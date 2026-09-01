@@ -26,15 +26,14 @@ export default function Countdown({
   variant?: "ink" | "white";
   valueClassName?: string;
 }) {
-  const [now, setNow] = useState<number | null>(null);
+  const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
-    setNow(Date.now());
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  const units = unitsFor(now ?? Date.now());
+  const units = unitsFor(now);
   const borderClass = variant === "white" ? "border-white" : "border-ink";
   const labelClass = variant === "white" ? "text-white/85" : "text-ink-700";
 

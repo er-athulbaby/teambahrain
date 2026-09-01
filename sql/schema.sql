@@ -114,6 +114,15 @@ CREATE TABLE olympic_medals (
   medal CHAR(1) NOT NULL CHECK (medal IN ('G', 'S', 'B'))
 );
 
+CREATE TABLE admins (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE,
+  username TEXT NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE TABLE continental_stats (
   id SERIAL PRIMARY KEY,
   value TEXT NOT NULL,

@@ -41,52 +41,54 @@
   }
 }
 
-* {
-  box-sizing: border-box;
-}
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  background: var(--color-ground);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  -webkit-font-smoothing: antialiased;
-}
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--color-ground);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-heading);
-}
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+  }
 
-a {
-  color: var(--color-accent-700);
-  text-decoration: none;
-}
-a:hover {
-  color: var(--color-accent);
-}
+  a {
+    color: var(--color-accent-700);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--color-accent);
+  }
 
-button,
-input,
-select,
-textarea {
-  font-family: inherit;
-  border-radius: 0;
-}
+  button,
+  input,
+  select,
+  textarea {
+    font-family: inherit;
+    border-radius: 0;
+  }
 
-::selection {
-  background: #ffc4b8;
-}
+  ::selection {
+    background: #ffc4b8;
+  }
 
-:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
 }
 
 .grayscale-photo {
