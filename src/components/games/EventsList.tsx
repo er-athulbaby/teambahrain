@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CalendarDays, Clock } from "lucide-react";
+import SportFilterDropdown from "@/components/games/SportFilterDropdown";
 import type { GameEditionEvent, GameEditionSport } from "@/types";
 
 function formatDate(d: string) {
@@ -23,22 +24,8 @@ export default function EventsList({
   return (
     <>
       <section className="border-b-2 border-ink">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 flex flex-wrap gap-0 overflow-x-auto">
-          {["All", ...sports.map((s) => s.name)].map((name) => {
-            const active = filter === name;
-            return (
-              <button
-                key={name}
-                type="button"
-                onClick={() => setFilter(name)}
-                className={`border-r-2 border-divider px-5 py-4.5 font-semibold text-xs tracking-[0.14em] uppercase hover:bg-surface ${
-                  active ? "text-ink shadow-[inset_0_-4px_0_0_var(--color-accent)]" : "text-ink-700"
-                }`}
-              >
-                {name}
-              </button>
-            );
-          })}
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-4">
+          <SportFilterDropdown sports={sports} value={filter} onChange={setFilter} />
         </div>
       </section>
 

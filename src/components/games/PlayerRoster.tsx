@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import ImageTile from "@/components/shared/ImageTile";
+import SportFilterDropdown from "@/components/games/SportFilterDropdown";
 import type { GameEditionPlayer, GameEditionSport } from "@/types";
 
 export default function PlayerRoster({
@@ -19,34 +19,8 @@ export default function PlayerRoster({
   return (
     <>
       <section className="border-b-2 border-ink">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 flex flex-wrap gap-0 overflow-x-auto">
-          <button
-            type="button"
-            onClick={() => setFilter("All")}
-            className={`border-r-2 border-divider px-5 py-4.5 font-semibold text-xs tracking-[0.14em] uppercase hover:bg-surface ${
-              filter === "All" ? "text-ink shadow-[inset_0_-4px_0_0_var(--color-accent)]" : "text-ink-700"
-            }`}
-          >
-            All
-          </button>
-          {sports.map((s) => {
-            const active = filter === s.name;
-            return (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => setFilter(s.name)}
-                className={`flex items-center gap-2 border-r-2 border-divider px-5 py-3.5 font-semibold text-xs tracking-[0.14em] uppercase hover:bg-surface ${
-                  active ? "text-ink shadow-[inset_0_-4px_0_0_var(--color-accent)]" : "text-ink-700"
-                }`}
-              >
-                {s.icon_path && (
-                  <Image src={s.icon_path} alt="" width={20} height={20} className="h-5 w-5 object-contain" />
-                )}
-                {s.name}
-              </button>
-            );
-          })}
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-4">
+          <SportFilterDropdown sports={sports} value={filter} onChange={setFilter} />
         </div>
       </section>
       <section className="border-b-2 border-ink">
