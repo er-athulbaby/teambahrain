@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import ImageTile from "@/components/shared/ImageTile";
 import { getLeadNews, getNewsList } from "@/lib/data/news";
+import { getPageContent } from "@/lib/data/pageContent";
 
 export const metadata: Metadata = {
   title: "News — Team Bahrain",
@@ -15,17 +16,17 @@ function formatDate(d: string) {
 }
 
 export default async function NewsPage() {
-  const [lead, news] = await Promise.all([getLeadNews(), getNewsList()]);
+  const [lead, news, content] = await Promise.all([getLeadNews(), getNewsList(), getPageContent("news")]);
 
   return (
     <main>
       <section className="border-b-2 border-ink">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-10 sm:py-14 flex flex-col gap-5">
           <span className="font-semibold text-xs tracking-[0.2em] uppercase text-accent-700">
-            Newsroom
+            {content.eyebrow}
           </span>
           <h1 className="m-0 font-bold text-6xl sm:text-8xl leading-[0.88] tracking-[-0.015em] uppercase">
-            News
+            {content.headline}
           </h1>
         </div>
       </section>
@@ -44,7 +45,7 @@ export default async function NewsPage() {
                 {lead.blurb}
               </p>
               <span className="font-semibold text-xs tracking-[0.1em] uppercase text-ink-700">
-                {formatDate(lead.date)} · Manama
+                {formatDate(lead.date)} · {content.lead_location}
               </span>
             </div>
             <ImageTile

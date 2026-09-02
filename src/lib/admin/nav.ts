@@ -13,6 +13,7 @@ import {
   Camera,
   Rss,
   Globe2,
+  FileText,
   type LucideIcon,
 } from "lucide-react";
 
@@ -33,6 +34,19 @@ export const ADMIN_NAV: AdminNavGroup[] = [
     items: [
       { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
       { href: "/admin/analytics", label: "Analytics", icon: LineChart },
+    ],
+  },
+  {
+    section: "Page content",
+    items: [
+      { href: "/admin/pages/home", label: "Home", icon: FileText },
+      { href: "/admin/pages/history", label: "History", icon: FileText },
+      { href: "/admin/pages/sports", label: "Sports", icon: FileText },
+      { href: "/admin/pages/athletes", label: "Athletes", icon: FileText },
+      { href: "/admin/pages/medals", label: "All-time medals", icon: FileText },
+      { href: "/admin/pages/news", label: "News", icon: FileText },
+      { href: "/admin/pages/videos", label: "Videos", icon: FileText },
+      { href: "/admin/pages/events", label: "Events", icon: FileText },
     ],
   },
   {

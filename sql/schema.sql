@@ -141,3 +141,13 @@ CREATE TABLE page_views (
 );
 CREATE INDEX page_views_created_at_idx ON page_views (created_at);
 CREATE INDEX page_views_path_idx ON page_views (path);
+
+-- One-off page copy/images (hero headlines, intros, feature photos) that
+-- isn't a repeating content type. Key-value per page/field, resolved
+-- against src/lib/admin/pageContentConfig.ts defaults when no row exists.
+CREATE TABLE page_content (
+  page TEXT NOT NULL,
+  field_key TEXT NOT NULL,
+  value TEXT,
+  PRIMARY KEY (page, field_key)
+);

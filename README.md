@@ -55,7 +55,14 @@ all of that content.
    npm run seed:admin -- "Your Name" you@example.com admin-username a-strong-password
    ```
 
-6. Run the dev server:
+6. Seed the editable page text/images (headlines, intros, hero photo — safe
+   to re-run any time, never overwrites an existing edit):
+
+   ```bash
+   npm run seed:page-content
+   ```
+
+7. Run the dev server:
 
    ```bash
    npm run dev
@@ -97,6 +104,33 @@ The admin UI (`src/components/admin/ui/*` — `Card`, `StatCard`, `Badge`,
 `Button`) uses a neutral indigo/slate palette, deliberately distinct from the
 public site's red/black so the two are never confused.
 
+### Page content (hero text/images, headlines, intros)
+
+Beyond the repeating resources above, every page also has one-off design
+copy — a hero headline, an intro paragraph, a feature photo — that isn't a
+list item. That's a separate, simpler system under **"Page content"** in the
+sidebar (`/admin/pages/<page>`, one form per public page):
+
+- `src/lib/admin/pageContentConfig.ts` — for each page, the list of editable
+  fields (text/textarea/image) **and their current default copy** — the
+  single source of truth for both what the admin form shows and what the
+  public site falls back to if nothing's been edited yet.
+- `page_content` table — flat `(page, field_key, value)` rows; only present
+  once someone edits something, since `getPageContent()`
+  (`src/lib/data/pageContent.ts`) always merges DB values over the config
+  defaults.
+- `src/app/api/admin/page-content/[page]/route.ts` + `PageContentManager.tsx`
+  — GET/PATCH for one page's fields, same whitelisted-by-config safeguard as
+  the resource CRUD layer.
+- `npm run seed:page-content` inserts the defaults with `ON CONFLICT DO
+  NOTHING`, so it's safe to run after adding a new field to the config
+  without touching anything an editor has already changed.
+
+Deliberately **not** covered: button labels/links, table headers, and other
+fixed UI chrome — this is "page settings," not a WordPress/Drupal-style page
+builder, since the site has a bespoke fixed layout rather than a generic
+content structure.
+
 ## Analytics
 
 `/admin/analytics` shows real visitor traffic on the public site — views over
@@ -123,8 +157,8 @@ you can see at a glance how much content of each type exists.
   `/admin` or `/login`.
 - `src/app/admin/*`, `src/app/login/*`, `src/app/api/admin/*`, `src/app/api/auth/*` — the admin panel and its API.
 - `src/components/` — `layout/` (public chrome), `shared/` (ImageTile, Countdown, SectionHead), `admin/` (AdminSidebar, AdminResourceManager, MedalsManager), and one folder per public-page domain (`home/`, `athletes/`, `medals/`, `events/`).
-- `src/lib/data/*` — server-only Postgres query functions for the public site, one file per domain.
-- `src/lib/admin/*` — the generic CRUD layer, resource config, admin nav, and analytics queries.
+- `src/lib/data/*` — server-only Postgres query functions for the public site, one file per domain, including `pageContent.ts`.
+- `src/lib/admin/*` — the generic CRUD layer, resource config, page-content config, admin nav, and analytics queries.
 - `src/components/analytics/Analytics.tsx` — the visitor-traffic beacon (public site only).
 - `src/lib/db.ts` — the `pg` pool + `query`/`queryOne` helpers (no SSL — matches the single-VM Postgres-on-localhost hosting pattern used by this user's other Next.js projects).
 - `src/lib/site.config.ts` — fixed structural constants (nav, footer links, filter chip labels, the LA2028 countdown target).

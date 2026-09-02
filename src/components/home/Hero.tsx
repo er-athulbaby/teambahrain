@@ -2,7 +2,9 @@ import Link from "next/link";
 import Countdown from "@/components/shared/Countdown";
 import ImageTile from "@/components/shared/ImageTile";
 
-export default function Hero() {
+export default function Hero({ content }: { content: Record<string, string> }) {
+  const headlineLines = content.hero_headline.split("\n");
+
   return (
     <section className="border-b-2 border-ink">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
@@ -10,18 +12,19 @@ export default function Hero() {
           <div className="flex items-center gap-3">
             <span className="w-7 h-1 bg-accent" />
             <span className="font-semibold text-xs tracking-[0.2em] uppercase text-accent-700">
-              Road to Los Angeles 2028
+              {content.hero_eyebrow}
             </span>
           </div>
           <h1 className="m-0 font-bold text-6xl sm:text-8xl lg:text-[104px] leading-[0.88] tracking-[-0.015em] uppercase">
-            One island.
-            <br />
-            One team.
+            {headlineLines.map((line, i) => (
+              <span key={i}>
+                {line}
+                {i < headlineLines.length - 1 && <br />}
+              </span>
+            ))}
           </h1>
           <p className="m-0 max-w-[44ch] text-lg sm:text-[19px] leading-[1.5] text-ink-800 text-pretty">
-            The official home of Bahrain&apos;s Olympic movement — every
-            athlete, every federation, every result on the road from
-            Aichi–Nagoya to Los Angeles.
+            {content.hero_intro}
           </p>
           <Countdown />
           <div className="flex gap-3 flex-wrap">
@@ -42,7 +45,7 @@ export default function Hero() {
         <div className="order-1 lg:order-2 border-t-2 lg:border-t-0 lg:border-l-2 border-ink relative min-h-[320px] sm:min-h-[460px] lg:min-h-[660px]">
           <div className="absolute inset-0">
             <ImageTile
-              src="/images/samples/tb-hero.png"
+              src={content.hero_photo}
               alt="Hero portrait — flagbearer, Paris 2024"
               aspect="auto"
               className="h-full"
@@ -50,7 +53,7 @@ export default function Hero() {
           </div>
           <div className="absolute left-0 bottom-0 bg-ground border-t-2 border-r-2 border-ink px-5 py-3.5 pointer-events-none">
             <span className="font-semibold text-[11px] tracking-[0.16em] uppercase text-ink-700">
-              Paris 2024 · Stade de France
+              {content.hero_caption}
             </span>
           </div>
         </div>

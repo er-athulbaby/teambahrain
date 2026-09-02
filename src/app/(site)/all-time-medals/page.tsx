@@ -1,25 +1,28 @@
 import type { Metadata } from "next";
 import MedalTable from "@/components/medals/MedalTable";
 import { getOlympicGames, getOlympicMedals, getMedalTotals, getContinentalStats } from "@/lib/data/medals";
+import { getPageContent } from "@/lib/data/pageContent";
 
 export const metadata: Metadata = {
   title: "All-time medals — Team Bahrain",
 };
 
 export default async function MedalsPage() {
-  const [games, medals, totals, continental] = await Promise.all([
+  const [games, medals, totals, continental, content] = await Promise.all([
     getOlympicGames(),
     getOlympicMedals(),
     getMedalTotals(),
     getContinentalStats(),
+    getPageContent("medals"),
   ]);
 
   const totalCells = [
-    { label: "Gold", value: totals.gold, note: "2012, 2016 and 2024 — all in athletics.", color: "text-accent" },
-    { label: "Silver", value: totals.silver, note: "Marathon, 10,000m and 400m.", color: "text-ink" },
-    { label: "Bronze", value: totals.bronze, note: "Still to come.", color: "text-ink-500" },
-    { label: "Total medals", value: totals.total, note: "Across eleven summer Games.", color: "text-ink" },
+    { label: "Gold", value: totals.gold, note: content.gold_note, color: "text-accent" },
+    { label: "Silver", value: totals.silver, note: content.silver_note, color: "text-ink" },
+    { label: "Bronze", value: totals.bronze, note: content.bronze_note, color: "text-ink-500" },
+    { label: "Total medals", value: totals.total, note: content.total_note, color: "text-ink" },
   ];
+  const headlineLines = content.headline.split("\n");
 
   return (
     <main>
@@ -27,20 +30,18 @@ export default async function MedalsPage() {
         <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-10 sm:py-14 grid grid-cols-1 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] gap-10 lg:items-end">
           <div className="flex flex-col gap-5">
             <span className="font-semibold text-xs tracking-[0.2em] uppercase text-accent-700">
-              1984 — 2024
+              {content.eyebrow}
             </span>
             <h1 className="m-0 font-bold text-6xl sm:text-8xl leading-[0.88] tracking-[-0.015em] uppercase">
-              All-time
-              <br />
-              medals
+              {headlineLines.map((line, i) => (
+                <span key={i}>
+                  {line}
+                  {i < headlineLines.length - 1 && <br />}
+                </span>
+              ))}
             </h1>
           </div>
-          <p className="m-0 text-lg leading-[1.5] text-ink-800 text-pretty">
-            Every Olympic medal won by a Bahraini athlete, by Games, sport,
-            event and athlete — select a row to open it. Counts reflect
-            medals as currently awarded, including subsequent
-            reallocations.
-          </p>
+          <p className="m-0 text-lg leading-[1.5] text-ink-800 text-pretty">{content.intro}</p>
         </div>
       </section>
 
@@ -75,10 +76,10 @@ export default async function MedalsPage() {
         <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-10 sm:py-12 grid grid-cols-1 sm:grid-cols-2 gap-10 items-center">
           <div className="flex flex-col gap-3.5">
             <span className="font-semibold text-xs tracking-[0.2em] uppercase text-accent-700">
-              Beyond the Olympics
+              {content.continental_eyebrow}
             </span>
             <p className="m-0 font-bold text-3xl sm:text-4xl leading-[0.98] tracking-[-0.012em] uppercase">
-              Asian Games &amp; continental record
+              {content.continental_headline}
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3">

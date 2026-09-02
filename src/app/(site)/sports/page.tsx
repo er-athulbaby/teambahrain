@@ -2,13 +2,14 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import ImageTile from "@/components/shared/ImageTile";
 import { getSports } from "@/lib/data/sports";
+import { getPageContent } from "@/lib/data/pageContent";
 
 export const metadata: Metadata = {
   title: "Sports — Team Bahrain",
 };
 
 export default async function SportsPage() {
-  const sports = await getSports();
+  const [sports, content] = await Promise.all([getSports(), getPageContent("sports")]);
 
   return (
     <main>
@@ -16,17 +17,13 @@ export default async function SportsPage() {
         <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-10 sm:py-14 grid grid-cols-1 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] gap-10 lg:items-end">
           <div className="flex flex-col gap-5">
             <span className="font-semibold text-xs tracking-[0.2em] uppercase text-accent-700">
-              Federations &amp; pathways
+              {content.eyebrow}
             </span>
             <h1 className="m-0 font-bold text-6xl sm:text-8xl leading-[0.88] tracking-[-0.015em] uppercase">
-              Sports
+              {content.headline}
             </h1>
           </div>
-          <p className="m-0 text-lg leading-[1.5] text-ink-800 text-pretty">
-            Each federation runs its own national squads, domestic league
-            and youth intake. Select a sport for fixtures, rankings and club
-            contacts.
-          </p>
+          <p className="m-0 text-lg leading-[1.5] text-ink-800 text-pretty">{content.intro}</p>
         </div>
       </section>
       <section className="border-b-2 border-ink">
