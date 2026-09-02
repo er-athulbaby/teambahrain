@@ -16,6 +16,7 @@ import {
   FileText,
   UserCog,
   Settings,
+  Flag,
   type LucideIcon,
 } from "lucide-react";
 
@@ -39,6 +40,10 @@ export const ADMIN_NAV: AdminNavGroup[] = [
       { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
       { href: "/admin/analytics", label: "Analytics", icon: LineChart, adminOnly: true },
     ],
+  },
+  {
+    section: "Games",
+    items: [{ href: "/admin/game_editions", label: "Games editions", icon: Flag }],
   },
   {
     section: "Settings",

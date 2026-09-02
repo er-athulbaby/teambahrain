@@ -6,6 +6,7 @@ export interface FieldConfig {
   type: FieldType;
   required?: boolean;
   options?: string[];
+  hint?: string;
 }
 
 export interface ResourceConfig {
@@ -17,6 +18,12 @@ export interface ResourceConfig {
   /** When set, a `slug` column is auto-generated from this field on create. */
   slugSource?: string;
   titleField: string;
+  /** When set, rows are scoped to a parent (e.g. "game_edition_id") — the
+   * API requires a `?scope=<id>` query param, filtered on list and injected on create. */
+  scopeField?: string;
+  /** URL template (with `{id}`) for a "Manage content →" link per row, e.g. a
+   * parent resource whose rows each own further scoped child resources. */
+  detailHref?: string;
 }
 
 export const RESOURCES: Record<string, ResourceConfig> = {
@@ -181,6 +188,111 @@ export const RESOURCES: Record<string, ResourceConfig> = {
     titleField: "text",
     fields: [
       { key: "text", label: "Text", type: "text", required: true },
+      { key: "sort_order", label: "Sort order", type: "number" },
+    ],
+  },
+  game_editions: {
+    key: "game_editions",
+    table: "game_editions",
+    label: "Games edition",
+    pluralLabel: "Games editions",
+    slugSource: "name",
+    titleField: "name",
+    detailHref: "/admin/game_editions/{id}/manage",
+    fields: [
+      { key: "name", label: "Name", type: "text", required: true },
+      { key: "edition_type", label: "Type", type: "text", required: true },
+      { key: "city", label: "Host city", type: "text", required: true },
+      { key: "start_date", label: "Start date", type: "date", required: true },
+      { key: "end_date", label: "End date", type: "date" },
+      { key: "logo_path", label: "Logo", type: "image" },
+      { key: "is_published", label: "Published (visible on the public site)", type: "boolean" },
+      { key: "sort_order", label: "Sort order", type: "number" },
+    ],
+  },
+  game_edition_sports: {
+    key: "game_edition_sports",
+    table: "game_edition_sports",
+    label: "Sport",
+    pluralLabel: "Sports",
+    titleField: "name",
+    scopeField: "game_edition_id",
+    fields: [
+      { key: "name", label: "Name", type: "text", required: true },
+      { key: "icon_path", label: "Icon", type: "image" },
+      { key: "sort_order", label: "Sort order", type: "number" },
+    ],
+  },
+  game_edition_delegates: {
+    key: "game_edition_delegates",
+    table: "game_edition_delegates",
+    label: "Delegate",
+    pluralLabel: "Delegation",
+    titleField: "name",
+    scopeField: "game_edition_id",
+    fields: [
+      {
+        key: "group_name",
+        label: "Group",
+        type: "select",
+        required: true,
+        options: ["official", "administrative"],
+      },
+      { key: "name", label: "Name", type: "text", required: true },
+      { key: "title", label: "Title", type: "text", required: true },
+      { key: "photo_path", label: "Photo", type: "image" },
+      { key: "sort_order", label: "Sort order", type: "number" },
+    ],
+  },
+  game_edition_players: {
+    key: "game_edition_players",
+    table: "game_edition_players",
+    label: "Player",
+    pluralLabel: "Players",
+    titleField: "name",
+    scopeField: "game_edition_id",
+    fields: [
+      { key: "name", label: "Name", type: "text", required: true },
+      { key: "sport", label: "Sport", type: "text", required: true },
+      { key: "photo_path", label: "Photo", type: "image" },
+      { key: "sort_order", label: "Sort order", type: "number" },
+    ],
+  },
+  game_edition_events: {
+    key: "game_edition_events",
+    table: "game_edition_events",
+    label: "Event",
+    pluralLabel: "Events & results",
+    titleField: "title",
+    scopeField: "game_edition_id",
+    fields: [
+      { key: "sport", label: "Sport", type: "text", required: true },
+      { key: "title", label: "Title", type: "text", required: true },
+      { key: "venue", label: "Venue", type: "text", required: true },
+      { key: "event_date", label: "Date", type: "date", required: true },
+      { key: "event_time", label: "Time", type: "text" },
+      {
+        key: "result_time",
+        label: "Result — time/score",
+        type: "text",
+        hint: "Leave blank until the event has happened; filling this in moves it from Events to Results.",
+      },
+      { key: "result_rank", label: "Result — rank", type: "text" },
+      { key: "sort_order", label: "Sort order", type: "number" },
+    ],
+  },
+  game_edition_medals: {
+    key: "game_edition_medals",
+    table: "game_edition_medals",
+    label: "Medal record",
+    pluralLabel: "Medals",
+    titleField: "athlete_name",
+    scopeField: "game_edition_id",
+    fields: [
+      { key: "sport", label: "Sport", type: "text", required: true },
+      { key: "event_name", label: "Event", type: "text", required: true },
+      { key: "athlete_name", label: "Athlete", type: "text", required: true },
+      { key: "medal", label: "Medal", type: "select", required: true, options: ["G", "S", "B"] },
       { key: "sort_order", label: "Sort order", type: "number" },
     ],
   },

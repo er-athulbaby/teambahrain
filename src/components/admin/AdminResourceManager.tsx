@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ImageOff, Loader2, Pencil, Trash2, UploadCloud } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, ImageOff, Loader2, Pencil, Trash2, UploadCloud } from "lucide-react";
 import type { ResourceConfig } from "@/lib/admin/resources";
 import Card from "@/components/admin/ui/Card";
 import Button from "@/components/admin/ui/Button";
@@ -20,7 +21,14 @@ function emptyForm(resource: ResourceConfig): Record<string, unknown> {
 const inputClass =
   "w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100";
 
-export default function AdminResourceManager({ resource }: { resource: ResourceConfig }) {
+export default function AdminResourceManager({
+  resource,
+  scopeValue,
+}: {
+  resource: ResourceConfig;
+  /** Required when the resource declares a `scopeField` (e.g. a parent Games edition's id). */
+  scopeValue?: string | number;
+}) {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<Record<string, unknown>>(() => emptyForm(resource));
@@ -30,12 +38,13 @@ export default function AdminResourceManager({ resource }: { resource: ResourceC
   const [error, setError] = useState<string | null>(null);
 
   const imageField = resource.fields.find((f) => f.type === "image");
+  const scopeQuery = scopeValue !== undefined ? `?scope=${encodeURIComponent(scopeValue)}` : "";
 
   const load = useCallback(async () => {
-    const res = await fetch(`/api/admin/${resource.key}`);
+    const res = await fetch(`/api/admin/${resource.key}${scopeQuery}`);
     if (res.ok) setRows(await res.json());
     setLoading(false);
-  }, [resource.key]);
+  }, [resource.key, scopeQuery]);
 
   useEffect(() => {
     // Fetch-on-mount: the flagged setState only runs after the await, not synchronously.
@@ -79,7 +88,9 @@ export default function AdminResourceManager({ resource }: { resource: ResourceC
     setError(null);
 
     const method = editingId ? "PATCH" : "POST";
-    const url = editingId ? `/api/admin/${resource.key}/${editingId}` : `/api/admin/${resource.key}`;
+    const url = editingId
+      ? `/api/admin/${resource.key}/${editingId}`
+      : `/api/admin/${resource.key}${scopeQuery}`;
     const res = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
@@ -114,6 +125,7 @@ export default function AdminResourceManager({ resource }: { resource: ResourceC
           {field.label}
           {field.required && <span className="text-red-500"> *</span>}
         </label>
+        {field.hint && <p className="mb-1.5 text-xs text-slate-400">{field.hint}</p>}
 
         {field.type === "textarea" && (
           <textarea
@@ -269,6 +281,15 @@ export default function AdminResourceManager({ resource }: { resource: ResourceC
                       <Badge>{String(row.sort_order ?? "")}</Badge>
                     </td>
                     <td className="px-4 py-2.5 text-right whitespace-nowrap">
+                      {resource.detailHref && (
+                        <Link
+                          href={resource.detailHref.replace("{id}", String(row.id))}
+                          className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-700 mr-4"
+                        >
+                          Manage content
+                          <ArrowRight size={13} strokeWidth={1.75} />
+                        </Link>
+                      )}
                       <button
                         onClick={() => startEdit(row)}
                         className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-indigo-600 mr-4"

@@ -7,10 +7,12 @@ export default function MobileNavDrawer({
   open,
   onClose,
   pathname,
+  showGames,
 }: {
   open: boolean;
   onClose: () => void;
   pathname: string;
+  showGames: boolean;
 }) {
   if (!open) return null;
 
@@ -37,6 +39,17 @@ export default function MobileNavDrawer({
           </button>
         </div>
         <nav className="flex flex-col">
+          {showGames && (
+            <Link
+              href="/games"
+              onClick={onClose}
+              className={`px-5 py-4 border-b-2 border-divider font-semibold text-[13px] tracking-[0.12em] uppercase ${
+                pathname.startsWith("/games") ? "text-ink bg-surface" : "text-ink-700"
+              }`}
+            >
+              Games
+            </Link>
+          )}
           {NAV_ITEMS.map((item) => {
             const active = pathname === item.href;
             return (

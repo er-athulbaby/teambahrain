@@ -152,3 +152,71 @@ CREATE TABLE page_content (
   value TEXT,
   PRIMARY KEY (page, field_key)
 );
+
+-- Games editions (Paris 2024, Aichi-Nagoya, ...): an independent per-edition
+-- micro-site (Delegation/Players/Events/Results/Medals), separate from the
+-- olympic_games/olympic_medals tables used by the site-wide all-time medals
+-- page. Medal totals here are computed from game_edition_medals leaf rows,
+-- never stored, same principle as olympic_medals.
+CREATE TABLE game_editions (
+  id SERIAL PRIMARY KEY,
+  slug TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  edition_type TEXT NOT NULL,
+  city TEXT NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE,
+  logo_path TEXT,
+  is_published BOOLEAN NOT NULL DEFAULT TRUE,
+  sort_order INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE game_edition_sports (
+  id SERIAL PRIMARY KEY,
+  game_edition_id INT NOT NULL REFERENCES game_editions(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  icon_path TEXT,
+  sort_order INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE game_edition_delegates (
+  id SERIAL PRIMARY KEY,
+  game_edition_id INT NOT NULL REFERENCES game_editions(id) ON DELETE CASCADE,
+  group_name TEXT NOT NULL CHECK (group_name IN ('official', 'administrative')),
+  name TEXT NOT NULL,
+  title TEXT NOT NULL,
+  photo_path TEXT,
+  sort_order INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE game_edition_players (
+  id SERIAL PRIMARY KEY,
+  game_edition_id INT NOT NULL REFERENCES game_editions(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  sport TEXT NOT NULL,
+  photo_path TEXT,
+  sort_order INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE game_edition_events (
+  id SERIAL PRIMARY KEY,
+  game_edition_id INT NOT NULL REFERENCES game_editions(id) ON DELETE CASCADE,
+  sport TEXT NOT NULL,
+  title TEXT NOT NULL,
+  venue TEXT NOT NULL,
+  event_date DATE NOT NULL,
+  event_time TEXT,
+  result_time TEXT,
+  result_rank TEXT,
+  sort_order INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE game_edition_medals (
+  id SERIAL PRIMARY KEY,
+  game_edition_id INT NOT NULL REFERENCES game_editions(id) ON DELETE CASCADE,
+  sport TEXT NOT NULL,
+  event_name TEXT NOT NULL,
+  athlete_name TEXT NOT NULL,
+  medal CHAR(1) NOT NULL CHECK (medal IN ('G', 'S', 'B')),
+  sort_order INT NOT NULL DEFAULT 0
+);

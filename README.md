@@ -3,8 +3,9 @@
 The official website for Team Bahrain / the Bahrain Olympic Committee — a
 Next.js + PostgreSQL rebuild of the `Team Bahrain.dc.html` Claude Design
 concept, covering eight public routes (Home, History, Sports, Athletes,
-All-time Medals, News, Videos, Events) plus an admin panel for managing
-all of that content.
+All-time Medals, News, Videos, Events), a per-Games-edition section
+(`/games`, e.g. Paris 2024 — Delegation/Players/Events/Results/Medals),
+plus an admin panel for managing all of it.
 
 > **Placeholder content.** Athlete facts, medal records and news items are
 > ported verbatim from the design prototype for development purposes. The
@@ -62,7 +63,13 @@ all of that content.
    npm run seed:page-content
    ```
 
-7. Run the dev server:
+7. Seed an example Games edition (Paris 2024, so `/games` isn't empty):
+
+   ```bash
+   npm run seed:games
+   ```
+
+8. Run the dev server:
 
    ```bash
    npm run dev
@@ -155,6 +162,47 @@ statically prerender those pages at build time and admin edits wouldn't
 appear on a real production build until the next deploy (`npm run dev`
 doesn't show this, since dev mode never prerenders).
 
+## Games editions (`/games`)
+
+A per-edition micro-site — Paris 2024, Aichi-Nagoya, any future Games —
+independent of the site-wide Athletes/Events/All-time-medals pages (which
+stay untouched). Each edition has its own Delegation, Players, Events,
+Results and Medals, reached via a "Games" dropdown in the header
+(`Header.tsx`, portaled with `createPortal` so it isn't clipped by the
+nav's `overflow-x-auto` scroll container — a real bug hit and fixed while
+building this: an element can't overflow an ancestor whose `overflow-x` is
+non-`visible`, since the browser then forces `overflow-y` to `auto` too).
+
+- `game_editions` + five child tables (`game_edition_sports`,
+  `_delegates`, `_players`, `_events`, `_medals`), all scoped by
+  `game_edition_id`. `game_edition_events` covers **both** the Events and
+  Results public pages — a row with `result_time`/`result_rank` filled in
+  is a result, blank is still upcoming; there's no separate results table.
+- Admin-side, this is the generic CRUD system (`resources.ts`/`crud.ts`)
+  extended with one new concept: an optional `scopeField` on a
+  `ResourceConfig`, so a resource's rows are filtered/injected by a parent
+  id. `AdminResourceManager` takes a `scopeValue` prop and appends
+  `?scope=` to its requests — everything else about it (forms, image
+  upload, edit/delete) is unchanged. `game_editions` itself is a normal
+  top-level (unscoped) resource with a `detailHref` config
+  (`/admin/game_editions/{id}/manage`), which is what puts a
+  "Manage content →" link on each row, leading to
+  `src/app/admin/game_editions/[id]/manage/page.tsx` — five
+  `AdminResourceManager`s, one per child resource, all scoped to that one
+  edition.
+- Public routes mirror the site's existing "real route per page" pattern
+  rather than client-side tab-switching: `src/app/(site)/games/page.tsx`
+  (index of published editions) and `.../games/[slug]/{delegation,players,
+  events,results,medals}/page.tsx` under a shared `[slug]/layout.tsx` that
+  404s on an unknown or unpublished slug and renders the edition
+  banner + tab nav. Data access is `src/lib/data/games.ts`; medal totals
+  reuse the existing `countMedals` helper (`src/lib/medals.ts`) rather than
+  a new implementation, same "compute from leaf records" principle as the
+  all-time medals table.
+- `npm run seed:games` seeds one example edition (Paris 2024), content
+  ported from the reference site shared when this feature was requested —
+  placeholder, same verify-before-publishing caveat as the other seed data.
+
 ## Analytics
 
 `/admin/analytics` shows real visitor traffic on the public site — views over
@@ -180,8 +228,8 @@ you can see at a glance how much content of each type exists.
   header/ticker/footer chrome from `(site)/layout.tsx` without leaking into
   `/admin` or `/login`.
 - `src/app/admin/*`, `src/app/login/*`, `src/app/api/admin/*`, `src/app/api/auth/*` — the admin panel and its API.
-- `src/components/` — `layout/` (public chrome), `shared/` (ImageTile, Countdown, SectionHead), `admin/` (AdminSidebar, AdminResourceManager, MedalsManager), and one folder per public-page domain (`home/`, `athletes/`, `medals/`, `events/`).
-- `src/lib/data/*` — server-only Postgres query functions for the public site, one file per domain, including `pageContent.ts`.
+- `src/components/` — `layout/` (public chrome), `shared/` (ImageTile, Countdown, SectionHead), `admin/` (AdminSidebar, AdminResourceManager, MedalsManager, UsersManager), `games/` (GameEditionTabs, PlayerRoster, EventsList), and one folder per public-page domain (`home/`, `athletes/`, `medals/`, `events/`).
+- `src/lib/data/*` — server-only Postgres query functions for the public site, one file per domain, including `pageContent.ts` and `games.ts`.
 - `src/lib/admin/*` — the generic CRUD layer, resource config, page-content config, admin nav, and analytics queries.
 - `src/components/analytics/Analytics.tsx` — the visitor-traffic beacon (public site only).
 - `src/lib/db.ts` — the `pg` pool + `query`/`queryOne` helpers (no SSL — matches the single-VM Postgres-on-localhost hosting pattern used by this user's other Next.js projects).
@@ -190,3 +238,4 @@ you can see at a glance how much content of each type exists.
 - `sql/schema.sql` — table definitions.
 - `scripts/seed.ts` — seeds the sample public content ported from the design prototype.
 - `scripts/seed-admin.ts` — creates/updates an admin login.
+- `scripts/seed-games.ts` — seeds the example Paris 2024 Games edition.

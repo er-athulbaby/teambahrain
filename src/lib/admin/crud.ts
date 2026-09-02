@@ -4,6 +4,9 @@ import { type ResourceConfig, slugify } from "@/lib/admin/resources";
 function coerceValue(type: string, raw: unknown) {
   if (type === "number") return raw === "" || raw === null || raw === undefined ? 0 : Number(raw);
   if (type === "boolean") return Boolean(raw);
+  // An empty string is not a valid Postgres date — treat it as "not set"
+  // for optional date fields (required ones are already rejected earlier).
+  if (type === "date" && raw === "") return null;
   return raw ?? null;
 }
 
@@ -20,24 +23,33 @@ async function uniqueSlug(table: string, base: string, excludeId?: number) {
   }
 }
 
-export async function listRows(resource: ResourceConfig) {
+export async function listRows(resource: ResourceConfig, scopeValue?: string) {
   const cols = ["id", ...resource.fields.map((f) => f.key)];
   if (resource.slugSource) cols.push("slug");
+  if (resource.scopeField) cols.push(resource.scopeField);
+
+  const where = resource.scopeField ? `WHERE ${resource.scopeField} = $1` : "";
+  const params = resource.scopeField ? [scopeValue] : [];
+
   const { rows } = await query(
-    `SELECT ${cols.join(", ")} FROM ${resource.table} ORDER BY sort_order ASC, id ASC`
+    `SELECT ${cols.join(", ")} FROM ${resource.table} ${where} ORDER BY sort_order ASC, id ASC`,
+    params
   );
   return rows;
 }
 
-export async function createRow(resource: ResourceConfig, body: Record<string, unknown>) {
+export async function createRow(resource: ResourceConfig, body: Record<string, unknown>, scopeValue?: string) {
   const cols: string[] = [];
   const values: unknown[] = [];
 
   for (const field of resource.fields) {
     if (field.key === "sort_order" && (body.sort_order === undefined || body.sort_order === "")) {
-      const max = await queryOne<{ max: number | null }>(
-        `SELECT MAX(sort_order) as max FROM ${resource.table}`
-      );
+      const max = resource.scopeField
+        ? await queryOne<{ max: number | null }>(
+            `SELECT MAX(sort_order) as max FROM ${resource.table} WHERE ${resource.scopeField} = $1`,
+            [scopeValue]
+          )
+        : await queryOne<{ max: number | null }>(`SELECT MAX(sort_order) as max FROM ${resource.table}`);
       cols.push("sort_order");
       values.push((max?.max ?? -1) + 1);
       continue;
@@ -50,6 +62,11 @@ export async function createRow(resource: ResourceConfig, body: Record<string, u
     const base = String(body[resource.slugSource] ?? "item");
     cols.push("slug");
     values.push(await uniqueSlug(resource.table, base));
+  }
+
+  if (resource.scopeField) {
+    cols.push(resource.scopeField);
+    values.push(scopeValue);
   }
 
   const placeholders = cols.map((_, i) => `$${i + 1}`);

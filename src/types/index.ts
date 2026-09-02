@@ -111,3 +111,55 @@ export interface MedalCounts {
   bronze: number;
   total: number;
 }
+
+export interface GameEdition {
+  id: number;
+  slug: string;
+  name: string;
+  edition_type: string;
+  city: string;
+  start_date: string;
+  end_date: string | null;
+  logo_path: string | null;
+}
+
+export interface GameEditionSport {
+  id: number;
+  name: string;
+  icon_path: string | null;
+}
+
+export type DelegateGroup = "official" | "administrative";
+
+export interface GameEditionDelegate {
+  id: number;
+  group_name: DelegateGroup;
+  name: string;
+  title: string;
+  photo_path: string | null;
+}
+
+export interface GameEditionPlayer {
+  id: number;
+  name: string;
+  sport: string;
+  photo_path: string | null;
+}
+
+export interface GameEditionEvent {
+  id: number;
+  sport: string;
+  title: string;
+  venue: string;
+  event_date: string;
+  event_time: string | null;
+  result_time: string | null;
+  result_rank: string | null;
+}
+
+export interface GameEditionMedalRecord {
+  sport: string;
+  event_name: string;
+  athlete_name: string;
+  medal: Medal;
+}
