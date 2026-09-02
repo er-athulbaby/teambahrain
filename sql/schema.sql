@@ -129,3 +129,15 @@ CREATE TABLE continental_stats (
   label TEXT NOT NULL,
   sort_order INT NOT NULL DEFAULT 0
 );
+
+-- Self-hosted visitor analytics. No IP address is stored — only what's
+-- needed for aggregate traffic stats (views by page/day, top referrers).
+CREATE TABLE page_views (
+  id SERIAL PRIMARY KEY,
+  path TEXT NOT NULL,
+  referrer TEXT,
+  device TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX page_views_created_at_idx ON page_views (created_at);
+CREATE INDEX page_views_path_idx ON page_views (path);

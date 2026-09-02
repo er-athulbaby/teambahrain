@@ -18,6 +18,8 @@ all of that content.
 - Next.js 16 (App Router, TypeScript, Tailwind CSS v4)
 - PostgreSQL via raw `pg` (no ORM) — see `src/lib/db.ts`
 - NextAuth v5 (credentials + bcrypt) for the admin panel, session cookie via JWT
+- `lucide-react` for admin icons, `recharts` for the analytics chart
+- Self-hosted, privacy-conscious visitor analytics (no third-party tracker, no IP storage)
 
 ## Getting started
 
@@ -91,6 +93,29 @@ Image fields upload through `/api/admin/upload` (PNG/JPEG/WebP, 8MB max) to
 `public/uploads/` (gitignored — runtime data, not source) and store the
 returned path on the row.
 
+The admin UI (`src/components/admin/ui/*` — `Card`, `StatCard`, `Badge`,
+`Button`) uses a neutral indigo/slate palette, deliberately distinct from the
+public site's red/black so the two are never confused.
+
+## Analytics
+
+`/admin/analytics` shows real visitor traffic on the public site — views over
+the last 30 days, top pages, and top referrers — backed by a `page_views`
+table (`path`, `referrer`, `device`, `created_at`; **no IP address stored**).
+
+- `src/components/analytics/Analytics.tsx` — a tiny client component mounted
+  only in `(site)/layout.tsx` (so admin/login usage isn't counted as "site
+  traffic"). Fires `navigator.sendBeacon("/api/track", ...)` on every route
+  change; skips when `navigator.webdriver` is set, to keep automated/test
+  traffic out of the numbers.
+- `src/app/api/track/route.ts` — the public ingest endpoint.
+- `src/lib/admin/analytics.ts` — the aggregate queries (`getTrafficSummary`,
+  `getViewsByDay`, `getTopPages`, `getTopReferrers`), plus `getContentCounts`
+  for the dashboard's content stats.
+
+The dashboard (`/admin`) also surfaces `getContentCounts` as stat cards, so
+you can see at a glance how much content of each type exists.
+
 ## Project layout
 
 - `src/app/(site)/*` — the 8 public route pages, grouped so they share the
@@ -99,7 +124,8 @@ returned path on the row.
 - `src/app/admin/*`, `src/app/login/*`, `src/app/api/admin/*`, `src/app/api/auth/*` — the admin panel and its API.
 - `src/components/` — `layout/` (public chrome), `shared/` (ImageTile, Countdown, SectionHead), `admin/` (AdminSidebar, AdminResourceManager, MedalsManager), and one folder per public-page domain (`home/`, `athletes/`, `medals/`, `events/`).
 - `src/lib/data/*` — server-only Postgres query functions for the public site, one file per domain.
-- `src/lib/admin/*` — the generic CRUD layer, resource config, and admin nav.
+- `src/lib/admin/*` — the generic CRUD layer, resource config, admin nav, and analytics queries.
+- `src/components/analytics/Analytics.tsx` — the visitor-traffic beacon (public site only).
 - `src/lib/db.ts` — the `pg` pool + `query`/`queryOne` helpers (no SSL — matches the single-VM Postgres-on-localhost hosting pattern used by this user's other Next.js projects).
 - `src/lib/site.config.ts` — fixed structural constants (nav, footer links, filter chip labels, the LA2028 countdown target).
 - `src/auth.ts` / `src/proxy.ts` — NextAuth config and the route proxy protecting `/admin`.

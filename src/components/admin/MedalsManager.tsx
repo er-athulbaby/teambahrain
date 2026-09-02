@@ -1,11 +1,26 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { ChevronDown, ChevronUp, Loader2, Pencil, Trash2 } from "lucide-react";
+import Card from "@/components/admin/ui/Card";
+import Button from "@/components/admin/ui/Button";
+import Badge from "@/components/admin/ui/Badge";
 
 type Medal = { id: number; game_id: number; sport: string; event_name: string; athlete_name: string; medal: "G" | "S" | "B" };
 type Game = { id: number; year: string; city: string; sort_order: number; medals: Medal[] };
 
 const emptyMedalForm = { sport: "", event_name: "", athlete_name: "", medal: "G" as Medal["medal"] };
+
+const inputClass =
+  "rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100";
+
+const MEDAL_TONE: Record<Medal["medal"], "indigo" | "slate" | "green"> = {
+  G: "indigo",
+  S: "slate",
+  B: "green",
+};
+
+const MEDAL_LABEL: Record<Medal["medal"], string> = { G: "Gold", S: "Silver", B: "Bronze" };
 
 async function readError(res: Response, fallback: string) {
   const data = await res.json().catch(() => ({}));
@@ -129,61 +144,65 @@ export default function MedalsManager() {
   return (
     <div>
       <h1 className="mb-1 text-2xl font-semibold text-slate-900">Olympic medals</h1>
-      <p className="mb-6 text-sm text-slate-500">
+      <p className="mb-6 text-sm text-slate-500 max-w-2xl">
         Manage the Games Bahrain has attended and the medal records within each — totals on the public
         site are always computed from these records, so add every Games (even zero-medal ones) for the
         table to render correctly.
       </p>
 
       {error && (
-        <div className="mb-4 max-w-lg rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <div className="mb-4 max-w-lg rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {error}
         </div>
       )}
 
-      <form onSubmit={addGame} className="mb-8 flex gap-2 items-end max-w-lg">
-        <div>
-          <label className="mb-1 block text-xs font-medium text-slate-600">Year</label>
-          <input
-            value={newGame.year}
-            onChange={(e) => setNewGame({ ...newGame, year: e.target.value })}
-            placeholder="2024"
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm w-28"
-          />
-        </div>
-        <div className="flex-1">
-          <label className="mb-1 block text-xs font-medium text-slate-600">Host city</label>
-          <input
-            value={newGame.city}
-            onChange={(e) => setNewGame({ ...newGame, city: e.target.value })}
-            placeholder="Paris"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-          />
-        </div>
-        <button className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700">
-          Add Games
-        </button>
-      </form>
+      <Card className="mb-8 p-5 max-w-lg">
+        <form onSubmit={addGame} className="flex gap-2 items-end">
+          <div>
+            <label className="mb-1.5 block text-xs font-medium text-slate-600">Year</label>
+            <input
+              value={newGame.year}
+              onChange={(e) => setNewGame({ ...newGame, year: e.target.value })}
+              placeholder="2024"
+              className={`${inputClass} w-28`}
+            />
+          </div>
+          <div className="flex-1">
+            <label className="mb-1.5 block text-xs font-medium text-slate-600">Host city</label>
+            <input
+              value={newGame.city}
+              onChange={(e) => setNewGame({ ...newGame, city: e.target.value })}
+              placeholder="Paris"
+              className={`${inputClass} w-full`}
+            />
+          </div>
+          <Button variant="primary">Add Games</Button>
+        </form>
+      </Card>
 
-      {loading && <p className="text-sm text-slate-400">Loading…</p>}
+      {loading && (
+        <p className="flex items-center gap-2 text-sm text-slate-400">
+          <Loader2 size={15} className="animate-spin" /> Loading…
+        </p>
+      )}
 
       <div className="flex flex-col gap-3">
         {games.map((game) => (
-          <div key={game.id} className="rounded-lg border border-slate-200 bg-white">
+          <Card key={game.id}>
             <div className="flex items-center justify-between px-4 py-3">
               {editingGameId === game.id ? (
                 <div className="flex items-center gap-2">
                   <input
                     value={editGame.year}
                     onChange={(e) => setEditGame({ ...editGame, year: e.target.value })}
-                    className="rounded-md border border-slate-300 px-2 py-1 text-sm w-20"
+                    className={`${inputClass} w-20`}
                   />
                   <input
                     value={editGame.city}
                     onChange={(e) => setEditGame({ ...editGame, city: e.target.value })}
-                    className="rounded-md border border-slate-300 px-2 py-1 text-sm w-40"
+                    className={`${inputClass} w-40`}
                   />
-                  <button onClick={() => saveGame(game.id)} className="text-xs font-medium text-slate-900 hover:underline">
+                  <button onClick={() => saveGame(game.id)} className="text-xs font-medium text-indigo-600 hover:underline">
                     Save
                   </button>
                   <button onClick={() => setEditingGameId(null)} className="text-xs text-slate-400 hover:underline">
@@ -193,28 +212,45 @@ export default function MedalsManager() {
               ) : (
                 <button
                   onClick={() => setExpanded(expanded === game.id ? null : game.id)}
-                  className="text-sm font-medium text-slate-900"
+                  className="flex items-center gap-2 text-sm font-medium text-slate-900"
                 >
-                  {game.city} {game.year}{" "}
-                  <span className="text-slate-400">({game.medals.length} medal{game.medals.length === 1 ? "" : "s"})</span>
+                  {expanded === game.id ? (
+                    <ChevronUp size={15} className="text-slate-400" />
+                  ) : (
+                    <ChevronDown size={15} className="text-slate-400" />
+                  )}
+                  {game.city} {game.year}
+                  <Badge tone="indigo">
+                    {game.medals.length} medal{game.medals.length === 1 ? "" : "s"}
+                  </Badge>
                 </button>
               )}
               <div className="flex items-center gap-3">
                 {editingGameId !== game.id && (
-                  <button onClick={() => startEditGame(game)} className="text-xs text-slate-400 hover:text-slate-700">
+                  <button
+                    onClick={() => startEditGame(game)}
+                    className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-indigo-600"
+                  >
+                    <Pencil size={13} strokeWidth={1.75} />
                     Edit
                   </button>
                 )}
-                <button onClick={() => deleteGame(game.id)} className="text-xs text-slate-400 hover:text-red-600">
+                <button
+                  onClick={() => deleteGame(game.id)}
+                  className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-red-600"
+                >
+                  <Trash2 size={13} strokeWidth={1.75} />
                   Delete
                 </button>
               </div>
             </div>
 
             {expanded === game.id && (
-              <div className="border-t border-slate-100 px-4 py-3">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Medal records</p>
-                <ul className="mb-3 flex flex-col gap-1.5">
+              <div className="border-t border-slate-100 px-4 py-4">
+                <p className="mb-2.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  Medal records
+                </p>
+                <ul className="mb-4 flex flex-col gap-2">
                   {game.medals.map((m) => (
                     <li key={m.id} className="flex items-center justify-between text-sm">
                       {editingMedalId === m.id ? (
@@ -223,30 +259,30 @@ export default function MedalsManager() {
                             value={editMedalForm.sport}
                             onChange={(e) => setEditMedalForm({ ...editMedalForm, sport: e.target.value })}
                             placeholder="Sport"
-                            className="rounded-md border border-slate-300 px-2 py-1 text-sm w-28"
+                            className={`${inputClass} w-28`}
                           />
                           <input
                             value={editMedalForm.event_name}
                             onChange={(e) => setEditMedalForm({ ...editMedalForm, event_name: e.target.value })}
                             placeholder="Event"
-                            className="rounded-md border border-slate-300 px-2 py-1 text-sm w-40"
+                            className={`${inputClass} w-40`}
                           />
                           <input
                             value={editMedalForm.athlete_name}
                             onChange={(e) => setEditMedalForm({ ...editMedalForm, athlete_name: e.target.value })}
                             placeholder="Athlete"
-                            className="rounded-md border border-slate-300 px-2 py-1 text-sm w-40"
+                            className={`${inputClass} w-40`}
                           />
                           <select
                             value={editMedalForm.medal}
                             onChange={(e) => setEditMedalForm({ ...editMedalForm, medal: e.target.value as Medal["medal"] })}
-                            className="rounded-md border border-slate-300 px-2 py-1 text-sm"
+                            className={inputClass}
                           >
                             <option value="G">Gold</option>
                             <option value="S">Silver</option>
                             <option value="B">Bronze</option>
                           </select>
-                          <button onClick={() => saveMedal(m.id)} className="text-xs font-medium text-slate-900 hover:underline">
+                          <button onClick={() => saveMedal(m.id)} className="text-xs font-medium text-indigo-600 hover:underline">
                             Save
                           </button>
                           <button onClick={() => setEditingMedalId(null)} className="text-xs text-slate-400 hover:underline">
@@ -255,17 +291,26 @@ export default function MedalsManager() {
                         </div>
                       ) : (
                         <>
-                          <span>
-                            <span className="font-medium">{m.athlete_name}</span> — {m.sport} · {m.event_name}{" "}
-                            <span className="text-xs text-slate-400">
-                              ({m.medal === "G" ? "Gold" : m.medal === "S" ? "Silver" : "Bronze"})
+                          <span className="flex items-center gap-2.5">
+                            <Badge tone={MEDAL_TONE[m.medal]}>{MEDAL_LABEL[m.medal]}</Badge>
+                            <span>
+                              <span className="font-medium text-slate-900">{m.athlete_name}</span>{" "}
+                              <span className="text-slate-500">
+                                — {m.sport} · {m.event_name}
+                              </span>
                             </span>
                           </span>
                           <span className="flex items-center gap-3">
-                            <button onClick={() => startEditMedal(m)} className="text-xs text-slate-400 hover:text-slate-700">
+                            <button
+                              onClick={() => startEditMedal(m)}
+                              className="text-xs text-slate-400 hover:text-indigo-600"
+                            >
                               Edit
                             </button>
-                            <button onClick={() => deleteMedal(m.id)} className="text-xs text-slate-400 hover:text-red-600">
+                            <button
+                              onClick={() => deleteMedal(m.id)}
+                              className="text-xs text-slate-400 hover:text-red-600"
+                            >
                               Remove
                             </button>
                           </span>
@@ -281,36 +326,36 @@ export default function MedalsManager() {
                     value={medalForm.sport}
                     onChange={(e) => setMedalForm({ ...medalForm, sport: e.target.value })}
                     placeholder="Sport"
-                    className="rounded-md border border-slate-300 px-2 py-1.5 text-sm w-28"
+                    className={`${inputClass} w-28`}
                   />
                   <input
                     value={medalForm.event_name}
                     onChange={(e) => setMedalForm({ ...medalForm, event_name: e.target.value })}
                     placeholder="Event"
-                    className="rounded-md border border-slate-300 px-2 py-1.5 text-sm w-40"
+                    className={`${inputClass} w-40`}
                   />
                   <input
                     value={medalForm.athlete_name}
                     onChange={(e) => setMedalForm({ ...medalForm, athlete_name: e.target.value })}
                     placeholder="Athlete"
-                    className="rounded-md border border-slate-300 px-2 py-1.5 text-sm w-40"
+                    className={`${inputClass} w-40`}
                   />
                   <select
                     value={medalForm.medal}
                     onChange={(e) => setMedalForm({ ...medalForm, medal: e.target.value as Medal["medal"] })}
-                    className="rounded-md border border-slate-300 px-2 py-1.5 text-sm"
+                    className={inputClass}
                   >
                     <option value="G">Gold</option>
                     <option value="S">Silver</option>
                     <option value="B">Bronze</option>
                   </select>
-                  <button className="rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-slate-700">
+                  <Button variant="secondary" className="!py-1.5">
                     Add medal
-                  </button>
+                  </Button>
                 </form>
               </div>
             )}
-          </div>
+          </Card>
         ))}
         {!loading && games.length === 0 && <p className="text-sm text-slate-400">No Games added yet.</p>}
       </div>
