@@ -19,6 +19,7 @@ plus an admin panel for managing all of it.
 - Next.js 16 (App Router, TypeScript, Tailwind CSS v4)
 - PostgreSQL via raw `pg` (no ORM) — see `src/lib/db.ts`
 - NextAuth v5 (credentials + bcrypt) for the admin panel, session cookie via JWT
+- AWS S3 for image/video storage, uploaded directly from the browser via presigned URLs
 - `lucide-react` for admin icons, `recharts` for the analytics chart
 - Self-hosted, privacy-conscious visitor analytics (no third-party tracker, no IP storage)
 
@@ -112,9 +113,11 @@ structure (mirroring how the public medal table is built from leaf data, never
 stored totals), so they get their own nested UI at `/admin/medals`
 (`MedalsManager.tsx`) and API routes under `/api/admin/games`.
 
-Image fields upload through `/api/admin/upload` (PNG/JPEG/WebP, 8MB max) to
-`public/uploads/` (gitignored — runtime data, not source) and store the
-returned path on the row.
+Image and video fields upload straight to S3 (presigned URL, see
+[Uploads (S3)](#uploads-s3) below) and store the returned public URL on the
+row. Older rows created before this change may still point at a local
+`public/uploads/...` path — those keep working untouched, nothing migrates
+existing files.
 
 The admin UI (`src/components/admin/ui/*` — `Card`, `StatCard`, `Badge`,
 `Button`) uses a neutral indigo/slate palette, deliberately distinct from the
@@ -161,6 +164,67 @@ editable without a redeploy, `src/app/(site)/layout.tsx` exports
 statically prerender those pages at build time and admin edits wouldn't
 appear on a real production build until the next deploy (`npm run dev`
 doesn't show this, since dev mode never prerenders).
+
+## Uploads (S3)
+
+Every image and video upload in the admin panel goes directly from the
+browser to S3 — file bytes never pass through the Next.js server. This
+matters most for video: routing a large file through the server twice
+(browser→server, server→S3) doesn't scale, so both images and videos share
+one presigned-upload flow instead:
+
+1. The browser asks `POST /api/admin/upload` for a presigned URL, sending
+   just `{ filename, contentType }` (no file bytes).
+2. `src/app/api/admin/upload/route.ts` checks the caller is an admin, checks
+   `contentType` against an allowlist (`image/png`, `image/jpeg`,
+   `image/webp`, `video/mp4`, `video/webm`, `video/quicktime`), and calls
+   `createPresignedUpload()` in `src/lib/s3.ts` to generate an
+   `uploads/<uuid>.<ext>` object key and a short-lived (5 min) presigned S3
+   `PutObject` URL.
+3. `src/lib/admin/uploadClient.ts`'s `uploadFile()` — the one function both
+   `AdminResourceManager.tsx` and `PageContentManager.tsx` call for every
+   image/video field — `fetch`es that presigned URL with `PUT` and the raw
+   `File`, directly against S3, then returns the public URL to store on the
+   row. It also enforces client-side size limits (8MB images, 500MB videos)
+   before starting, since a presigned PUT has no server-side size check the
+   way a buffered upload would.
+
+**Required environment variables** (`.env`, never committed):
+
+```
+AWS_REGION=us-east-1
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+AWS_S3_BUCKET=...
+```
+
+Until all four are set, `isS3Configured()` returns false and the upload
+route responds `503` with a message explaining what's missing — the admin
+form surfaces that inline instead of failing silently.
+
+**What the S3 bucket needs** (see `.env.example` for the same summary):
+
+- Bucket policy allowing public `s3:GetObject` on the `uploads/*` prefix
+  only — "Block all public access" should otherwise stay on.
+- CORS allowing `PUT` from the app's origin(s) (`http://localhost:3000` in
+  dev, plus the production domain), since the upload goes browser → S3
+  directly.
+- An IAM user/role whose only permission is `s3:PutObject` on
+  `arn:aws:s3:::<bucket>/uploads/*`, used for `AWS_ACCESS_KEY_ID` /
+  `AWS_SECRET_ACCESS_KEY`.
+
+`next.config.ts` allows `next/image` to optimize the resulting
+`https://<bucket>.s3.<region>.amazonaws.com/...` URLs via a
+`**.amazonaws.com` `remotePatterns` entry — worth narrowing to the exact
+bucket hostname once it's finalized in production.
+
+**Video playback**: the `videos` resource has an optional `video_path`
+alongside the existing `photo_path` thumbnail (`sql/schema.sql`,
+`resources.ts`). On the public Videos page, `FeatureVideo.tsx` and
+`VideoGridTile.tsx` (both client components, since they hold play/pause
+state) render the thumbnail as-is when a row has no `video_path` — identical
+to the site's original thumbnail-only behavior — and swap in a real
+`<video controls autoPlay>` element on click when one is set.
 
 ## Games editions (`/games`)
 
@@ -230,7 +294,9 @@ you can see at a glance how much content of each type exists.
 - `src/app/admin/*`, `src/app/login/*`, `src/app/api/admin/*`, `src/app/api/auth/*` — the admin panel and its API.
 - `src/components/` — `layout/` (public chrome), `shared/` (ImageTile, Countdown, SectionHead), `admin/` (AdminSidebar, AdminResourceManager, MedalsManager, UsersManager), `games/` (GameEditionTabs, PlayerRoster, EventsList), and one folder per public-page domain (`home/`, `athletes/`, `medals/`, `events/`).
 - `src/lib/data/*` — server-only Postgres query functions for the public site, one file per domain, including `pageContent.ts` and `games.ts`.
-- `src/lib/admin/*` — the generic CRUD layer, resource config, page-content config, admin nav, and analytics queries.
+- `src/lib/admin/*` — the generic CRUD layer, resource config, page-content config, admin nav, analytics queries, and `uploadClient.ts` (shared browser→S3 upload helper).
+- `src/lib/s3.ts` — the S3 client and presigned-upload URL generation used by `/api/admin/upload`.
+- `src/components/videos/*` — `FeatureVideo.tsx` / `VideoGridTile.tsx`, the client components that swap a video thumbnail for real playback when a row has a `video_path`.
 - `src/components/analytics/Analytics.tsx` — the visitor-traffic beacon (public site only).
 - `src/lib/db.ts` — the `pg` pool + `query`/`queryOne` helpers (no SSL — matches the single-VM Postgres-on-localhost hosting pattern used by this user's other Next.js projects).
 - `src/lib/site.config.ts` — fixed structural constants (nav, footer links, filter chip labels, the LA2028 countdown target).

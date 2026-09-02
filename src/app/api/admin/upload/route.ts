@@ -1,34 +1,38 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
 import { requireAdmin, errorResponse } from "@/lib/admin/api";
+import { createPresignedUpload, isS3Configured } from "@/lib/s3";
 
-const MAX_BYTES = 8 * 1024 * 1024;
 const ALLOWED_TYPES: Record<string, string> = {
   "image/png": "png",
   "image/jpeg": "jpg",
   "image/webp": "webp",
+  "video/mp4": "mp4",
+  "video/webm": "webm",
+  "video/quicktime": "mov",
 };
 
 export async function POST(request: Request) {
   const { error } = await requireAdmin();
   if (error) return error;
 
-  const formData = await request.formData();
-  const file = formData.get("file");
-  if (!(file instanceof File)) return errorResponse("No file provided");
+  if (!isS3Configured()) {
+    return errorResponse(
+      "S3 is not configured yet — set AWS_REGION, AWS_S3_BUCKET, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY.",
+      503
+    );
+  }
 
-  const ext = ALLOWED_TYPES[file.type];
-  if (!ext) return errorResponse("Only PNG, JPEG or WebP images are allowed");
-  if (file.size > MAX_BYTES) return errorResponse("File must be under 8MB");
+  const { filename, contentType } = await request.json();
+  if (typeof filename !== "string" || typeof contentType !== "string") {
+    return errorResponse("filename and contentType are required");
+  }
 
-  const uploadDir = path.join(process.cwd(), "public", "uploads");
-  await mkdir(uploadDir, { recursive: true });
+  const ext = ALLOWED_TYPES[contentType];
+  if (!ext) return errorResponse("Only PNG, JPEG, WebP images or MP4/WebM/MOV videos are allowed");
 
-  const filename = `${randomUUID()}.${ext}`;
-  const buffer = Buffer.from(await file.arrayBuffer());
-  await writeFile(path.join(uploadDir, filename), buffer);
+  const key = `uploads/${randomUUID()}.${ext}`;
+  const { uploadUrl, publicUrl } = await createPresignedUpload(key, contentType);
 
-  return NextResponse.json({ path: `/uploads/${filename}` });
+  return NextResponse.json({ uploadUrl, publicUrl });
 }

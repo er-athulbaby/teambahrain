@@ -84,8 +84,12 @@ export async function updateRow(resource: ResourceConfig, id: number, body: Reco
 
   for (const field of resource.fields) {
     if (!(field.key in body)) continue;
-    // Skip clearing an image field when no new upload was provided.
-    if (field.type === "image" && (body[field.key] === undefined || body[field.key] === null)) continue;
+    // Skip clearing an image/video field when no new upload was provided.
+    if (
+      (field.type === "image" || field.type === "video") &&
+      (body[field.key] === undefined || body[field.key] === null)
+    )
+      continue;
     sets.push(`${field.key} = $${i++}`);
     values.push(coerceValue(field.type, body[field.key]));
   }

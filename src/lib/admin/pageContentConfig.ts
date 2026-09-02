@@ -1,4 +1,4 @@
-export type PageFieldType = "text" | "textarea" | "image" | "boolean";
+export type PageFieldType = "text" | "textarea" | "image" | "video" | "boolean";
 
 export interface PageFieldConfig {
   key: string;

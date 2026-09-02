@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, ImageOff, Loader2, Pencil, Trash2, UploadCloud } from "lucide-react";
+import { ArrowRight, ImageOff, Loader2, Pencil, Trash2, UploadCloud, VideoOff } from "lucide-react";
 import type { ResourceConfig } from "@/lib/admin/resources";
+import { uploadFile } from "@/lib/admin/uploadClient";
 import Card from "@/components/admin/ui/Card";
 import Button from "@/components/admin/ui/Button";
 import Badge from "@/components/admin/ui/Badge";
@@ -69,17 +70,14 @@ export default function AdminResourceManager({
   async function handleUpload(fieldKey: string, file: File) {
     setUploading(true);
     setError(null);
-    const body = new FormData();
-    body.append("file", file);
-    const res = await fetch("/api/admin/upload", { method: "POST", body });
-    setUploading(false);
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Upload failed");
-      return;
+    try {
+      const url = await uploadFile(file);
+      setForm((f) => ({ ...f, [fieldKey]: url }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
     }
-    const data = await res.json();
-    setForm((f) => ({ ...f, [fieldKey]: data.path }));
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -115,8 +113,12 @@ export default function AdminResourceManager({
     load();
   }
 
-  const shortFields = resource.fields.filter((f) => f.type !== "textarea" && f.type !== "image");
-  const longFields = resource.fields.filter((f) => f.type === "textarea" || f.type === "image");
+  const shortFields = resource.fields.filter(
+    (f) => f.type !== "textarea" && f.type !== "image" && f.type !== "video"
+  );
+  const longFields = resource.fields.filter(
+    (f) => f.type === "textarea" || f.type === "image" || f.type === "video"
+  );
 
   function renderField(field: (typeof resource.fields)[number]) {
     return (
@@ -179,6 +181,31 @@ export default function AdminResourceManager({
               <input
                 type="file"
                 accept="image/png,image/jpeg,image/webp"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleUpload(field.key, file);
+                }}
+              />
+            </label>
+          </div>
+        )}
+
+        {field.type === "video" && (
+          <div className="flex items-center gap-3">
+            <span className="h-16 w-28 flex-none rounded-lg border border-slate-200 bg-slate-50 overflow-hidden flex items-center justify-center">
+              {typeof form[field.key] === "string" && form[field.key] !== "" ? (
+                <video src={String(form[field.key])} controls className="h-full w-full object-cover" />
+              ) : (
+                <VideoOff size={18} className="text-slate-300" />
+              )}
+            </span>
+            <label className="flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 cursor-pointer">
+              <UploadCloud size={15} strokeWidth={1.75} />
+              {uploading ? "Uploading…" : "Choose video"}
+              <input
+                type="file"
+                accept="video/mp4,video/webm,video/quicktime"
                 className="hidden"
                 onChange={(e) => {
                   const file = e.target.files?.[0];

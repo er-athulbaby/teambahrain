@@ -57,6 +57,7 @@ CREATE TABLE videos (
   duration TEXT NOT NULL,
   series TEXT NOT NULL,
   photo_path TEXT NOT NULL,
+  video_path TEXT,
   is_feature BOOLEAN NOT NULL DEFAULT FALSE,
   sort_order INT NOT NULL DEFAULT 0
 );

@@ -1,4 +1,4 @@
-export type FieldType = "text" | "textarea" | "number" | "boolean" | "date" | "image" | "select";
+export type FieldType = "text" | "textarea" | "number" | "boolean" | "date" | "image" | "video" | "select";
 
 export interface FieldConfig {
   key: string;
@@ -88,6 +88,12 @@ export const RESOURCES: Record<string, ResourceConfig> = {
       { key: "duration", label: "Duration", type: "text", required: true },
       { key: "series", label: "Series", type: "text", required: true },
       { key: "photo_path", label: "Thumbnail", type: "image" },
+      {
+        key: "video_path",
+        label: "Video file",
+        type: "video",
+        hint: "Optional — without one, the public page just shows the thumbnail (today's behavior).",
+      },
       { key: "is_feature", label: "Feature video (top of page)", type: "boolean" },
       { key: "sort_order", label: "Sort order", type: "number" },
     ],

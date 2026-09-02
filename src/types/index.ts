@@ -36,6 +36,7 @@ export interface Video {
   duration: string;
   series: string;
   photo_path: string;
+  video_path: string | null;
   is_feature: boolean;
 }
 

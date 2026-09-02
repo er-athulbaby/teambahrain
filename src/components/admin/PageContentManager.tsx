@@ -1,8 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ImageOff, Loader2, UploadCloud } from "lucide-react";
+import { ImageOff, Loader2, UploadCloud, VideoOff } from "lucide-react";
 import type { PageContentConfig } from "@/lib/admin/pageContentConfig";
+import { uploadFile } from "@/lib/admin/uploadClient";
 import Card from "@/components/admin/ui/Card";
 import Button from "@/components/admin/ui/Button";
 
@@ -38,17 +39,14 @@ export default function PageContentManager({
   async function handleUpload(fieldKey: string, file: File) {
     setUploadingField(fieldKey);
     setError(null);
-    const body = new FormData();
-    body.append("file", file);
-    const res = await fetch("/api/admin/upload", { method: "POST", body });
-    setUploadingField(null);
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Upload failed");
-      return;
+    try {
+      const url = await uploadFile(file);
+      setValues((v) => ({ ...v, [fieldKey]: url }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploadingField(null);
     }
-    const data = await res.json();
-    setValues((v) => ({ ...v, [fieldKey]: data.path }));
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -143,6 +141,31 @@ export default function PageContentManager({
                   <input
                     type="file"
                     accept="image/png,image/jpeg,image/webp"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleUpload(field.key, file);
+                    }}
+                  />
+                </label>
+              </div>
+            )}
+
+            {field.type === "video" && (
+              <div className="flex items-center gap-3">
+                <span className="h-16 w-28 flex-none rounded-lg border border-slate-200 bg-slate-50 overflow-hidden flex items-center justify-center">
+                  {values[field.key] ? (
+                    <video src={values[field.key]} controls className="h-full w-full object-cover" />
+                  ) : (
+                    <VideoOff size={18} className="text-slate-300" />
+                  )}
+                </span>
+                <label className="flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 cursor-pointer">
+                  <UploadCloud size={15} strokeWidth={1.75} />
+                  {uploadingField === field.key ? "Uploading…" : "Choose video"}
+                  <input
+                    type="file"
+                    accept="video/mp4,video/webm,video/quicktime"
                     className="hidden"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
