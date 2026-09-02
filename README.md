@@ -75,7 +75,16 @@ all of that content.
 ## Admin panel
 
 `/admin` is protected by `src/proxy.ts` (Next 16's renamed `middleware.ts`) —
-unauthenticated visitors are redirected to `/login`. Eleven of the twelve
+unauthenticated visitors are redirected to `/login`. `admins.role` is either
+`"admin"` (full access) or `"editor"` (all content — resources, medals, page
+content — but not Users, Analytics, or Site settings; enforced both in
+`requireAdmin({ adminOnly: true })` on the relevant API routes and as a
+`redirect()` guard in the page components themselves, and the sidebar
+(`AdminSidebar.tsx`) hides those nav items for editors). Manage accounts at
+`/admin/users` (`UsersManager.tsx`); password resets still go through
+`npm run seed:admin` rather than a UI flow.
+
+Eleven of the twelve
 content sections (Athletes, Sports, News, Videos, Events, Timeline, Legends,
 Instagram, Home figures, Continental stats, Ticker) share one generic
 CRUD system:
@@ -130,6 +139,21 @@ Deliberately **not** covered: button labels/links, table headers, and other
 fixed UI chrome — this is "page settings," not a WordPress/Drupal-style page
 builder, since the site has a bespoke fixed layout rather than a generic
 content structure.
+
+**Site-wide settings** (favicon, tagline, the navigation loading bar) reuse
+this exact system as one more entry, `site`, in `PAGE_CONTENT_CONFIG` —
+`adminOnly: true` restricts it to `/admin/pages/site`, visible only to the
+`admin` role. The favicon is wired through `generateMetadata()` in the root
+`layout.tsx`; the tagline replaces the header's hardcoded subtitle
+(`Header.tsx`, threaded from `(site)/layout.tsx`); `loader_enabled` toggles
+`RouteLoader.tsx`, a small top progress bar shown during route navigation.
+
+**Important:** because everything on the public pages is meant to be
+editable without a redeploy, `src/app/(site)/layout.tsx` exports
+`export const dynamic = "force-dynamic"` — without it, Next would
+statically prerender those pages at build time and admin edits wouldn't
+appear on a real production build until the next deploy (`npm run dev`
+doesn't show this, since dev mode never prerenders).
 
 ## Analytics
 

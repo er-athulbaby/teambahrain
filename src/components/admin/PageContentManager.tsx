@@ -85,7 +85,22 @@ export default function PageContentManager({
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         {config.fields.map((field) => (
           <div key={field.key}>
-            <label className="mb-1.5 block text-xs font-medium text-slate-600">{field.label}</label>
+            {field.type === "boolean" ? (
+              <label className="flex items-center gap-2 text-sm text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={values[field.key] === "true"}
+                  onChange={(e) => {
+                    setSaved(false);
+                    setValues((v) => ({ ...v, [field.key]: e.target.checked ? "true" : "false" }));
+                  }}
+                  className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                />
+                {field.label}
+              </label>
+            ) : (
+              <label className="mb-1.5 block text-xs font-medium text-slate-600">{field.label}</label>
+            )}
             {field.hint && <p className="mb-1.5 text-xs text-slate-400">{field.hint}</p>}
 
             {field.type === "textarea" && (

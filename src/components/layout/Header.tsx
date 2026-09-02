@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { NAV_ITEMS } from "@/lib/site.config";
 import MobileNavDrawer from "./MobileNavDrawer";
 
-export default function Header() {
+export default function Header({ tagline }: { tagline: string }) {
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -32,7 +32,7 @@ export default function Header() {
                 Team Bahrain
               </span>
               <span className="font-medium text-[10px] leading-none tracking-[0.18em] uppercase text-ink-700 whitespace-nowrap">
-                Bahrain Olympic Committee
+                {tagline}
               </span>
             </span>
           </Link>

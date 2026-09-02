@@ -14,7 +14,7 @@ export default async function AdminLayout({
 
   return (
     <div className="flex min-h-screen w-full bg-slate-50 text-slate-900">
-      <AdminSidebar adminName={session.user.name} />
+      <AdminSidebar adminName={session.user.name} role={session.user.role} />
       <div className="flex-1 min-w-0 flex flex-col">
         <div className="border-b border-slate-200 bg-white px-8 py-3 flex justify-end">
           <Link

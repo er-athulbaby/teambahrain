@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 
-export async function requireAdmin() {
+export async function requireAdmin(options?: { adminOnly?: boolean }) {
   const session = await auth();
   if (!session) {
     return { session: null, error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
+  }
+  if (options?.adminOnly && session.user.role !== "admin") {
+    return { session: null, error: NextResponse.json({ error: "Admins only" }, { status: 403 }) };
   }
   return { session, error: null };
 }

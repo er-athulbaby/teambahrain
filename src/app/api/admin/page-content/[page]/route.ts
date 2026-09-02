@@ -5,24 +5,24 @@ import { getPageConfig } from "@/lib/admin/pageContentConfig";
 import { getPageContent } from "@/lib/data/pageContent";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ page: string }> }) {
-  const { error } = await requireAdmin();
-  if (error) return error;
-
   const { page } = await params;
   const config = getPageConfig(page);
   if (!config) return errorResponse("Unknown page", 404);
+
+  const { error } = await requireAdmin({ adminOnly: config.adminOnly });
+  if (error) return error;
 
   const values = await getPageContent(page);
   return NextResponse.json(values);
 }
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ page: string }> }) {
-  const { error } = await requireAdmin();
-  if (error) return error;
-
   const { page } = await params;
   const config = getPageConfig(page);
   if (!config) return errorResponse("Unknown page", 404);
+
+  const { error } = await requireAdmin({ adminOnly: config.adminOnly });
+  if (error) return error;
 
   const body = await request.json();
 

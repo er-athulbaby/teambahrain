@@ -120,6 +120,7 @@ CREATE TABLE admins (
   email TEXT NOT NULL UNIQUE,
   username TEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'admin' CHECK (role IN ('admin', 'editor')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 

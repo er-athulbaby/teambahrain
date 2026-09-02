@@ -3,12 +3,21 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { pool } from "@/lib/db";
 
+export type AdminRole = "admin" | "editor";
+
 declare module "next-auth" {
   interface Session {
     user: {
       id: string;
       name: string;
+      role: AdminRole;
     };
+  }
+}
+
+declare module "@auth/core/jwt" {
+  interface JWT {
+    role: AdminRole;
   }
 }
 
@@ -27,7 +36,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!username || !password) return null;
 
         const result = await pool.query(
-          "SELECT id, name, password_hash FROM admins WHERE username = $1",
+          "SELECT id, name, password_hash, role FROM admins WHERE username = $1",
           [username]
         );
         const admin = result.rows[0];
@@ -36,18 +45,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const valid = await bcrypt.compare(password, admin.password_hash);
         if (!valid) return null;
 
-        return { id: String(admin.id), name: admin.name };
+        return { id: String(admin.id), name: admin.name, role: admin.role as AdminRole };
       },
     }),
   ],
   callbacks: {
     jwt: async ({ token, user }) => {
-      if (user) token.name = user.name;
+      if (user) {
+        token.name = user.name;
+        token.role = (user as { role: AdminRole }).role;
+      }
       return token;
     },
     session: async ({ session, token }) => {
       session.user.id = token.sub as string;
       session.user.name = token.name as string;
+      session.user.role = token.role;
       return session;
     },
   },

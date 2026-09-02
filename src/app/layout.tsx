@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { getPageContent } from "@/lib/data/pageContent";
 
 const quicksand = Quicksand({
   variable: "--font-quicksand",
@@ -9,11 +10,16 @@ const quicksand = Quicksand({
   weight: ["400", "500", "600", "700"],
 });
 
-export const metadata: Metadata = {
-  title: "Team Bahrain — Bahrain Olympic Committee",
-  description:
-    "The official home of Bahrain's Olympic movement — every athlete, every federation, every result on the road from Aichi–Nagoya to Los Angeles.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const site = await getPageContent("site");
+
+  return {
+    title: "Team Bahrain — Bahrain Olympic Committee",
+    description:
+      "The official home of Bahrain's Olympic movement — every athlete, every federation, every result on the road from Aichi–Nagoya to Los Angeles.",
+    icons: { icon: site.favicon },
+  };
+}
 
 export default function RootLayout({
   children,

@@ -1,4 +1,4 @@
-export type PageFieldType = "text" | "textarea" | "image";
+export type PageFieldType = "text" | "textarea" | "image" | "boolean";
 
 export interface PageFieldConfig {
   key: string;
@@ -11,9 +11,25 @@ export interface PageFieldConfig {
 export interface PageContentConfig {
   label: string;
   fields: PageFieldConfig[];
+  /** Restricts this page's settings to the "admin" role (Editors are blocked). */
+  adminOnly?: boolean;
 }
 
 export const PAGE_CONTENT_CONFIG: Record<string, PageContentConfig> = {
+  site: {
+    label: "Site settings",
+    adminOnly: true,
+    fields: [
+      { key: "favicon", label: "Favicon", type: "image", default: "/favicon.ico" },
+      { key: "tagline", label: "Site tagline", type: "text", default: "Bahrain Olympic Committee" },
+      {
+        key: "loader_enabled",
+        label: "Show a loading bar during page navigation",
+        type: "boolean",
+        default: "true",
+      },
+    ],
+  },
   home: {
     label: "Home",
     fields: [

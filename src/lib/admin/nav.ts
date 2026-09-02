@@ -14,6 +14,8 @@ import {
   Rss,
   Globe2,
   FileText,
+  UserCog,
+  Settings,
   type LucideIcon,
 } from "lucide-react";
 
@@ -21,6 +23,8 @@ export interface AdminNavItem {
   href: string;
   label: string;
   icon: LucideIcon;
+  /** Hidden from Editors — visible to the "admin" role only. */
+  adminOnly?: boolean;
 }
 
 export interface AdminNavGroup {
@@ -33,7 +37,14 @@ export const ADMIN_NAV: AdminNavGroup[] = [
     section: null,
     items: [
       { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-      { href: "/admin/analytics", label: "Analytics", icon: LineChart },
+      { href: "/admin/analytics", label: "Analytics", icon: LineChart, adminOnly: true },
+    ],
+  },
+  {
+    section: "Settings",
+    items: [
+      { href: "/admin/users", label: "Users", icon: UserCog, adminOnly: true },
+      { href: "/admin/pages/site", label: "Site settings", icon: Settings, adminOnly: true },
     ],
   },
   {

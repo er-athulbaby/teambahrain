@@ -1,4 +1,6 @@
+import { redirect } from "next/navigation";
 import { Eye, CalendarDays, CalendarClock, TrendingUp } from "lucide-react";
+import { auth } from "@/auth";
 import { getTrafficSummary, getViewsByDay, getTopPages, getTopReferrers } from "@/lib/admin/analytics";
 import StatCard from "@/components/admin/ui/StatCard";
 import Card from "@/components/admin/ui/Card";
@@ -6,6 +8,9 @@ import ViewsChart from "@/components/admin/ViewsChart";
 import RankedBarList from "@/components/admin/ui/RankedBarList";
 
 export default async function AdminAnalyticsPage() {
+  const session = await auth();
+  if (session?.user.role !== "admin") redirect("/admin");
+
   const [summary, viewsByDay, topPages, topReferrers] = await Promise.all([
     getTrafficSummary(),
     getViewsByDay(30),

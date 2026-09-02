@@ -5,9 +5,15 @@ import { usePathname } from "next/navigation";
 import { LogOut, Flame } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { ADMIN_NAV } from "@/lib/admin/nav";
+import type { AdminRole } from "@/auth";
 
-export default function AdminSidebar({ adminName }: { adminName: string }) {
+export default function AdminSidebar({ adminName, role }: { adminName: string; role: AdminRole }) {
   const pathname = usePathname();
+
+  const visibleNav = ADMIN_NAV.map((group) => ({
+    ...group,
+    items: group.items.filter((item) => !item.adminOnly || role === "admin"),
+  })).filter((group) => group.items.length > 0);
 
   return (
     <aside className="w-64 flex-none border-r border-slate-200 bg-white flex flex-col">
@@ -24,7 +30,7 @@ export default function AdminSidebar({ adminName }: { adminName: string }) {
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4 flex flex-col gap-5">
-        {ADMIN_NAV.map((group, i) => (
+        {visibleNav.map((group, i) => (
           <div key={group.section ?? `group-${i}`}>
             {group.section && (
               <p className="px-2 mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400">

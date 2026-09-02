@@ -1,12 +1,26 @@
 import Link from "next/link";
 import { Eye, CalendarClock, TrendingUp } from "lucide-react";
+import { auth } from "@/auth";
 import { ADMIN_NAV } from "@/lib/admin/nav";
 import { getContentCounts, getTrafficSummary } from "@/lib/admin/analytics";
 import StatCard from "@/components/admin/ui/StatCard";
 import Card from "@/components/admin/ui/Card";
 
 export default async function AdminDashboard() {
-  const [contentCounts, traffic] = await Promise.all([getContentCounts(), getTrafficSummary()]);
+  const session = await auth();
+  const isAdmin = session?.user.role === "admin";
+
+  const [contentCounts, traffic] = await Promise.all([
+    getContentCounts(),
+    isAdmin ? getTrafficSummary() : null,
+  ]);
+
+  const quickLinkGroups = ADMIN_NAV.filter((group) => group.section)
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) => !item.adminOnly || isAdmin),
+    }))
+    .filter((group) => group.items.length > 0);
 
   return (
     <div>
@@ -15,19 +29,21 @@ export default async function AdminDashboard() {
         Manage the content shown on the public Team Bahrain site.
       </p>
 
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-400">Site traffic</h2>
-          <Link href="/admin/analytics" className="text-xs font-medium text-indigo-600 hover:text-indigo-700">
-            View analytics →
-          </Link>
+      {traffic && (
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-400">Site traffic</h2>
+            <Link href="/admin/analytics" className="text-xs font-medium text-indigo-600 hover:text-indigo-700">
+              View analytics →
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <StatCard icon={Eye} label="Views today" value={traffic.today} />
+            <StatCard icon={CalendarClock} label="Last 7 days" value={traffic.last7Days} />
+            <StatCard icon={TrendingUp} label="Last 30 days" value={traffic.last30Days} />
+          </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <StatCard icon={Eye} label="Views today" value={traffic.today} />
-          <StatCard icon={CalendarClock} label="Last 7 days" value={traffic.last7Days} />
-          <StatCard icon={TrendingUp} label="Last 30 days" value={traffic.last30Days} />
-        </div>
-      </div>
+      )}
 
       <div className="mb-8">
         <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
@@ -46,7 +62,7 @@ export default async function AdminDashboard() {
       </div>
 
       <div className="flex flex-col gap-8">
-        {ADMIN_NAV.filter((group) => group.section).map((group) => (
+        {quickLinkGroups.map((group) => (
           <div key={group.section}>
             <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
               {group.section}
