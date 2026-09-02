@@ -91,10 +91,6 @@
   }
 }
 
-.grayscale-photo {
-  filter: grayscale(1);
-}
-
 nav.scroll-hidden {
   scrollbar-width: none;
 }

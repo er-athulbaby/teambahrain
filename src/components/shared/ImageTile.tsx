@@ -15,7 +15,7 @@ export default function ImageTile({
 }) {
   return (
     <div
-      className={`relative w-full grayscale-photo overflow-hidden ${className}`}
+      className={`relative w-full overflow-hidden ${className}`}
       style={{ aspectRatio: aspect }}
     >
       <Image src={src} alt={alt} fill sizes={sizes} className="object-cover" />
