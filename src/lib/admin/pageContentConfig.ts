@@ -20,6 +20,13 @@ export const PAGE_CONTENT_CONFIG: Record<string, PageContentConfig> = {
     label: "Site settings",
     adminOnly: true,
     fields: [
+      {
+        key: "logo",
+        label: "Logo",
+        type: "image",
+        default: "",
+        hint: "Shown in the admin sidebar and on the login page. Falls back to the default icon when empty.",
+      },
       { key: "favicon", label: "Favicon", type: "image", default: "/favicon.ico" },
       { key: "tagline", label: "Site tagline", type: "text", default: "Bahrain Olympic Committee" },
       {

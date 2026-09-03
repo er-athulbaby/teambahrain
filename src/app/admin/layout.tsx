@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { auth } from "@/auth";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import { getPageContent } from "@/lib/data/pageContent";
 
 export default async function AdminLayout({
   children,
@@ -11,10 +12,11 @@ export default async function AdminLayout({
 }>) {
   const session = await auth();
   if (!session) redirect("/login");
+  const site = await getPageContent("site");
 
   return (
     <div className="flex min-h-screen w-full bg-slate-50 text-slate-900">
-      <AdminSidebar adminName={session.user.name} role={session.user.role} />
+      <AdminSidebar adminName={session.user.name} role={session.user.role} logoUrl={site.logo} />
       <div className="flex-1 min-w-0 flex flex-col">
         <div className="border-b border-slate-200 bg-white px-8 py-3 flex justify-end">
           <Link

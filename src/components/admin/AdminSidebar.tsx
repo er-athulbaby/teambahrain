@@ -7,7 +7,15 @@ import { signOut } from "next-auth/react";
 import { ADMIN_NAV } from "@/lib/admin/nav";
 import type { AdminRole } from "@/auth";
 
-export default function AdminSidebar({ adminName, role }: { adminName: string; role: AdminRole }) {
+export default function AdminSidebar({
+  adminName,
+  role,
+  logoUrl,
+}: {
+  adminName: string;
+  role: AdminRole;
+  logoUrl?: string;
+}) {
   const pathname = usePathname();
 
   const visibleNav = ADMIN_NAV.map((group) => ({
@@ -18,9 +26,18 @@ export default function AdminSidebar({ adminName, role }: { adminName: string; r
   return (
     <aside className="w-64 flex-none border-r border-slate-200 bg-white flex flex-col">
       <div className="px-5 py-5 border-b border-slate-200 flex items-center gap-2.5">
-        <span className="h-8 w-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center flex-none">
-          <Flame size={17} strokeWidth={2} />
-        </span>
+        {logoUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={logoUrl}
+            alt=""
+            className="h-8 w-8 rounded-lg object-cover flex-none"
+          />
+        ) : (
+          <span className="h-8 w-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center flex-none">
+            <Flame size={17} strokeWidth={2} />
+          </span>
+        )}
         <div>
           <Link href="/admin" className="font-semibold text-slate-900 leading-tight block">
             Team Bahrain
