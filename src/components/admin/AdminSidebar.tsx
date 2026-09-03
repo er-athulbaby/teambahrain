@@ -31,7 +31,7 @@ export default function AdminSidebar({
           <img
             src={logoUrl}
             alt=""
-            className="h-8 w-8 rounded-lg object-cover flex-none"
+            className="h-10 w-10 object-contain flex-none"
           />
         ) : (
           <span className="h-8 w-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center flex-none">

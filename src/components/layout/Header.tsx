@@ -45,9 +45,9 @@ export default function Header({
             <Image
               src="/boc-logo.png"
               alt="Bahrain Olympic Committee"
-              width={46}
-              height={46}
-              className="h-[46px] w-auto block"
+              width={60}
+              height={60}
+              className="h-[60px] w-auto block"
               priority
             />
             <span className="flex flex-col gap-0.5">

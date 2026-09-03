@@ -35,7 +35,7 @@ export default function LoginForm({ logoUrl }: { logoUrl?: string }) {
         <div className="mb-5 flex justify-center">
           {logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={logoUrl} alt="" className="h-12 w-12 rounded-xl object-cover" />
+            <img src={logoUrl} alt="" className="h-16 w-16 object-contain" />
           ) : (
             <span className="h-12 w-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center">
               <Flame size={22} strokeWidth={2} />
