@@ -1,4 +1,4 @@
-export type PageFieldType = "text" | "textarea" | "image" | "video" | "boolean";
+export type PageFieldType = "text" | "textarea" | "image" | "video" | "boolean" | "date";
 
 export interface PageFieldConfig {
   key: string;
@@ -35,6 +35,13 @@ export const PAGE_CONTENT_CONFIG: Record<string, PageContentConfig> = {
         type: "boolean",
         default: "true",
       },
+      {
+        key: "games_date",
+        label: "Countdown target date",
+        type: "date",
+        default: "2028-07-14",
+        hint: "The countdown on the Home and Events pages counts down to midnight UTC on this date.",
+      },
     ],
   },
   home: {
@@ -70,6 +77,24 @@ export const PAGE_CONTENT_CONFIG: Record<string, PageContentConfig> = {
         label: "Closing band body",
         type: "textarea",
         default: "Fifteen federations, one development pathway. Follow the squad, or find a club near you.",
+      },
+      {
+        key: "show_news_section",
+        label: "Show \"Latest from the team\" section",
+        type: "boolean",
+        default: "true",
+      },
+      {
+        key: "show_athletes_section",
+        label: "Show \"Athletes to watch\" section",
+        type: "boolean",
+        default: "true",
+      },
+      {
+        key: "show_medals_section",
+        label: "Show \"All-time Olympic medals\" section",
+        type: "boolean",
+        default: "true",
       },
     ],
   },

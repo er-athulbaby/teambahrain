@@ -7,8 +7,8 @@ function pad(n: number) {
   return String(n).padStart(2, "0");
 }
 
-function unitsFor(now: number) {
-  const target = new Date(GAMES_DATE).getTime();
+function unitsFor(now: number, targetDate: string) {
+  const target = new Date(targetDate).getTime();
   const diff = Math.max(0, target - now);
   const s = Math.floor(diff / 1000);
   return [
@@ -22,9 +22,12 @@ function unitsFor(now: number) {
 export default function Countdown({
   variant = "ink",
   valueClassName = "text-[46px]",
+  targetDate = GAMES_DATE,
 }: {
   variant?: "ink" | "white";
   valueClassName?: string;
+  /** Admin-editable via Site settings — falls back to the built-in constant when not set. */
+  targetDate?: string;
 }) {
   const [now, setNow] = useState(() => Date.now());
 
@@ -33,7 +36,7 @@ export default function Countdown({
     return () => clearInterval(timer);
   }, []);
 
-  const units = unitsFor(now);
+  const units = unitsFor(now, targetDate);
   const borderClass = variant === "white" ? "border-white" : "border-ink";
   const labelClass = variant === "white" ? "text-white/85" : "text-ink-700";
 

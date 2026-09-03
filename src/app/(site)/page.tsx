@@ -10,22 +10,23 @@ import { getMedalTotals } from "@/lib/data/medals";
 import { getPageContent } from "@/lib/data/pageContent";
 
 export default async function HomePage() {
-  const [figures, news, athletes, instagram, medalTotals, content] = await Promise.all([
+  const [figures, news, athletes, instagram, medalTotals, content, site] = await Promise.all([
     getHomeFigures(),
     getHomeNews(),
     getFeaturedAthletes(),
     getInstagramPosts(),
     getMedalTotals(),
     getPageContent("home"),
+    getPageContent("site"),
   ]);
 
   return (
     <main>
-      <Hero content={content} />
+      <Hero content={content} targetDate={site.games_date} />
       <FiguresStrip figures={figures} />
-      <NewsPreview news={news} />
-      <AthletesPreview athletes={athletes} />
-      <MedalsBand totals={medalTotals} />
+      {content.show_news_section !== "false" && <NewsPreview news={news} />}
+      {content.show_athletes_section !== "false" && <AthletesPreview athletes={athletes} />}
+      {content.show_medals_section !== "false" && <MedalsBand totals={medalTotals} />}
       <InstagramGrid posts={instagram} />
       <RedClose content={content} />
     </main>

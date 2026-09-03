@@ -1,12 +1,6 @@
 export const NAV_ITEMS = [
   { href: "/", label: "Home" },
-  { href: "/history", label: "History" },
-  { href: "/sports", label: "Sports" },
-  { href: "/athletes", label: "Athletes" },
-  { href: "/all-time-medals", label: "Medals" },
-  { href: "/news", label: "News" },
   { href: "/videos", label: "Videos" },
-  { href: "/events", label: "Events" },
 ] as const;
 
 export const FOOTER_COLUMNS = [

@@ -1,7 +1,17 @@
-import ImageTile from "@/components/shared/ImageTile";
 import type { InstagramPost } from "@/types";
 
+function extractInstagramCode(url: string): string | null {
+  const match = url.match(/instagram\.com\/(?:reel|p|tv)\/([A-Za-z0-9_-]+)/);
+  return match ? match[1] : null;
+}
+
 export default function InstagramGrid({ posts }: { posts: InstagramPost[] }) {
+  const embeddable = posts
+    .map((p) => ({ id: p.id, code: extractInstagramCode(p.reel_url) }))
+    .filter((p): p is { id: number; code: string } => p.code !== null);
+
+  if (embeddable.length === 0) return null;
+
   return (
     <section className="border-b-2 border-ink bg-surface">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-10 sm:py-14">
@@ -23,27 +33,22 @@ export default function InstagramGrid({ posts }: { posts: InstagramPost[] }) {
             Follow the team →
           </a>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5">
-          {posts.map((p) => (
-            <a
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {embeddable.map((p) => (
+            <div
               key={p.id}
-              href={p.permalink}
-              target="_blank"
-              rel="noreferrer"
-              className="flex flex-col gap-2.5 text-ink hover:text-accent-700"
+              className="border-2 border-ink bg-ink overflow-hidden aspect-[9/16] max-h-[560px]"
             >
-              <ImageTile
-                src={p.photo_path}
-                alt={p.caption}
-                aspect="1/1"
-                sizes="(max-width: 1024px) 33vw, 16vw"
-                className="border-2 border-ink"
+              <iframe
+                src={`https://www.instagram.com/reel/${p.code}/embed/`}
+                className="h-full w-full border-0"
+                allowFullScreen
+                scrolling="no"
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                loading="lazy"
+                title="Instagram reel"
               />
-              <span className="font-semibold text-[11px] tracking-[0.1em] uppercase">
-                ♥ {p.likes}
-              </span>
-              <span className="text-[13px] leading-[1.4] text-ink-700">{p.caption}</span>
-            </a>
+            </div>
           ))}
         </div>
       </div>

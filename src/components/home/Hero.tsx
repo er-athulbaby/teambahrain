@@ -2,7 +2,13 @@ import Link from "next/link";
 import Countdown from "@/components/shared/Countdown";
 import ImageTile from "@/components/shared/ImageTile";
 
-export default function Hero({ content }: { content: Record<string, string> }) {
+export default function Hero({
+  content,
+  targetDate,
+}: {
+  content: Record<string, string>;
+  targetDate?: string;
+}) {
   const headlineLines = content.hero_headline.split("\n");
 
   return (
@@ -26,7 +32,7 @@ export default function Hero({ content }: { content: Record<string, string> }) {
           <p className="m-0 max-w-[44ch] text-lg sm:text-[19px] leading-[1.5] text-ink-800 text-pretty">
             {content.hero_intro}
           </p>
-          <Countdown />
+          <Countdown targetDate={targetDate} />
           <div className="flex gap-3 flex-wrap">
             <Link
               href="/athletes"

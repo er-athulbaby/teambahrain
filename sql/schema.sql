@@ -92,10 +92,7 @@ CREATE TABLE legends (
 
 CREATE TABLE instagram_posts (
   id SERIAL PRIMARY KEY,
-  likes TEXT NOT NULL,
-  caption TEXT NOT NULL,
-  photo_path TEXT NOT NULL,
-  permalink TEXT NOT NULL DEFAULT 'https://www.instagram.com/',
+  reel_url TEXT NOT NULL,
   sort_order INT NOT NULL DEFAULT 0
 );
 

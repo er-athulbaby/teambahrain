@@ -150,14 +150,17 @@ export const RESOURCES: Record<string, ResourceConfig> = {
   instagram_posts: {
     key: "instagram_posts",
     table: "instagram_posts",
-    label: "Instagram post",
+    label: "Instagram reel",
     pluralLabel: "Instagram",
-    titleField: "caption",
+    titleField: "reel_url",
     fields: [
-      { key: "likes", label: "Likes", type: "text", required: true },
-      { key: "caption", label: "Caption", type: "textarea", required: true },
-      { key: "photo_path", label: "Photo", type: "image" },
-      { key: "permalink", label: "Link", type: "text", required: true },
+      {
+        key: "reel_url",
+        label: "Instagram post/reel URL",
+        type: "text",
+        required: true,
+        hint: "Paste the full instagram.com/reel/... or instagram.com/p/... link — the real post embeds automatically, no caption or like count needed.",
+      },
       { key: "sort_order", label: "Sort order", type: "number" },
     ],
   },

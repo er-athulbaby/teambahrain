@@ -113,9 +113,9 @@ export default function PageContentManager({
               />
             )}
 
-            {field.type === "text" && (
+            {(field.type === "text" || field.type === "date") && (
               <input
-                type="text"
+                type={field.type}
                 value={values[field.key] ?? ""}
                 onChange={(e) => {
                   setSaved(false);

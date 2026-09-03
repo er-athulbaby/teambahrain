@@ -69,10 +69,7 @@ export interface Legend {
 
 export interface InstagramPost {
   id: number;
-  likes: string;
-  caption: string;
-  photo_path: string;
-  permalink: string;
+  reel_url: string;
 }
 
 export interface HomeFigure {

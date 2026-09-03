@@ -150,20 +150,34 @@ fixed UI chrome — this is "page settings," not a WordPress/Drupal-style page
 builder, since the site has a bespoke fixed layout rather than a generic
 content structure.
 
-**Site-wide settings** (favicon, tagline, the navigation loading bar) reuse
-this exact system as one more entry, `site`, in `PAGE_CONTENT_CONFIG` —
-`adminOnly: true` restricts it to `/admin/pages/site`, visible only to the
-`admin` role. The favicon is wired through `generateMetadata()` in the root
-`layout.tsx`; the tagline replaces the header's hardcoded subtitle
-(`Header.tsx`, threaded from `(site)/layout.tsx`); `loader_enabled` toggles
-`RouteLoader.tsx`, a small top progress bar shown during route navigation.
+**Site-wide settings** (logo, favicon, tagline, the navigation loading bar,
+the countdown target date) reuse this exact system as one more entry, `site`,
+in `PAGE_CONTENT_CONFIG` — `adminOnly: true` restricts it to
+`/admin/pages/site`, visible only to the `admin` role. The favicon is wired
+through `generateMetadata()` in the root `layout.tsx`; the logo shows in the
+admin sidebar (`AdminSidebar.tsx`) and on `/login` (`LoginForm.tsx`), falling
+back to the default icon when empty; the tagline replaces the header's
+hardcoded subtitle (`Header.tsx`, threaded from `(site)/layout.tsx`);
+`loader_enabled` toggles `RouteLoader.tsx`; `games_date` (a `"date"` field —
+a plain HTML date input, so it's UTC-midnight precision, not exact-hour) is
+read by every `<Countdown targetDate={...}>` usage (`Hero.tsx` on Home,
+`(site)/events/page.tsx`) instead of the old hardcoded `GAMES_DATE` constant
+in `site.config.ts`, which now only serves as the fallback default.
+
+The `home` page's config also carries three booleans —
+`show_news_section`/`show_athletes_section`/`show_medals_section` — that
+`(site)/page.tsx` checks (`!== "false"`, so they default on) to show or hide
+the "Latest from the team", "Athletes to watch", and "All-time Olympic
+medals" sections without touching code.
 
 **Important:** because everything on the public pages is meant to be
 editable without a redeploy, `src/app/(site)/layout.tsx` exports
 `export const dynamic = "force-dynamic"` — without it, Next would
 statically prerender those pages at build time and admin edits wouldn't
 appear on a real production build until the next deploy (`npm run dev`
-doesn't show this, since dev mode never prerenders).
+doesn't show this, since dev mode never prerenders). `/login` carries the
+same export directly on its own `page.tsx` for the same reason (it sits
+outside the `(site)` route group, so it doesn't inherit the layout's).
 
 ## Uploads (S3)
 
@@ -225,6 +239,22 @@ alongside the existing `photo_path` thumbnail (`sql/schema.sql`,
 state) render the thumbnail as-is when a row has no `video_path` — identical
 to the site's original thumbnail-only behavior — and swap in a real
 `<video controls autoPlay>` element on click when one is set.
+
+## Instagram (Home page)
+
+The home page's Instagram section embeds real Instagram reels rather than
+static photo tiles. The `instagram_posts` admin resource
+(`/admin/instagram_posts`) has a single required field, `reel_url` — the
+full `instagram.com/reel/...` or `.../p/...` link, nothing else to fill in.
+`InstagramGrid.tsx` extracts the shortcode from that URL
+(`/instagram\.com\/(?:reel|p|tv)\/([A-Za-z0-9_-]+)/`) and renders each as an
+`<iframe src="https://www.instagram.com/reel/<code>/embed/">` in a 9:16 tile
+— Instagram's public embed endpoint needs no API key, no app registration,
+and no script tag. Rows with a URL that doesn't match are skipped, and the
+whole section renders nothing (not an empty header) when there's nothing
+embeddable. This deliberately doesn't attempt real Instagram API integration
+(Graph API tokens, refresh flows) since the public embed endpoint covers the
+"show our real reels" requirement without that overhead.
 
 ## Games editions (`/games`)
 
@@ -299,7 +329,7 @@ you can see at a glance how much content of each type exists.
 - `src/components/videos/*` — `FeatureVideo.tsx` / `VideoGridTile.tsx`, the client components that swap a video thumbnail for real playback when a row has a `video_path`.
 - `src/components/analytics/Analytics.tsx` — the visitor-traffic beacon (public site only).
 - `src/lib/db.ts` — the `pg` pool + `query`/`queryOne` helpers (no SSL — matches the single-VM Postgres-on-localhost hosting pattern used by this user's other Next.js projects).
-- `src/lib/site.config.ts` — fixed structural constants (nav, footer links, filter chip labels, the LA2028 countdown target).
+- `src/lib/site.config.ts` — fixed structural constants (header nav items, footer links, filter chip labels, the countdown's fallback default date).
 - `src/auth.ts` / `src/proxy.ts` — NextAuth config and the route proxy protecting `/admin`.
 - `sql/schema.sql` — table definitions.
 - `scripts/seed.ts` — seeds the sample public content ported from the design prototype.

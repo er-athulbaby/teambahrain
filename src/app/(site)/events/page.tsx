@@ -9,7 +9,11 @@ export const metadata: Metadata = {
 };
 
 export default async function EventsPage() {
-  const [events, content] = await Promise.all([getEvents(), getPageContent("events")]);
+  const [events, content, site] = await Promise.all([
+    getEvents(),
+    getPageContent("events"),
+    getPageContent("site"),
+  ]);
   const closingLines = content.closing_headline.split("\n");
 
   return (
@@ -44,7 +48,7 @@ export default async function EventsPage() {
               </span>
             ))}
           </p>
-          <Countdown variant="white" valueClassName="text-[42px]" />
+          <Countdown variant="white" valueClassName="text-[42px]" targetDate={site.games_date} />
         </div>
       </section>
     </main>

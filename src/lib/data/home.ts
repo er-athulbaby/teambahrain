@@ -33,7 +33,7 @@ export async function getFeaturedAthletes() {
 
 export async function getInstagramPosts() {
   const { rows } = await query<InstagramPost>(
-    `SELECT id, likes, caption, photo_path, permalink FROM instagram_posts ORDER BY sort_order ASC`
+    `SELECT id, reel_url FROM instagram_posts ORDER BY sort_order ASC`
   );
   return rows;
 }
