@@ -79,6 +79,18 @@ export const PAGE_CONTENT_CONFIG: Record<string, PageContentConfig> = {
         default: "Fifteen federations, one development pathway. Follow the squad, or find a club near you.",
       },
       {
+        key: "show_figures_strip",
+        label: "Show the figures strip (First games / Olympic titles / Federations / Athletes)",
+        type: "boolean",
+        default: "true",
+      },
+      {
+        key: "show_games_section",
+        label: "Show the \"Games\" section",
+        type: "boolean",
+        default: "true",
+      },
+      {
         key: "show_news_section",
         label: "Show \"Latest from the team\" section",
         type: "boolean",
