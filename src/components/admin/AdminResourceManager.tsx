@@ -39,8 +39,10 @@ export default function AdminResourceManager({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pickerFieldKey, setPickerFieldKey] = useState<string | null>(null);
+  const [sportOptions, setSportOptions] = useState<string[]>([]);
 
   const imageField = resource.fields.find((f) => f.type === "image");
+  const hasSportField = resource.fields.some((f) => f.type === "sport");
   const scopeQuery = scopeValue !== undefined ? `?scope=${encodeURIComponent(scopeValue)}` : "";
 
   const load = useCallback(async () => {
@@ -54,6 +56,13 @@ export default function AdminResourceManager({
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
   }, [load]);
+
+  useEffect(() => {
+    if (!hasSportField || scopeValue === undefined) return;
+    fetch(`/api/admin/game_edition_sports?scope=${encodeURIComponent(scopeValue)}`)
+      .then((res) => res.json())
+      .then((sports: { name: string }[]) => setSportOptions(sports.map((s) => s.name)));
+  }, [hasSportField, scopeValue]);
 
   function startAdd() {
     setEditingId(null);
@@ -162,6 +171,24 @@ export default function AdminResourceManager({
             {field.options?.map((opt) => (
               <option key={opt} value={opt}>
                 {opt}
+              </option>
+            ))}
+          </select>
+        )}
+
+        {field.type === "sport" && (
+          <select
+            required={field.required}
+            value={String(form[field.key] ?? "")}
+            onChange={(e) => setForm((f) => ({ ...f, [field.key]: e.target.value }))}
+            className={inputClass}
+          >
+            <option value="" disabled>
+              {sportOptions.length === 0 ? "Add a sport on this edition first…" : "Select a sport…"}
+            </option>
+            {sportOptions.map((name) => (
+              <option key={name} value={name}>
+                {name}
               </option>
             ))}
           </select>

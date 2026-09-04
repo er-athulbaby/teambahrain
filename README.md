@@ -244,7 +244,18 @@ image/video, there's no reference tracking). Every image/video field across
 `AdminResourceManager.tsx` and `PageContentManager.tsx` gets a second
 "Library" button next to "Choose image/video", opening `MediaPickerModal.tsx`
 (portaled, same reason as the header's Games dropdown) to reuse an existing
-file instead of re-uploading a duplicate.
+file instead of re-uploading a duplicate. `media.url` is `UNIQUE`, so both the
+upload route's insert and the backfill script below use
+`ON CONFLICT (url) DO NOTHING` and are safe to run more than once.
+
+Uploads made *before* this table existed were never catalogued anywhere —
+`npm run backfill:media` (`scripts/backfill-media.ts`) finds them after the
+fact by scanning every `image`/`video` field on every resource
+(`resources.ts`) plus every `page_content` value for anything hosted on
+`amazonaws.com`, then inserts whatever isn't already in `media` (content
+type and filename inferred from the URL, since that's all a pre-existing
+reference gives you). Run it once after deploying this feature to a site
+that already has real uploads.
 
 **Video playback**: the `videos` resource has an optional `video_path`
 alongside the existing `photo_path` thumbnail (`sql/schema.sql`,
@@ -298,6 +309,13 @@ non-`visible`, since the browser then forces `overflow-y` to `auto` too).
   `src/app/admin/game_editions/[id]/manage/page.tsx` — five
   `AdminResourceManager`s, one per child resource, all scoped to that one
   edition.
+- The `sport` field on Players/Events/Medals is a `"sport"` field type
+  (`resources.ts`), not free text — `AdminResourceManager` fetches that
+  edition's own `game_edition_sports` list (`?scope=`) and renders it as a
+  dropdown, so the stored name can't drift from what the sport
+  filter/icons on the public pages match against. Still just a plain TEXT
+  column underneath — no schema change, no migration — the dropdown only
+  narrows what the admin can type.
 - Public routes mirror the site's existing "real route per page" pattern
   rather than client-side tab-switching: `src/app/(site)/games/page.tsx`
   (index of published editions) and `.../games/[slug]/{delegation,players,

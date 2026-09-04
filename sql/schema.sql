@@ -156,7 +156,7 @@ CREATE TABLE page_content (
 -- "choose from library" picker on every image/video field.
 CREATE TABLE media (
   id SERIAL PRIMARY KEY,
-  url TEXT NOT NULL,
+  url TEXT NOT NULL UNIQUE,
   content_type TEXT NOT NULL,
   filename TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

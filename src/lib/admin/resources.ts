@@ -1,4 +1,16 @@
-export type FieldType = "text" | "textarea" | "number" | "boolean" | "date" | "image" | "video" | "select";
+export type FieldType =
+  | "text"
+  | "textarea"
+  | "number"
+  | "boolean"
+  | "date"
+  | "image"
+  | "video"
+  | "select"
+  /** A dropdown of the current Games edition's own Sports list (game_edition_sports),
+   * scoped to the same parent edition — keeps the value consistent with the sport
+   * filter/icons on the public pages instead of a free-typed name that can drift. */
+  | "sport";
 
 export interface FieldConfig {
   key: string;
@@ -262,7 +274,7 @@ export const RESOURCES: Record<string, ResourceConfig> = {
     scopeField: "game_edition_id",
     fields: [
       { key: "name", label: "Name", type: "text", required: true },
-      { key: "sport", label: "Sport", type: "text", required: true },
+      { key: "sport", label: "Sport", type: "sport", required: true },
       { key: "photo_path", label: "Photo", type: "image" },
       { key: "sort_order", label: "Sort order", type: "number" },
     ],
@@ -275,7 +287,7 @@ export const RESOURCES: Record<string, ResourceConfig> = {
     titleField: "title",
     scopeField: "game_edition_id",
     fields: [
-      { key: "sport", label: "Sport", type: "text", required: true },
+      { key: "sport", label: "Sport", type: "sport", required: true },
       { key: "title", label: "Title", type: "text", required: true },
       { key: "venue", label: "Venue", type: "text", required: true },
       { key: "event_date", label: "Date", type: "date", required: true },
@@ -298,7 +310,7 @@ export const RESOURCES: Record<string, ResourceConfig> = {
     titleField: "athlete_name",
     scopeField: "game_edition_id",
     fields: [
-      { key: "sport", label: "Sport", type: "text", required: true },
+      { key: "sport", label: "Sport", type: "sport", required: true },
       { key: "event_name", label: "Event", type: "text", required: true },
       { key: "athlete_name", label: "Athlete", type: "text", required: true },
       { key: "medal", label: "Medal", type: "select", required: true, options: ["G", "S", "B"] },

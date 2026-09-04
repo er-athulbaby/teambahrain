@@ -40,11 +40,10 @@ export async function POST(request: Request) {
   // Recorded here (not after the client's PUT to S3) since that PUT goes
   // straight to S3 and never touches this server — this is the one point
   // that knows about the upload at all.
-  await query(`INSERT INTO media (url, content_type, filename) VALUES ($1, $2, $3)`, [
-    publicUrl,
-    contentType,
-    filename,
-  ]);
+  await query(
+    `INSERT INTO media (url, content_type, filename) VALUES ($1, $2, $3) ON CONFLICT (url) DO NOTHING`,
+    [publicUrl, contentType, filename]
+  );
 
   return NextResponse.json({ uploadUrl, publicUrl });
 }
