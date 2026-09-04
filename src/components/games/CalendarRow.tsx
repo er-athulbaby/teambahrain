@@ -35,7 +35,7 @@ export default function CalendarRow({ edition }: { edition: GameEdition }) {
 
   const content = (
     <>
-      <span className="w-24 h-24 flex-none border-2 border-ink overflow-hidden flex items-center justify-center bg-surface">
+      <span className="w-24 h-24 flex-none border-2 border-ink overflow-hidden flex items-center justify-center bg-white">
         {edition.logo_path ? (
           <Image
             src={edition.logo_path}
