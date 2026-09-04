@@ -365,10 +365,15 @@ non-`visible`, since the browser then forces `overflow-y` to `auto` too).
   narrows what the admin can type.
 - Public routes mirror the site's existing "real route per page" pattern
   rather than client-side tab-switching: `src/app/(site)/games/page.tsx`
-  (index of published editions) and `.../games/[slug]/{delegation,players,
-  events,results,medals}/page.tsx` under a shared `[slug]/layout.tsx` that
-  404s on an unknown or unpublished slug and renders the edition
-  banner + tab nav. Data access is `src/lib/data/games.ts`; medal totals
+  (index of published editions) and `.../games/[slug]/{delegation,sports,
+  players,events,results,medals}/page.tsx` under a shared `[slug]/layout.tsx`
+  that 404s on an unknown/draft/announced slug and renders the edition
+  banner + tab nav (`GameEditionTabs.tsx`, in that same order — Sports
+  before Players since Players filters by that same list). The Sports tab
+  is a static name+icon grid straight off `game_edition_sports`, deliberately
+  not linked to anything (no filtered Players/Events jump) — just "here's
+  what we're competing in this edition." Data access is
+  `src/lib/data/games.ts`; medal totals
   reuse the existing `countMedals` helper (`src/lib/medals.ts`) rather than
   a new implementation, same "compute from leaf records" principle as the
   all-time medals table.
