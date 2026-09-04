@@ -1,11 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ImageOff, Loader2, UploadCloud, VideoOff } from "lucide-react";
+import { ImageOff, Images, Loader2, UploadCloud, VideoOff } from "lucide-react";
 import type { PageContentConfig } from "@/lib/admin/pageContentConfig";
 import { uploadFile } from "@/lib/admin/uploadClient";
 import Card from "@/components/admin/ui/Card";
 import Button from "@/components/admin/ui/Button";
+import MediaPickerModal from "@/components/admin/MediaPickerModal";
 
 const inputClass =
   "w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100";
@@ -23,6 +24,7 @@ export default function PageContentManager({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [pickerFieldKey, setPickerFieldKey] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const res = await fetch(`/api/admin/page-content/${page}`);
@@ -148,6 +150,14 @@ export default function PageContentManager({
                     }}
                   />
                 </label>
+                <button
+                  type="button"
+                  onClick={() => setPickerFieldKey(field.key)}
+                  className="flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50"
+                >
+                  <Images size={15} strokeWidth={1.75} />
+                  Library
+                </button>
               </div>
             )}
 
@@ -173,6 +183,14 @@ export default function PageContentManager({
                     }}
                   />
                 </label>
+                <button
+                  type="button"
+                  onClick={() => setPickerFieldKey(field.key)}
+                  className="flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50"
+                >
+                  <Images size={15} strokeWidth={1.75} />
+                  Library
+                </button>
               </div>
             )}
           </div>
@@ -193,6 +211,18 @@ export default function PageContentManager({
           </Button>
         </div>
       </form>
+
+      {pickerFieldKey && (
+        <MediaPickerModal
+          type={config.fields.find((f) => f.key === pickerFieldKey)?.type === "video" ? "video" : "image"}
+          onSelect={(url) => {
+            setSaved(false);
+            setValues((v) => ({ ...v, [pickerFieldKey]: url }));
+            setPickerFieldKey(null);
+          }}
+          onClose={() => setPickerFieldKey(null)}
+        />
+      )}
     </Card>
   );
 }

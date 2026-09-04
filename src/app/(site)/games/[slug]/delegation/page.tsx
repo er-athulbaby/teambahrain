@@ -13,7 +13,13 @@ function DelegateGrid({ delegates }: { delegates: GameEditionDelegate[] }) {
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-7">
       {delegates.map((d) => (
         <article key={d.id} className="flex flex-col gap-3">
-          <ImageTile src={d.photo_path} alt={d.name} aspect="1/1" className="border-2 border-ink" />
+          <ImageTile
+            src={d.photo_path}
+            alt={d.name}
+            aspect="1/1"
+            objectPosition="top"
+            className="border-2 border-ink"
+          />
           <div>
             <h3 className="m-0 font-bold text-base leading-tight uppercase">{d.name}</h3>
             <p className="m-0 text-sm text-ink-700">{d.title}</p>

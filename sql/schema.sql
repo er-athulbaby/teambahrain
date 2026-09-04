@@ -151,6 +151,17 @@ CREATE TABLE page_content (
   PRIMARY KEY (page, field_key)
 );
 
+-- Catalog of every S3 upload, recorded at presign time (src/app/api/admin/
+-- upload/route.ts). Backs the admin Media Library (/admin/media) and its
+-- "choose from library" picker on every image/video field.
+CREATE TABLE media (
+  id SERIAL PRIMARY KEY,
+  url TEXT NOT NULL,
+  content_type TEXT NOT NULL,
+  filename TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 -- Games editions (Paris 2024, Aichi-Nagoya, ...): an independent per-edition
 -- micro-site (Delegation/Players/Events/Results/Medals), separate from the
 -- olympic_games/olympic_medals tables used by the site-wide all-time medals

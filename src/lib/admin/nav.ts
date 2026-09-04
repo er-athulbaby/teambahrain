@@ -11,6 +11,7 @@ import {
   Star,
   BarChart3,
   Camera,
+  Images,
   Rss,
   Globe2,
   FileText,
@@ -39,6 +40,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
     items: [
       { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
       { href: "/admin/analytics", label: "Analytics", icon: LineChart, adminOnly: true },
+      { href: "/admin/media", label: "Media", icon: Images },
     ],
   },
   {

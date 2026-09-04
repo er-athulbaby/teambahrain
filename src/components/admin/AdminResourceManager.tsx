@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, ImageOff, Loader2, Pencil, Trash2, UploadCloud, VideoOff } from "lucide-react";
+import { ArrowRight, ImageOff, Images, Loader2, Pencil, Trash2, UploadCloud, VideoOff } from "lucide-react";
 import type { ResourceConfig } from "@/lib/admin/resources";
 import { uploadFile } from "@/lib/admin/uploadClient";
 import Card from "@/components/admin/ui/Card";
 import Button from "@/components/admin/ui/Button";
 import Badge from "@/components/admin/ui/Badge";
+import MediaPickerModal from "@/components/admin/MediaPickerModal";
 
 type Row = Record<string, unknown> & { id: number };
 
@@ -37,6 +38,7 @@ export default function AdminResourceManager({
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pickerFieldKey, setPickerFieldKey] = useState<string | null>(null);
 
   const imageField = resource.fields.find((f) => f.type === "image");
   const scopeQuery = scopeValue !== undefined ? `?scope=${encodeURIComponent(scopeValue)}` : "";
@@ -188,6 +190,14 @@ export default function AdminResourceManager({
                 }}
               />
             </label>
+            <button
+              type="button"
+              onClick={() => setPickerFieldKey(field.key)}
+              className="flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50"
+            >
+              <Images size={15} strokeWidth={1.75} />
+              Library
+            </button>
           </div>
         )}
 
@@ -213,6 +223,14 @@ export default function AdminResourceManager({
                 }}
               />
             </label>
+            <button
+              type="button"
+              onClick={() => setPickerFieldKey(field.key)}
+              className="flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50"
+            >
+              <Images size={15} strokeWidth={1.75} />
+              Library
+            </button>
           </div>
         )}
 
@@ -345,6 +363,17 @@ export default function AdminResourceManager({
             </table>
           </div>
         </Card>
+      )}
+
+      {pickerFieldKey && (
+        <MediaPickerModal
+          type={resource.fields.find((f) => f.key === pickerFieldKey)?.type === "video" ? "video" : "image"}
+          onSelect={(url) => {
+            setForm((f) => ({ ...f, [pickerFieldKey]: url }));
+            setPickerFieldKey(null);
+          }}
+          onClose={() => setPickerFieldKey(null)}
+        />
       )}
     </div>
   );

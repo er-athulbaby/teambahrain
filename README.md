@@ -232,6 +232,20 @@ form surfaces that inline instead of failing silently.
 `**.amazonaws.com` `remotePatterns` entry — worth narrowing to the exact
 bucket hostname once it's finalized in production.
 
+**Media Library** (`/admin/media`): every upload is recorded into a `media`
+table (`url`, `content_type`, `filename`) at presign time in
+`/api/admin/upload/route.ts` — the one point that knows about the upload at
+all, since the actual file `PUT` goes straight from the browser to S3 and
+never touches this server. The library page (`MediaLibrary.tsx`) lists
+everything ever uploaded with its own upload button and delete (which also
+calls `deleteUpload()` in `src/lib/s3.ts` to remove the underlying S3
+object — deleting something still referenced elsewhere will break that
+image/video, there's no reference tracking). Every image/video field across
+`AdminResourceManager.tsx` and `PageContentManager.tsx` gets a second
+"Library" button next to "Choose image/video", opening `MediaPickerModal.tsx`
+(portaled, same reason as the header's Games dropdown) to reuse an existing
+file instead of re-uploading a duplicate.
+
 **Video playback**: the `videos` resource has an optional `video_path`
 alongside the existing `photo_path` thumbnail (`sql/schema.sql`,
 `resources.ts`). On the public Videos page, `FeatureVideo.tsx` and

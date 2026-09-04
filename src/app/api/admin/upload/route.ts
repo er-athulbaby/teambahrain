@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { requireAdmin, errorResponse } from "@/lib/admin/api";
 import { createPresignedUpload, isS3Configured } from "@/lib/s3";
+import { query } from "@/lib/db";
 
 const ALLOWED_TYPES: Record<string, string> = {
   "image/png": "png",
@@ -35,6 +36,15 @@ export async function POST(request: Request) {
 
   const key = `uploads/${randomUUID()}.${ext}`;
   const { uploadUrl, publicUrl } = await createPresignedUpload(key, contentType);
+
+  // Recorded here (not after the client's PUT to S3) since that PUT goes
+  // straight to S3 and never touches this server — this is the one point
+  // that knows about the upload at all.
+  await query(`INSERT INTO media (url, content_type, filename) VALUES ($1, $2, $3)`, [
+    publicUrl,
+    contentType,
+    filename,
+  ]);
 
   return NextResponse.json({ uploadUrl, publicUrl });
 }

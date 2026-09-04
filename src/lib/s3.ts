@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const REGION = process.env.AWS_REGION;
@@ -28,4 +28,14 @@ export async function createPresignedUpload(key: string, contentType: string) {
   const publicUrl = `https://${BUCKET}.s3.${REGION}.amazonaws.com/${key}`;
 
   return { uploadUrl, publicUrl };
+}
+
+/** Deletes the underlying S3 object for a URL previously returned by createPresignedUpload. */
+export async function deleteUpload(publicUrl: string) {
+  if (!BUCKET) throw new Error("AWS_S3_BUCKET is not configured");
+
+  const key = publicUrl.split(`${BUCKET}.s3.${REGION}.amazonaws.com/`)[1];
+  if (!key) return;
+
+  await getClient().send(new DeleteObjectCommand({ Bucket: BUCKET, Key: key }));
 }
