@@ -41,7 +41,7 @@ export default async function GamesIndexPage() {
                 className="border-2 border-ink p-6 flex flex-col gap-4 hover:bg-surface"
               >
                 {e.logo_path && (
-                  <Image src={e.logo_path} alt={e.name} width={56} height={56} className="h-14 w-14 object-contain" />
+                  <Image src={e.logo_path} alt={e.name} width={96} height={96} className="h-24 w-24 object-contain" />
                 )}
                 <div>
                   <span className="font-semibold text-[11px] tracking-[0.16em] uppercase text-accent-700">

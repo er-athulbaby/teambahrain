@@ -1,6 +1,7 @@
 import Hero from "@/components/home/Hero";
 import FiguresStrip from "@/components/home/FiguresStrip";
 import GamesPreview from "@/components/home/GamesPreview";
+import CalendarPreview from "@/components/home/CalendarPreview";
 import NewsPreview from "@/components/home/NewsPreview";
 import AthletesPreview from "@/components/home/AthletesPreview";
 import MedalsBand from "@/components/home/MedalsBand";
@@ -28,6 +29,7 @@ export default async function HomePage() {
       <Hero content={content} targetDate={site.games_date} />
       {content.show_figures_strip !== "false" && <FiguresStrip figures={figures} />}
       {content.show_games_section !== "false" && <GamesPreview editions={editions} />}
+      {content.show_calendar_section !== "false" && <CalendarPreview editions={editions} />}
       {content.show_news_section !== "false" && <NewsPreview news={news} />}
       {content.show_athletes_section !== "false" && <AthletesPreview athletes={athletes} />}
       {content.show_medals_section !== "false" && <MedalsBand totals={medalTotals} />}

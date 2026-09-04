@@ -334,7 +334,11 @@ non-`visible`, since the browser then forces `overflow-y` to `auto` too).
   styled after a reference NOC calendar page the user shared but rebuilt in
   Team Bahrain's own design language rather than copying that site's look.
   Keyword search and a year-range slider (also in that reference) were
-  deliberately left out of this first pass, pending real usage.
+  deliberately left out of this first pass, pending real usage. The row
+  markup itself (`CalendarRow.tsx`) lives under `src/components/games/`
+  rather than inside the page, since the Home page's own Calendar preview
+  (`CalendarPreview.tsx`, next 3 upcoming, gated by
+  `show_calendar_section`) reuses it rather than duplicating the JSX.
 
 ## Analytics
 

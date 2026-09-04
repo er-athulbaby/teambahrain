@@ -25,9 +25,9 @@ export default function GamesPreview({ editions }: { editions: GameEdition[] }) 
                 <Image
                   src={e.logo_path}
                   alt={e.name}
-                  width={56}
-                  height={56}
-                  className="h-14 w-14 object-contain"
+                  width={96}
+                  height={96}
+                  className="h-24 w-24 object-contain"
                 />
               )}
               <div>

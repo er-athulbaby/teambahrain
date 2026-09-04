@@ -91,6 +91,12 @@ export const PAGE_CONTENT_CONFIG: Record<string, PageContentConfig> = {
         default: "true",
       },
       {
+        key: "show_calendar_section",
+        label: "Show the \"Calendar\" section",
+        type: "boolean",
+        default: "true",
+      },
+      {
         key: "show_news_section",
         label: "Show \"Latest from the team\" section",
         type: "boolean",
