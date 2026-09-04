@@ -224,6 +224,11 @@ CREATE TABLE game_edition_events (
   venue TEXT NOT NULL,
   event_date DATE NOT NULL,
   event_time TEXT,
+  -- ISO 3166-1 alpha-2 code for a team fixture's opponent (e.g. "PH"),
+  -- rendered as a flag next to the title. Null for individual events, or
+  -- for an opponent with no fitting flag (e.g. Chinese Taipei — see
+  -- src/lib/flagEmoji.ts).
+  opponent_country TEXT,
   result_time TEXT,
   result_rank TEXT,
   sort_order INT NOT NULL DEFAULT 0

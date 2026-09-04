@@ -74,7 +74,7 @@ export async function getEditionEvents(editionId: number, onlyResults: boolean) 
     ? "AND (result_time IS NOT NULL OR result_rank IS NOT NULL)"
     : "AND result_time IS NULL AND result_rank IS NULL";
   const { rows } = await query<GameEditionEvent>(
-    `SELECT id, sport, title, venue, event_date, event_time, result_time, result_rank
+    `SELECT id, sport, title, venue, event_date, event_time, opponent_country, result_time, result_rank
      FROM game_edition_events
      WHERE game_edition_id = $1 ${resultFilter}
      ORDER BY sort_order ASC`,

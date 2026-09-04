@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CalendarDays, Clock } from "lucide-react";
 import SportFilterDropdown from "@/components/games/SportFilterDropdown";
+import { flagEmoji } from "@/lib/flagEmoji";
 import type { GameEditionEvent, GameEditionSport } from "@/types";
 
 function formatDate(d: string) {
@@ -52,7 +53,14 @@ export default function EventsList({
                 <span className="font-semibold text-[11px] tracking-[0.16em] uppercase text-accent-200">
                   {e.sport}
                 </span>
-                <h3 className="m-0 font-bold text-xl uppercase">{e.title}</h3>
+                <h3 className="m-0 font-bold text-xl uppercase">
+                  {flagEmoji(e.opponent_country) && (
+                    <span className="mr-2" aria-hidden="true">
+                      {flagEmoji(e.opponent_country)}
+                    </span>
+                  )}
+                  {e.title}
+                </h3>
                 <span className="flex flex-wrap items-center gap-4 text-sm text-white/80">
                   <span>{e.venue}</span>
                   <span className="inline-flex items-center gap-1.5">

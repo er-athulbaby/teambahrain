@@ -388,17 +388,36 @@ non-`visible`, since the browser then forces `overflow-y` to `auto` too).
 - `npm run seed:games` seeds one example edition (Paris 2024), content
   ported from the reference site shared when this feature was requested —
   placeholder, same verify-before-publishing caveat as the other seed data.
-- `/calendar` — a second view over the exact same `game_editions` data as
-  `/games` (same `getPublishedEditions()`, no new table), sorted
-  chronologically by `start_date` rather than the admin-set `sort_order`,
-  styled after a reference NOC calendar page the user shared but rebuilt in
-  Team Bahrain's own design language rather than copying that site's look.
-  Keyword search and a year-range slider (also in that reference) were
-  deliberately left out of this first pass, pending real usage. The row
-  markup itself (`CalendarRow.tsx`) lives under `src/components/games/`
-  rather than inside the page, since the Home page's own Calendar preview
-  (`CalendarPreview.tsx`, next 3 upcoming, gated by
-  `show_calendar_section`) reuses it rather than duplicating the JSX.
+- `/calendar` — a second view over `game_editions` (see the `/games` vs
+  `/calendar` query split above), styled after a reference NOC calendar page
+  the user shared but rebuilt in Team Bahrain's own design language rather
+  than copying that site's look. Keyword search and a year-range slider
+  (also in that reference) were deliberately left out of this first pass,
+  pending real usage. The row markup itself (`CalendarRow.tsx`) lives under
+  `src/components/games/` rather than inside the page, since the Home
+  page's own Calendar preview (`CalendarPreview.tsx`, next 3 upcoming,
+  gated by `show_calendar_section`) reuses it rather than duplicating the
+  JSX.
+- `game_edition_events` has an optional `opponent_country` (ISO 3166-1
+  alpha-2, e.g. `"PH"`) rendered as a flag next to a team fixture's title
+  via `flagEmoji()` (`src/lib/flagEmoji.ts` — converts the code to its
+  Unicode Regional Indicator Symbol pair, no image assets needed).
+  Deliberately left null for opponents with no fitting flag — Chinese
+  Taipei has no ISO country code of its own, and using Taiwan's would be
+  diplomatically inaccurate for an official BOC site. Real browsers render
+  this as a proper flag; environments without a color-emoji font (some
+  headless/CI setups, rare locked-down configs) fall back to showing the
+  bare two letters.
+- `npm run import:aichi-nagoya-events` (`scripts/import-aichi-nagoya-events.ts`)
+  bulk-loaded Team Bahrain's full real competition schedule for Aichi-Nagoya
+  2026 (192 fixtures, 20 sports) from a PDF the user shared — every heat,
+  qualification, preliminary and final, not just medal rounds, since that's
+  what a fan actually checks to know when to watch. It also corrected the
+  edition's `start_date`/`end_date` to the schedule's real span (2026-09-11
+  – 2026-10-03), replacing an earlier placeholder guess. Re-running it is
+  safe for the sports list (skips ones that already exist by name) but will
+  duplicate events if run twice — it's a one-time import, not idempotent
+  seed data like `seed-games.ts`.
 
 ## Analytics
 

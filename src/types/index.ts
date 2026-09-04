@@ -158,6 +158,8 @@ export interface GameEditionEvent {
   venue: string;
   event_date: string;
   event_time: string | null;
+  /** ISO 3166-1 alpha-2 opponent code for a team fixture (e.g. "PH") — see flagEmoji(). */
+  opponent_country: string | null;
   result_time: string | null;
   result_rank: string | null;
 }

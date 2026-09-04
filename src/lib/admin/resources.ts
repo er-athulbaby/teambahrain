@@ -319,6 +319,12 @@ export const RESOURCES: Record<string, ResourceConfig> = {
       { key: "event_date", label: "Date", type: "date", required: true },
       { key: "event_time", label: "Time", type: "text" },
       {
+        key: "opponent_country",
+        label: "Opponent country code",
+        type: "text",
+        hint: "ISO 2-letter code (e.g. PH for Philippines) — shows as a flag next to the title on a team fixture. Leave blank for individual events.",
+      },
+      {
         key: "result_time",
         label: "Result — time/score",
         type: "text",
