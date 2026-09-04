@@ -6,7 +6,12 @@ import SportFilterDropdown from "@/components/games/SportFilterDropdown";
 import type { GameEditionEvent, GameEditionSport } from "@/types";
 
 function formatDate(d: string) {
-  return new Date(d).toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" });
+  return new Date(d).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "UTC",
+  });
 }
 
 export default function EventsList({

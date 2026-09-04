@@ -173,8 +173,14 @@ CREATE TABLE game_editions (
   name TEXT NOT NULL,
   edition_type TEXT NOT NULL,
   city TEXT NOT NULL,
-  start_date DATE NOT NULL,
+  -- Exact dates once known; start_year/end_year are the fallback for a
+  -- future edition where only the year has been announced so far — exactly
+  -- one of start_date/start_year (and, if set at all, end_date/end_year)
+  -- should be non-null at a time.
+  start_date DATE,
+  start_year INT,
   end_date DATE,
+  end_year INT,
   logo_path TEXT,
   is_published BOOLEAN NOT NULL DEFAULT TRUE,
   sort_order INT NOT NULL DEFAULT 0

@@ -3,9 +3,9 @@ import CalendarRow from "@/components/games/CalendarRow";
 import type { GameEdition } from "@/types";
 
 export default function CalendarPreview({ editions }: { editions: GameEdition[] }) {
-  const upcoming = [...editions]
-    .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())
-    .slice(0, 3);
+  // Same sort_order as /games and /calendar — see calendar/page.tsx for why
+  // this isn't sorted by date.
+  const upcoming = editions.slice(0, 3);
 
   if (upcoming.length === 0) return null;
 

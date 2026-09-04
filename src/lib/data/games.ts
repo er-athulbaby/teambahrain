@@ -10,7 +10,7 @@ import type {
 
 export async function getPublishedEditions() {
   const { rows } = await query<GameEdition>(
-    `SELECT id, slug, name, edition_type, city, start_date, end_date, logo_path
+    `SELECT id, slug, name, edition_type, city, start_date, start_year, end_date, end_year, logo_path
      FROM game_editions WHERE is_published = TRUE ORDER BY sort_order ASC`
   );
   return rows;
@@ -18,7 +18,7 @@ export async function getPublishedEditions() {
 
 export async function getEditionBySlug(slug: string) {
   return queryOne<GameEdition>(
-    `SELECT id, slug, name, edition_type, city, start_date, end_date, logo_path
+    `SELECT id, slug, name, edition_type, city, start_date, start_year, end_date, end_year, logo_path
      FROM game_editions WHERE slug = $1 AND is_published = TRUE`,
     [slug]
   );

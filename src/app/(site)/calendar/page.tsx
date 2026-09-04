@@ -7,10 +7,10 @@ export const metadata: Metadata = {
 };
 
 export default async function CalendarPage() {
+  // Ordered by sort_order (same as /games), set manually per edition — not every
+  // edition has an exact date to sort by, and some have only a year, so a
+  // date-based sort can't place them all correctly on its own.
   const editions = await getPublishedEditions();
-  const sorted = [...editions].sort(
-    (a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime()
-  );
 
   return (
     <main>
@@ -30,10 +30,10 @@ export default async function CalendarPage() {
 
       <section>
         <div className="max-w-[1400px] mx-auto px-4 sm:px-8">
-          {sorted.map((edition) => (
+          {editions.map((edition) => (
             <CalendarRow key={edition.id} edition={edition} />
           ))}
-          {sorted.length === 0 && (
+          {editions.length === 0 && (
             <p className="py-14 text-ink-700">No Games editions published yet.</p>
           )}
         </div>

@@ -297,6 +297,33 @@ non-`visible`, since the browser then forces `overflow-y` to `auto` too).
   `game_edition_id`. `game_edition_events` covers **both** the Events and
   Results public pages — a row with `result_time`/`result_rank` filled in
   is a result, blank is still upcoming; there's no separate results table.
+- `start_date`/`end_date` are nullable, each paired with a `start_year`/
+  `end_year` fallback for a future edition whose exact dates aren't
+  announced yet — exactly one of the pair should be set at a time. This is
+  the generic resource system's `"date_or_year"` field type
+  (`resources.ts`): `AdminResourceManager` renders an exact-date input with
+  a "year only" checkbox that swaps it for a plain year number instead,
+  writing into the field's declared `yearFieldKey`. The year column itself
+  is a separate `"year"` field marked `hiddenInForm` — present in
+  `resource.fields` so `crud.ts` reads/writes it, but not rendered as its
+  own row (the `date_or_year` field's UI covers both). `"year"` exists
+  because plain `"number"` fields default an empty value to `0` (correct
+  for `sort_order`, wrong for "no year set" — that must stay `null`).
+  Every public date display goes through `formatEditionDate()`
+  (`src/lib/formatEditionDate.ts`), falling back to the bare year, and
+  `/games`, `/calendar` and the Home page all order editions by the
+  existing `sort_order` rather than by date, since a year-only edition
+  has nothing reliable to sort against.
+- **A real bug found and fixed while building this**: `pg`'s default
+  `DATE` column parser returns a JS `Date` object, which serializes with
+  the *server's* timezone offset applied — silently shifting the stored
+  calendar date by a day on round-trip, and producing a value
+  `<input type="date">` can't parse at all (it requires exactly
+  `"YYYY-MM-DD"`, not a full ISO timestamp), so an edit form's date
+  fields rendered blank. `src/lib/db.ts` now registers
+  `types.setTypeParser(1082, (v) => v)` (OID 1082 = Postgres `date`) so
+  `pg` returns the raw wire string instead — fixes both problems at the
+  root, for every `DATE` column site-wide, not just `game_editions`.
 - Admin-side, this is the generic CRUD system (`resources.ts`/`crud.ts`)
   extended with one new concept: an optional `scopeField` on a
   `ResourceConfig`, so a resource's rows are filtered/injected by a parent

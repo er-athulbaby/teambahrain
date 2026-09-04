@@ -1,4 +1,11 @@
-import { Pool, type QueryResultRow } from "pg";
+import { Pool, types, type QueryResultRow } from "pg";
+
+// pg's default DATE parser returns a JS Date object at local midnight, which
+// then serializes with the server's timezone offset applied — silently
+// shifting the calendar date by a day, and producing a format
+// <input type="date"> can't parse anyway (it needs exactly "YYYY-MM-DD").
+// Returning the raw wire string sidesteps both problems entirely.
+types.setTypeParser(1082, (value) => value);
 
 declare global {
   var _pgPool: Pool | undefined;

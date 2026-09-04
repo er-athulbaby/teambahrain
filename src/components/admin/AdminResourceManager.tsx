@@ -40,6 +40,7 @@ export default function AdminResourceManager({
   const [error, setError] = useState<string | null>(null);
   const [pickerFieldKey, setPickerFieldKey] = useState<string | null>(null);
   const [sportOptions, setSportOptions] = useState<string[]>([]);
+  const [yearMode, setYearMode] = useState<Record<string, boolean>>({});
 
   const imageField = resource.fields.find((f) => f.type === "image");
   const hasSportField = resource.fields.some((f) => f.type === "sport");
@@ -67,6 +68,7 @@ export default function AdminResourceManager({
   function startAdd() {
     setEditingId(null);
     setForm(emptyForm(resource));
+    setYearMode({});
     setError(null);
   }
 
@@ -75,6 +77,13 @@ export default function AdminResourceManager({
     const next: Record<string, unknown> = {};
     for (const field of resource.fields) next[field.key] = row[field.key] ?? "";
     setForm(next);
+    const nextYearMode: Record<string, boolean> = {};
+    for (const field of resource.fields) {
+      if (field.type === "date_or_year" && field.yearFieldKey) {
+        nextYearMode[field.key] = !row[field.key] && Boolean(row[field.yearFieldKey]);
+      }
+    }
+    setYearMode(nextYearMode);
     setError(null);
   }
 
@@ -124,10 +133,11 @@ export default function AdminResourceManager({
     load();
   }
 
-  const shortFields = resource.fields.filter(
+  const visibleFields = resource.fields.filter((f) => !f.hiddenInForm);
+  const shortFields = visibleFields.filter(
     (f) => f.type !== "textarea" && f.type !== "image" && f.type !== "video"
   );
-  const longFields = resource.fields.filter(
+  const longFields = visibleFields.filter(
     (f) => f.type === "textarea" || f.type === "image" || f.type === "video"
   );
 
@@ -192,6 +202,46 @@ export default function AdminResourceManager({
               </option>
             ))}
           </select>
+        )}
+
+        {field.type === "date_or_year" && (
+          <div className="flex flex-col gap-1.5">
+            {yearMode[field.key] ? (
+              <input
+                type="number"
+                required={field.required}
+                placeholder="e.g. 2030"
+                value={String(form[field.yearFieldKey!] ?? "")}
+                onChange={(e) => setForm((f) => ({ ...f, [field.yearFieldKey!]: e.target.value }))}
+                className={inputClass}
+              />
+            ) : (
+              <input
+                type="date"
+                required={field.required}
+                value={String(form[field.key] ?? "")}
+                onChange={(e) => setForm((f) => ({ ...f, [field.key]: e.target.value }))}
+                className={inputClass}
+              />
+            )}
+            <label className="flex items-center gap-2 text-xs text-slate-500">
+              <input
+                type="checkbox"
+                checked={Boolean(yearMode[field.key])}
+                onChange={(e) => {
+                  const checked = e.target.checked;
+                  setYearMode((m) => ({ ...m, [field.key]: checked }));
+                  setForm((f) => ({
+                    ...f,
+                    [field.key]: checked ? "" : f[field.key],
+                    [field.yearFieldKey!]: checked ? f[field.yearFieldKey!] : "",
+                  }));
+                }}
+                className="h-3.5 w-3.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              Exact date not confirmed yet — year only
+            </label>
+          </div>
         )}
 
         {field.type === "image" && (

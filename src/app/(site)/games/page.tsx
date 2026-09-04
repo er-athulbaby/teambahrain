@@ -2,14 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getPublishedEditions } from "@/lib/data/games";
+import { formatEditionDate } from "@/lib/formatEditionDate";
 
 export const metadata: Metadata = {
   title: "Games — Team Bahrain",
 };
-
-function formatDate(d: string) {
-  return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-}
 
 export default async function GamesIndexPage() {
   const editions = await getPublishedEditions();
@@ -49,7 +46,7 @@ export default async function GamesIndexPage() {
                   </span>
                   <h2 className="m-0 font-bold text-2xl uppercase">{e.name}</h2>
                   <p className="m-0 text-sm text-ink-700 mt-1">
-                    {e.city} · {formatDate(e.start_date)}
+                    {e.city} · {formatEditionDate(e.start_date, e.start_year)}
                   </p>
                 </div>
               </Link>

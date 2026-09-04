@@ -1,11 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import SectionHead from "@/components/shared/SectionHead";
+import { formatEditionDate } from "@/lib/formatEditionDate";
 import type { GameEdition } from "@/types";
-
-function formatDate(d: string) {
-  return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-}
 
 export default function GamesPreview({ editions }: { editions: GameEdition[] }) {
   if (editions.length === 0) return null;
@@ -36,7 +33,7 @@ export default function GamesPreview({ editions }: { editions: GameEdition[] }) 
                 </span>
                 <h3 className="m-0 font-bold text-2xl uppercase">{e.name}</h3>
                 <p className="m-0 text-sm text-ink-700 mt-1">
-                  {e.city} · {formatDate(e.start_date)}
+                  {e.city} · {formatEditionDate(e.start_date, e.start_year)}
                 </p>
               </div>
             </Link>

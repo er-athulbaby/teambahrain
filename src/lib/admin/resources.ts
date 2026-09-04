@@ -10,7 +10,13 @@ export type FieldType =
   /** A dropdown of the current Games edition's own Sports list (game_edition_sports),
    * scoped to the same parent edition — keeps the value consistent with the sport
    * filter/icons on the public pages instead of a free-typed name that can drift. */
-  | "sport";
+  | "sport"
+  /** An exact date, with a "year only" fallback (see FieldConfig.yearFieldKey) for
+   * a future edition whose exact dates aren't announced yet. */
+  | "date_or_year"
+  /** A nullable year number — unlike "number" (which defaults empty to 0, correct
+   * for sort_order), empty here must mean "not set", not the year 0. */
+  | "year";
 
 export interface FieldConfig {
   key: string;
@@ -19,6 +25,11 @@ export interface FieldConfig {
   required?: boolean;
   options?: string[];
   hint?: string;
+  /** For type "date_or_year": the sibling field holding the year-only fallback value. */
+  yearFieldKey?: string;
+  /** Hides this field from the form UI — its value is still read/written normally.
+   * Used for the shadow *_year column a "date_or_year" field manages on its behalf. */
+  hiddenInForm?: boolean;
 }
 
 export interface ResourceConfig {
@@ -224,8 +235,16 @@ export const RESOURCES: Record<string, ResourceConfig> = {
       { key: "name", label: "Name", type: "text", required: true },
       { key: "edition_type", label: "Type", type: "text", required: true },
       { key: "city", label: "Host city", type: "text", required: true },
-      { key: "start_date", label: "Start date", type: "date", required: true },
-      { key: "end_date", label: "End date", type: "date" },
+      {
+        key: "start_date",
+        label: "Start date",
+        type: "date_or_year",
+        required: true,
+        yearFieldKey: "start_year",
+      },
+      { key: "start_year", label: "Start year", type: "year", hiddenInForm: true },
+      { key: "end_date", label: "End date", type: "date_or_year", yearFieldKey: "end_year" },
+      { key: "end_year", label: "End year", type: "year", hiddenInForm: true },
       { key: "logo_path", label: "Logo", type: "image" },
       { key: "is_published", label: "Published (visible on the public site)", type: "boolean" },
       { key: "sort_order", label: "Sort order", type: "number" },

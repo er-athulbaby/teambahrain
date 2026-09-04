@@ -3,22 +3,33 @@ import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import type { GameEdition } from "@/types";
 
-function DateBox({ date }: { date: string }) {
+function DateBox({ date, year }: { date: string | null; year: number | null }) {
+  if (!date) {
+    if (!year) return null;
+    return (
+      <div className="w-[76px] h-[76px] flex-none border-2 border-ink flex items-center justify-center">
+        <span className="font-bold text-3xl leading-none tabular-nums">{year}</span>
+      </div>
+    );
+  }
+
   const d = new Date(date);
-  const day = d.getDate();
-  const month = d.toLocaleDateString("en-GB", { month: "short" }).toUpperCase();
-  const year = d.getFullYear();
+  const day = d.getUTCDate();
+  const month = d.toLocaleDateString("en-GB", { month: "short", timeZone: "UTC" }).toUpperCase();
+  const displayYear = d.getUTCFullYear();
 
   return (
     <div className="w-[76px] flex-none border-2 border-ink flex flex-col items-center justify-center py-2.5 gap-0.5">
       <span className="font-bold text-2xl leading-none tabular-nums">{day}</span>
       <span className="font-semibold text-[10px] tracking-[0.1em] uppercase text-accent-700">{month}</span>
-      <span className="text-[11px] text-ink-700 tabular-nums">{year}</span>
+      <span className="text-[11px] text-ink-700 tabular-nums">{displayYear}</span>
     </div>
   );
 }
 
 export default function CalendarRow({ edition }: { edition: GameEdition }) {
+  const hasEnd = Boolean(edition.end_date || edition.end_year);
+
   return (
     <Link
       href={`/games/${edition.slug}`}
@@ -37,11 +48,11 @@ export default function CalendarRow({ edition }: { edition: GameEdition }) {
       </span>
 
       <div className="flex items-center gap-3 flex-none">
-        <DateBox date={edition.start_date} />
-        {edition.end_date && (
+        <DateBox date={edition.start_date} year={edition.start_year} />
+        {hasEnd && (
           <>
             <ChevronRight size={16} className="text-ink-400 flex-none" />
-            <DateBox date={edition.end_date} />
+            <DateBox date={edition.end_date} year={edition.end_year} />
           </>
         )}
       </div>

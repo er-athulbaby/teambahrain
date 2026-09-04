@@ -116,8 +116,12 @@ export interface GameEdition {
   name: string;
   edition_type: string;
   city: string;
-  start_date: string;
+  /** Exactly one of start_date/start_year is set — start_year is the
+   * fallback for an edition whose exact dates aren't announced yet. */
+  start_date: string | null;
+  start_year: number | null;
   end_date: string | null;
+  end_year: number | null;
   logo_path: string | null;
 }
 

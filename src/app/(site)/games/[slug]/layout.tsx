@@ -2,10 +2,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getEditionBySlug } from "@/lib/data/games";
 import GameEditionTabs from "@/components/games/GameEditionTabs";
-
-function formatDate(d: string) {
-  return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-}
+import { formatEditionDate } from "@/lib/formatEditionDate";
 
 export default async function GameEditionLayout({
   children,
@@ -18,9 +15,11 @@ export default async function GameEditionLayout({
   const edition = await getEditionBySlug(slug);
   if (!edition) notFound();
 
-  const dateRange = edition.end_date
-    ? `${formatDate(edition.start_date)} – ${formatDate(edition.end_date)}`
-    : formatDate(edition.start_date);
+  const startLabel = formatEditionDate(edition.start_date, edition.start_year);
+  const dateRange =
+    edition.end_date || edition.end_year
+      ? `${startLabel} – ${formatEditionDate(edition.end_date, edition.end_year)}`
+      : startLabel;
 
   return (
     <main>
