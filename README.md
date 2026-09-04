@@ -328,6 +328,13 @@ non-`visible`, since the browser then forces `overflow-y` to `auto` too).
 - `npm run seed:games` seeds one example edition (Paris 2024), content
   ported from the reference site shared when this feature was requested —
   placeholder, same verify-before-publishing caveat as the other seed data.
+- `/calendar` — a second view over the exact same `game_editions` data as
+  `/games` (same `getPublishedEditions()`, no new table), sorted
+  chronologically by `start_date` rather than the admin-set `sort_order`,
+  styled after a reference NOC calendar page the user shared but rebuilt in
+  Team Bahrain's own design language rather than copying that site's look.
+  Keyword search and a year-range slider (also in that reference) were
+  deliberately left out of this first pass, pending real usage.
 
 ## Analytics
 
