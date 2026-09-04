@@ -23,7 +23,7 @@ export default async function CalendarPage() {
             Calendar
           </h1>
           <p className="m-0 max-w-[58ch] text-lg sm:text-[19px] leading-[1.5] text-ink-800 text-pretty">
-            Every Games edition on the road ahead, in order.
+            Every Games edition Team Bahrain has competed in or announced, in order.
           </p>
         </div>
       </section>

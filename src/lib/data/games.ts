@@ -8,13 +8,25 @@ import type {
   GameEditionMedalRecord,
 } from "@/types";
 
-// "announced" editions belong in listings but their micro-site isn't live
-// yet (see getEditionBySlug) — the public listing components decide whether
-// to render each row as a link based on edition.status themselves.
+// For /calendar and its Home preview — both announced and live editions,
+// no date filtering (an already-completed live edition, e.g. Paris 2024,
+// still belongs on the calendar). "announced" ones aren't links yet (see
+// getEditionBySlug) — the listing components branch on edition.status.
 export async function getPublishedEditions() {
   const { rows } = await query<GameEdition>(
     `SELECT id, slug, name, edition_type, city, start_date, start_year, end_date, end_year, logo_path, status
      FROM game_editions WHERE status IN ('announced', 'live') ORDER BY sort_order ASC`
+  );
+  return rows;
+}
+
+// For /games and its Home preview — the directory of editions with real
+// micro-site content. Deliberately excludes "announced" ones (no Delegation/
+// Sports/Players yet) — those only ever show up on /calendar until they go live.
+export async function getLiveEditions() {
+  const { rows } = await query<GameEdition>(
+    `SELECT id, slug, name, edition_type, city, start_date, start_year, end_date, end_year, logo_path, status
+     FROM game_editions WHERE status = 'live' ORDER BY sort_order ASC`
   );
   return rows;
 }

@@ -328,8 +328,8 @@ non-`visible`, since the browser then forces `overflow-y` to `auto` too).
   `status` (`"draft" | "announced" | "live"`, a plain `select` field with
   a `CHECK` constraint) — for a future edition whose Delegation/Sports/
   Players aren't set up yet: `draft` stays fully hidden (the old
-  `is_published = false`); `announced` shows on `/games`, `/calendar` and
-  the Home page but the card/row isn't a link (see `GameEditionCard.tsx`,
+  `is_published = false`); `announced` shows on `/calendar` and the Home
+  page's Calendar section, card/row not a link (see `GameEditionCard.tsx`,
   `CalendarRow.tsx` — both branch on `edition.status === "live"` between
   rendering a `<Link>` or a plain `<div>` with identical styling, no
   visible difference); `live` is the old `is_published = true`. Kept as
@@ -339,6 +339,14 @@ non-`visible`, since the browser then forces `overflow-y` to `auto` too).
   'live'` strictly, so an announced edition's micro-site 404s even by
   direct URL — same as a hidden draft one. The header's Games dropdown
   filters to `live` only, for the same reason.
+- **`/games` vs `/calendar` now read from two different queries**
+  (`src/lib/data/games.ts`): `getLiveEditions()` (`status = 'live'` only)
+  backs `/games` and its Home preview — the permanent directory of every
+  edition with real content, past and upcoming alike, so a completed one
+  like Paris 2024 never disappears. `getPublishedEditions()` (`status IN
+  ('announced', 'live')`, unfiltered by date) backs `/calendar` and its
+  Home preview — an announced edition only ever shows there until it goes
+  live, at which point it appears on both.
 - The "Manage content" page (`admin/game_editions/[id]/manage/page.tsx`)
   orders its five `AdminResourceManager`s Delegation → **Sports** →
   Players → Events & Results → Medals — Sports has to come before

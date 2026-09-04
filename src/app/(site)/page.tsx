@@ -10,26 +10,28 @@ import RedClose from "@/components/home/RedClose";
 import { getHomeFigures, getHomeNews, getFeaturedAthletes, getInstagramPosts } from "@/lib/data/home";
 import { getMedalTotals } from "@/lib/data/medals";
 import { getPageContent } from "@/lib/data/pageContent";
-import { getPublishedEditions } from "@/lib/data/games";
+import { getPublishedEditions, getLiveEditions } from "@/lib/data/games";
 
 export default async function HomePage() {
-  const [figures, news, athletes, instagram, medalTotals, editions, content, site] = await Promise.all([
-    getHomeFigures(),
-    getHomeNews(),
-    getFeaturedAthletes(),
-    getInstagramPosts(),
-    getMedalTotals(),
-    getPublishedEditions(),
-    getPageContent("home"),
-    getPageContent("site"),
-  ]);
+  const [figures, news, athletes, instagram, medalTotals, liveEditions, calendarEditions, content, site] =
+    await Promise.all([
+      getHomeFigures(),
+      getHomeNews(),
+      getFeaturedAthletes(),
+      getInstagramPosts(),
+      getMedalTotals(),
+      getLiveEditions(),
+      getPublishedEditions(),
+      getPageContent("home"),
+      getPageContent("site"),
+    ]);
 
   return (
     <main>
       <Hero content={content} targetDate={site.games_date} />
       {content.show_figures_strip !== "false" && <FiguresStrip figures={figures} />}
-      {content.show_games_section !== "false" && <GamesPreview editions={editions} />}
-      {content.show_calendar_section !== "false" && <CalendarPreview editions={editions} />}
+      {content.show_games_section !== "false" && <GamesPreview editions={liveEditions} />}
+      {content.show_calendar_section !== "false" && <CalendarPreview editions={calendarEditions} />}
       {content.show_news_section !== "false" && <NewsPreview news={news} />}
       {content.show_athletes_section !== "false" && <AthletesPreview athletes={athletes} />}
       {content.show_medals_section !== "false" && <MedalsBand totals={medalTotals} />}

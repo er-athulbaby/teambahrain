@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import GameEditionCard from "@/components/games/GameEditionCard";
-import { getPublishedEditions } from "@/lib/data/games";
+import { getLiveEditions } from "@/lib/data/games";
 
 export const metadata: Metadata = {
   title: "Games — Team Bahrain",
 };
 
 export default async function GamesIndexPage() {
-  const editions = await getPublishedEditions();
+  const editions = await getLiveEditions();
 
   return (
     <main>
@@ -20,8 +21,12 @@ export default async function GamesIndexPage() {
             Games
           </h1>
           <p className="m-0 max-w-[58ch] text-lg sm:text-[19px] leading-[1.5] text-ink-800 text-pretty">
-            Delegation, players, fixtures, results and medals for every Games edition Bahrain has
-            sent a team to.
+            Delegation, sports, players, fixtures, results and medals — every Games edition Bahrain
+            is competing in or has competed in. Announced editions still being set up show on the{" "}
+            <Link href="/calendar" className="underline hover:text-accent-700">
+              Calendar
+            </Link>{" "}
+            first.
           </p>
         </div>
       </section>
