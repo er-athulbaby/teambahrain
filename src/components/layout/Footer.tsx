@@ -39,7 +39,7 @@ export default function Footer() {
       <div className="border-t-2 border-ink-800">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-5.5 flex justify-between gap-6 flex-wrap">
           <span className="text-xs tracking-[0.1em] uppercase text-ink-500">
-            © 2026 Bahrain Olympic Committee — concept design
+            © 2026 Bahrain Olympic Committee
           </span>
           <span className="text-xs tracking-[0.1em] uppercase text-ink-500">
             Privacy · Accessibility · Media enquiries
