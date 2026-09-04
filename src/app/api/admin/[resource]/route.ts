@@ -29,9 +29,16 @@ export async function POST(request: Request, { params }: { params: Promise<{ res
 
   const body = await request.json();
   for (const field of resource.fields) {
-    if (field.required && field.type !== "image" && !body[field.key]) {
-      return errorResponse(`${field.label} is required`);
+    if (!field.required || field.type === "image") continue;
+    // In "year only" mode, body[field.key] (the exact date) is deliberately
+    // blank — the year in the paired yearFieldKey satisfies "required" instead.
+    if (field.type === "date_or_year") {
+      const hasDate = Boolean(body[field.key]);
+      const hasYear = field.yearFieldKey ? Boolean(body[field.yearFieldKey]) : false;
+      if (!hasDate && !hasYear) return errorResponse(`${field.label} is required`);
+      continue;
     }
+    if (!body[field.key]) return errorResponse(`${field.label} is required`);
   }
 
   const created = await createRow(resource, body, scope);
