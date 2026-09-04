@@ -29,12 +29,12 @@ function DateBox({ date, year }: { date: string | null; year: number | null }) {
 
 export default function CalendarRow({ edition }: { edition: GameEdition }) {
   const hasEnd = Boolean(edition.end_date || edition.end_year);
+  const isLive = edition.status === "live";
+  const className =
+    "flex flex-col sm:flex-row sm:items-center gap-5 py-8 border-b-2 border-ink last:border-0 text-ink hover:bg-surface";
 
-  return (
-    <Link
-      href={`/games/${edition.slug}`}
-      className="flex flex-col sm:flex-row sm:items-center gap-5 py-8 border-b-2 border-ink last:border-0 text-ink hover:bg-surface"
-    >
+  const content = (
+    <>
       <span className="w-24 h-24 flex-none border-2 border-ink overflow-hidden flex items-center justify-center bg-surface">
         {edition.logo_path ? (
           <Image
@@ -64,6 +64,14 @@ export default function CalendarRow({ edition }: { edition: GameEdition }) {
         <span className="text-sm text-ink-700">{edition.city}</span>
         <h2 className="m-0 font-bold text-xl sm:text-2xl uppercase leading-tight">{edition.name}</h2>
       </div>
+    </>
+  );
+
+  if (!isLive) return <div className={className}>{content}</div>;
+
+  return (
+    <Link href={`/games/${edition.slug}`} className={className}>
+      {content}
     </Link>
   );
 }

@@ -182,7 +182,10 @@ CREATE TABLE game_editions (
   end_date DATE,
   end_year INT,
   logo_path TEXT,
-  is_published BOOLEAN NOT NULL DEFAULT TRUE,
+  -- draft: fully hidden. announced: shows in Calendar/Games/Home listings
+  -- but isn't a link — no micro-site content yet. live: fully clickable,
+  -- same as the old is_published = true.
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'announced', 'live')),
   sort_order INT NOT NULL DEFAULT 0
 );
 

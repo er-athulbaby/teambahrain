@@ -324,6 +324,26 @@ non-`visible`, since the browser then forces `overflow-y` to `auto` too).
   `types.setTypeParser(1082, (v) => v)` (OID 1082 = Postgres `date`) so
   `pg` returns the raw wire string instead — fixes both problems at the
   root, for every `DATE` column site-wide, not just `game_editions`.
+- **Status** replaces the old `is_published` boolean with a three-way
+  `status` (`"draft" | "announced" | "live"`, a plain `select` field with
+  a `CHECK` constraint) — for a future edition whose Delegation/Sports/
+  Players aren't set up yet: `draft` stays fully hidden (the old
+  `is_published = false`); `announced` shows on `/games`, `/calendar` and
+  the Home page but the card/row isn't a link (see `GameEditionCard.tsx`,
+  `CalendarRow.tsx` — both branch on `edition.status === "live"` between
+  rendering a `<Link>` or a plain `<div>` with identical styling, no
+  visible difference); `live` is the old `is_published = true`. Kept as
+  one field rather than a second checkbox specifically so "announced but
+  somehow still a link" can't happen. `getEditionBySlug()` (used only by
+  the micro-site's own `/games/[slug]/...` routes) requires `status =
+  'live'` strictly, so an announced edition's micro-site 404s even by
+  direct URL — same as a hidden draft one. The header's Games dropdown
+  filters to `live` only, for the same reason.
+- The "Manage content" page (`admin/game_editions/[id]/manage/page.tsx`)
+  orders its five `AdminResourceManager`s Delegation → **Sports** →
+  Players → Events & Results → Medals — Sports has to come before
+  Players since Players' `"sport"` field is a dropdown fed from that
+  edition's own Sports list (each with its own icon).
 - Admin-side, this is the generic CRUD system (`resources.ts`/`crud.ts`)
   extended with one new concept: an optional `scopeField` on a
   `ResourceConfig`, so a resource's rows are filtered/injected by a parent

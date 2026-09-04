@@ -8,18 +8,24 @@ import type {
   GameEditionMedalRecord,
 } from "@/types";
 
+// "announced" editions belong in listings but their micro-site isn't live
+// yet (see getEditionBySlug) — the public listing components decide whether
+// to render each row as a link based on edition.status themselves.
 export async function getPublishedEditions() {
   const { rows } = await query<GameEdition>(
-    `SELECT id, slug, name, edition_type, city, start_date, start_year, end_date, end_year, logo_path
-     FROM game_editions WHERE is_published = TRUE ORDER BY sort_order ASC`
+    `SELECT id, slug, name, edition_type, city, start_date, start_year, end_date, end_year, logo_path, status
+     FROM game_editions WHERE status IN ('announced', 'live') ORDER BY sort_order ASC`
   );
   return rows;
 }
 
+// Used only by the micro-site's own routes (games/[slug]/...) — strictly
+// "live", so an "announced" edition's micro-site 404s even if visited
+// directly by URL, same as a fully hidden "draft" one.
 export async function getEditionBySlug(slug: string) {
   return queryOne<GameEdition>(
-    `SELECT id, slug, name, edition_type, city, start_date, start_year, end_date, end_year, logo_path
-     FROM game_editions WHERE slug = $1 AND is_published = TRUE`,
+    `SELECT id, slug, name, edition_type, city, start_date, start_year, end_date, end_year, logo_path, status
+     FROM game_editions WHERE slug = $1 AND status = 'live'`,
     [slug]
   );
 }

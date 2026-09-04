@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import Image from "next/image";
+import GameEditionCard from "@/components/games/GameEditionCard";
 import { getPublishedEditions } from "@/lib/data/games";
-import { formatEditionDate } from "@/lib/formatEditionDate";
 
 export const metadata: Metadata = {
   title: "Games — Team Bahrain",
@@ -32,24 +30,7 @@ export default async function GamesIndexPage() {
         <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-10 sm:py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {editions.map((e) => (
-              <Link
-                key={e.id}
-                href={`/games/${e.slug}`}
-                className="border-2 border-ink p-6 flex flex-col gap-4 hover:bg-surface"
-              >
-                {e.logo_path && (
-                  <Image src={e.logo_path} alt={e.name} width={96} height={96} className="h-24 w-24 object-contain" />
-                )}
-                <div>
-                  <span className="font-semibold text-[11px] tracking-[0.16em] uppercase text-accent-700">
-                    {e.edition_type}
-                  </span>
-                  <h2 className="m-0 font-bold text-2xl uppercase">{e.name}</h2>
-                  <p className="m-0 text-sm text-ink-700 mt-1">
-                    {e.city} · {formatEditionDate(e.start_date, e.start_year)}
-                  </p>
-                </div>
-              </Link>
+              <GameEditionCard key={e.id} edition={e} />
             ))}
             {editions.length === 0 && <p className="text-ink-700">No Games editions published yet.</p>}
           </div>

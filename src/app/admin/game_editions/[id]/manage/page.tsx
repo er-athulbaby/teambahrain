@@ -28,13 +28,14 @@ export default async function ManageGameEditionPage({
       </Link>
       <h1 className="mb-1 text-2xl font-semibold text-slate-900">{edition.name}</h1>
       <p className="mb-8 text-sm text-slate-500">
-        Manage this edition&apos;s Delegation, Players, Events &amp; Results, Sports and Medals.
+        Manage this edition&apos;s Delegation, Sports, Players, Events &amp; Results, and Medals.
       </p>
 
       <div className="flex flex-col gap-12">
         <AdminResourceManager resource={RESOURCES.game_edition_delegates} scopeValue={edition.id} />
-        <AdminResourceManager resource={RESOURCES.game_edition_players} scopeValue={edition.id} />
+        {/* Sports before Players: Players' Sport field is a dropdown fed from this list. */}
         <AdminResourceManager resource={RESOURCES.game_edition_sports} scopeValue={edition.id} />
+        <AdminResourceManager resource={RESOURCES.game_edition_players} scopeValue={edition.id} />
         <AdminResourceManager resource={RESOURCES.game_edition_events} scopeValue={edition.id} />
         <AdminResourceManager resource={RESOURCES.game_edition_medals} scopeValue={edition.id} />
       </div>

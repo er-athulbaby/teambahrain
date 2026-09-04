@@ -27,7 +27,12 @@ export default async function SiteLayout({
     <>
       <Analytics />
       <RouteLoader enabled={site.loader_enabled === "true"} />
-      <Header tagline={site.tagline} gamesEditions={editions.map((e) => ({ slug: e.slug, name: e.name }))} />
+      <Header
+        tagline={site.tagline}
+        gamesEditions={editions
+          .filter((e) => e.status === "live")
+          .map((e) => ({ slug: e.slug, name: e.name }))}
+      />
       <Ticker items={tickerItems} />
       <div className="flex-1">{children}</div>
       <Footer />
