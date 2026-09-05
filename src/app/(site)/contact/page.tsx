@@ -14,8 +14,6 @@ export default async function ContactPage() {
     { icon: MapPin, label: "Address", value: content.address },
     { icon: Phone, label: "Phone", value: content.phone },
     { icon: Mail, label: "General enquiries", value: content.general_email },
-    { icon: Mail, label: "Media enquiries", value: content.media_email },
-    { icon: Mail, label: "Athletes & federations", value: content.athletes_email },
   ];
 
   return (

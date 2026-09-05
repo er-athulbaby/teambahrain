@@ -2,6 +2,7 @@ export const NAV_ITEMS = [
   { href: "/", label: "Home" },
   { href: "/calendar", label: "Calendar" },
   { href: "/videos", label: "Videos" },
+  { href: "/contact", label: "Contact" },
 ] as const;
 
 export const FOOTER_COLUMNS = [

@@ -430,11 +430,11 @@ non-`visible`, since the browser then forces `overflow-y` to `auto` too).
 ## Contact page (`/contact`)
 
 A standard NOC-style contact page: an admin-editable hero + address/phone/
-department-email tiles + an embedded Google Map, plus a contact form that
-emails the BOC.
+email tiles + an embedded Google Map, plus a contact form that emails the
+BOC.
 
-- Copy (eyebrow/headline/intro), address, phone, the three department emails
-  shown on the tiles (general/media/athletes), and the map embed URL are all
+- Copy (eyebrow/headline/intro), address, phone, the general enquiries
+  email shown on the tiles, and the map embed URL are all
   editable at `/admin/pages/contact` (`contact` entry in
   `src/lib/admin/pageContentConfig.ts`) — same `page_content` mechanism as
   every other page's copy. The map embed URL is Google Maps' own

@@ -70,14 +70,12 @@ export default function Header({
               >
                 <Link
                   href="/games"
-                  className={`flex items-center gap-1 flex-col justify-end px-[13px] h-full hover:bg-surface ${
+                  className={`flex flex-col justify-end gap-0 px-[13px] h-full flex-none hover:bg-surface ${
                     gamesActive ? "text-ink" : "text-ink-700"
                   }`}
                 >
-                  <span className="flex items-center gap-1 pb-3.5">
-                    <span className="font-semibold text-[11px] tracking-[0.12em] uppercase whitespace-nowrap">
-                      Games
-                    </span>
+                  <span className="font-semibold text-[11px] tracking-[0.12em] uppercase pb-3.5 flex items-center gap-1 whitespace-nowrap">
+                    Games
                     <ChevronDown size={12} strokeWidth={2} />
                   </span>
                   <span className={`h-1 w-full ${gamesActive ? "bg-accent" : "bg-transparent"}`} />
