@@ -27,9 +27,9 @@ function FlagBadge({ code }: { code: string }) {
         width={40}
         height={30}
         unoptimized
-        className="w-10 h-auto border border-white/20"
+        className="w-10 h-auto border border-ink-400"
       />
-      <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-white/80 whitespace-nowrap">
+      <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-ink-700 whitespace-nowrap">
         {countryName(code)}
       </span>
     </span>
@@ -62,30 +62,30 @@ export default function EventsList({
           {list.map((e) => {
             const sportIcon = iconBySport.get(e.sport);
             return (
-              <div key={e.id} className="border-2 border-ink bg-ink text-white p-6 flex flex-col gap-4">
+              <div key={e.id} className="border-2 border-ink bg-white p-6 flex flex-col gap-4">
                 {showResults && (
                   <div className="flex gap-3">
                     {e.result_time && (
-                      <span className="bg-ink-700 px-4 py-2.5 font-bold text-lg">Time : {e.result_time}</span>
+                      <span className="bg-ink-700 text-white px-4 py-2.5 font-bold text-lg">Time : {e.result_time}</span>
                     )}
                     {e.result_rank && (
-                      <span className="bg-ink-700 px-4 py-2.5 font-bold text-lg">Rank : {e.result_rank}</span>
+                      <span className="bg-ink-700 text-white px-4 py-2.5 font-bold text-lg">Rank : {e.result_rank}</span>
                     )}
                   </div>
                 )}
                 <div className="flex items-center justify-between gap-6 flex-wrap">
                   <div className="flex items-center gap-4">
                     {sportIcon && (
-                      <span className="h-14 w-14 rounded-full border-2 border-white/20 bg-white/5 overflow-hidden flex items-center justify-center flex-none">
+                      <span className="h-14 w-14 rounded-full border-2 border-ink-400 bg-surface overflow-hidden flex items-center justify-center flex-none">
                         <Image src={sportIcon} alt="" width={40} height={40} className="h-8 w-8 object-contain" />
                       </span>
                     )}
                     <div className="flex flex-col gap-2 text-left">
-                      <span className="font-semibold text-[11px] tracking-[0.16em] uppercase text-accent-200">
+                      <span className="font-semibold text-[11px] tracking-[0.16em] uppercase text-accent-700">
                         {e.sport}
                       </span>
                       <h3 className="m-0 font-bold text-xl uppercase">{e.title}</h3>
-                      <span className="flex flex-wrap items-center gap-4 text-sm text-white/80">
+                      <span className="flex flex-wrap items-center gap-4 text-sm text-ink-700">
                         <span>{e.venue}</span>
                         <span className="inline-flex items-center gap-1.5">
                           <CalendarDays size={14} className="text-accent" />
@@ -104,7 +104,7 @@ export default function EventsList({
                     <FlagBadge code="BH" />
                     {e.opponent_country && (
                       <>
-                        <span className="font-bold text-xs uppercase text-white/40">vs</span>
+                        <span className="font-bold text-xs uppercase text-ink-400">vs</span>
                         <FlagBadge code={e.opponent_country} />
                       </>
                     )}
