@@ -399,15 +399,23 @@ non-`visible`, since the browser then forces `overflow-y` to `auto` too).
   gated by `show_calendar_section`) reuses it rather than duplicating the
   JSX.
 - `game_edition_events` has an optional `opponent_country` (ISO 3166-1
-  alpha-2, e.g. `"PH"`) rendered as a flag next to a team fixture's title
-  via `flagEmoji()` (`src/lib/flagEmoji.ts` — converts the code to its
-  Unicode Regional Indicator Symbol pair, no image assets needed).
-  Deliberately left null for opponents with no fitting flag — Chinese
-  Taipei has no ISO country code of its own, and using Taiwan's would be
-  diplomatically inaccurate for an official BOC site. Real browsers render
-  this as a proper flag; environments without a color-emoji font (some
-  headless/CI setups, rare locked-down configs) fall back to showing the
-  bare two letters.
+  alpha-2, e.g. `"PH"`). `EventsList.tsx` shows Bahrain's own flag on
+  *every* event card, and — only when `opponent_country` is set — a "vs"
+  separator plus the opponent's flag, via `flagSrc()`/`countryName()`
+  (`src/lib/flags.ts`). Flags are real SVGs self-hosted under
+  `public/flags/` (sourced once from the MIT-licensed
+  [flag-icons](https://github.com/lipis/flag-icons) project, matching this
+  project's self-hosted approach elsewhere — no CDN, no third-party
+  requests) — this replaced an earlier Unicode-emoji-flag approach that
+  didn't render reliably across browsers/OSes. Deliberately no flag for
+  opponents with no fitting one — Chinese Taipei has no ISO country code
+  of its own, and using Taiwan's would be diplomatically inaccurate for an
+  official BOC site. Adding a new opponent means dropping its `{code}.svg`
+  into `public/flags/` and registering it in `flags.ts`. Each event card
+  also shows a circular sport-icon badge when the matching
+  `game_edition_sports.icon_path` is set (the same image the admin already
+  uploads for that sport under the edition's Sports tab — no separate icon
+  system).
 - `npm run import:aichi-nagoya-events` (`scripts/import-aichi-nagoya-events.ts`)
   bulk-loaded Team Bahrain's full real competition schedule for Aichi-Nagoya
   2026 (192 fixtures, 20 sports) from a PDF the user shared — every heat,
