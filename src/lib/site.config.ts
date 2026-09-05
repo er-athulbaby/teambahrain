@@ -5,9 +5,9 @@ export const NAV_ITEMS = [
 ] as const;
 
 export const FOOTER_COLUMNS = [
-  { title: "The team", links: ["Athletes", "Sports", "Results archive", "Selection policy"] },
-  { title: "Media", links: ["News", "Videos", "Photo requests", "Accreditation"] },
-  { title: "Committee", links: ["About the BOC", "Governance", "Integrity & safeguarding", "Careers"] },
+  { title: "The team", links: ["Athletes", "Sports", "Results archive"] },
+  { title: "Media", links: ["News", "Videos"] },
+  { title: "Committee", links: ["Integrity & safeguarding"] },
 ] as const;
 
 export const ATHLETE_FILTERS = ["All", "Athletics", "Handball", "Football", "Cycling", "Combat"] as const;

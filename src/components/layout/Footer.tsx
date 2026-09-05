@@ -16,7 +16,7 @@ export default function Footer() {
           <span className="text-sm leading-relaxed text-ink-400">
             Bahrain Olympic Committee
             <br />
-            Isa Town, Kingdom of Bahrain
+            Kingdom of Bahrain
           </span>
         </div>
         {FOOTER_COLUMNS.map((col) => (
@@ -24,6 +24,21 @@ export default function Footer() {
             <span className="font-semibold text-[10px] tracking-[0.18em] uppercase text-ink-500">
               {col.title}
             </span>
+            {col.title === "Committee" && (
+              <>
+                <a
+                  href="https://boc.bh"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[15px] text-white hover:text-[#ff9783]"
+                >
+                  BOC
+                </a>
+                <a href="/contact" className="text-[15px] text-white hover:text-[#ff9783]">
+                  Contact
+                </a>
+              </>
+            )}
             {col.links.map((link) => (
               <a
                 key={link}

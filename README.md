@@ -427,6 +427,31 @@ non-`visible`, since the browser then forces `overflow-y` to `auto` too).
   duplicate events if run twice — it's a one-time import, not idempotent
   seed data like `seed-games.ts`.
 
+## Contact page (`/contact`)
+
+A standard NOC-style contact page: an admin-editable hero + address/phone/
+department-email tiles + an embedded Google Map, plus a contact form that
+emails the BOC.
+
+- Copy (eyebrow/headline/intro), address, phone, the three department emails
+  shown on the tiles (general/media/athletes), and the map embed URL are all
+  editable at `/admin/pages/contact` (`contact` entry in
+  `src/lib/admin/pageContentConfig.ts`) — same `page_content` mechanism as
+  every other page's copy. The map embed URL is Google Maps' own
+  Share → Embed a map → copy the `src="..."` value.
+- The form (`src/components/contact/ContactForm.tsx`) posts name/email/
+  subject/message to `POST /api/contact` (`src/app/api/admin` sibling at
+  `src/app/api/contact/route.ts`), which validates the fields, checks a
+  hidden honeypot input (real visitors never fill it in), and sends the
+  message via `src/lib/mailer.ts` (`nodemailer`, kept on the `^8` line
+  because `next-auth`/`@auth/core` pins `nodemailer` as an optional peer at
+  `^7.0.7 || ^8.0.5` — forcing a newer major broke that peer resolution
+  during development). **Without SMTP env vars set, submissions are logged
+  to the server console instead of emailed** — convenient for local dev,
+  but means production needs real credentials to actually deliver mail:
+  `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`,
+  `CONTACT_TO_EMAIL` (see `.env.example`).
+
 ## Analytics
 
 `/admin/analytics` shows real visitor traffic on the public site — views over

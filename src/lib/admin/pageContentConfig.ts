@@ -205,6 +205,31 @@ export const PAGE_CONTENT_CONFIG: Record<string, PageContentConfig> = {
       { key: "headline", label: "Headline", type: "text", default: "Videos" },
     ],
   },
+  contact: {
+    label: "Contact",
+    fields: [
+      { key: "eyebrow", label: "Eyebrow", type: "text", default: "Get in touch" },
+      { key: "headline", label: "Headline", type: "text", default: "Contact" },
+      {
+        key: "intro",
+        label: "Intro",
+        type: "textarea",
+        default: "Questions about the team, media enquiries or accreditation — reach the right department below.",
+      },
+      { key: "address", label: "Address", type: "textarea", default: "Bahrain Olympic Committee\nKingdom of Bahrain" },
+      { key: "phone", label: "Phone", type: "text", default: "+973 1234 5678" },
+      { key: "general_email", label: "General enquiries email", type: "text", default: "info@boc.bh" },
+      { key: "media_email", label: "Media enquiries email", type: "text", default: "media@boc.bh" },
+      { key: "athletes_email", label: "Athletes & federations email", type: "text", default: "athletes@boc.bh" },
+      {
+        key: "map_embed_url",
+        label: "Map embed URL",
+        type: "text",
+        default: "https://maps.google.com/maps?q=Bahrain%20Olympic%20Committee&t=&z=15&ie=UTF8&iwloc=&output=embed",
+        hint: "The src URL for an embedded Google Maps iframe — from Google Maps: Share → Embed a map → copy the src=\"...\" value.",
+      },
+    ],
+  },
   events: {
     label: "Events",
     fields: [

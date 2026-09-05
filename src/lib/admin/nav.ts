@@ -65,6 +65,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
       { href: "/admin/pages/news", label: "News", icon: FileText },
       { href: "/admin/pages/videos", label: "Videos", icon: FileText },
       { href: "/admin/pages/events", label: "Events", icon: FileText },
+      { href: "/admin/pages/contact", label: "Contact", icon: FileText },
     ],
   },
   {
