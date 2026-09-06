@@ -3,6 +3,42 @@
 -- and production edition ids/slugs have diverged (production has more editions,
 -- and this one was renamed there, which regenerated its slug).
 BEGIN;
+
+-- Media library catalog rows (so these show up under Admin > Media, matching
+-- what the normal browser-upload flow records at upload time).
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/2471da43-8344-4fca-ba83-33181b97bdc1.jpg', 'image/jpeg', 'عباس علي يوسف.jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/5bed0f47-b698-455f-aa1f-02cd4d9d1c8d.jpg', 'image/jpeg', 'عبد الرحمن محمود (4).jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/316cc01f-8ea7-41cd-9674-3fe957631370.jpg', 'image/jpeg', 'عبد الغني محمد حامد - لاعب (2).jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/bfe916be-37f8-4da3-ae84-eb1ae8d0299c.png', 'image/png', '9afea11f-b24a-49bd-aa55-1353b5f4150b.png') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/945aa419-d6b9-4720-b41d-3a24f95777b7.jpg', 'image/jpeg', 'عبدالرؤوف رشيد.jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/e4462348-79ff-456b-903f-0715b219925b.png', 'image/png', 'be87fee6-270c-4c0c-a6c9-8ec8c65ac2fc.png') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/8cc52888-c4b4-49ff-83d8-9e93b4de90aa.png', 'image/png', 'ثثبثبث.png') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/3cb33b93-f028-487d-b162-f1fa7fbd7f9b.jpg', 'image/jpeg', 'علاء صامويل.jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/6acd07a8-e768-4e54-8872-baee5afd33b8.jpg', 'image/jpeg', 'البرت روب (2).jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/0ed9e830-04fa-4d41-8426-e2f43d9f08f1.jpg', 'image/jpeg', 'علي حاجي (1).jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/5e17b42e-078a-4f18-9bc2-ab2916b8bc8e.jpg', 'image/jpeg', 'بيرهانو يماتاو- لاعب.jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/3afea90c-6de2-41e7-a9cc-d24a358a70f1.jpg', 'image/jpeg', 'ابراهيم سايمون عمر.jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/10be6735-6c66-4532-9a96-dee5842c86de.png', 'image/png', '00a51ce5-9a2f-4c07-80b5-124640df5515.png') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/ae99fab2-74e9-4061-8993-1650374b4f26.jpg', 'image/jpeg', 'الحسن عباسي.jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/0e9f3de8-de1d-4f34-a933-d6e8bf816bc6.jpg', 'image/jpeg', 'هاجر العميري.jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/c6f09bd7-d2ed-4a0c-882b-b658a6a44ef3.png', 'image/png', 'b1fc6ba4-1d42-4fe3-8e75-49f388252215.png') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/daecfd95-179f-49cf-aba4-cfdf25aaabdf.jpg', 'image/jpeg', 'ليلى كمال - لاعبة....jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/7625a3f4-f7e1-490b-bd6b-e3e44ea2ff1b.png', 'image/png', 'عيسى موسى.png') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/2add2c31-40ec-4879-b480-f989df3ddee5.jpg', 'image/jpeg', 'نيللي جيبكوزقي - ص.jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/fcd9d814-4b9f-405a-b623-012fd28f977a.jpg', 'image/jpeg', 'أولكيمي موجيدات.jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/bd4cda77-c3cc-47b1-875d-102209793e60.jpg', 'image/jpeg', 'Raihanah Anuoluwapo R. Garoubah PHOTO.jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/6c96b097-92fe-4327-a86f-91ed05e238fd.jpg', 'image/jpeg', 'روزي جليمو (2).jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/8fb5e929-0652-4607-b051-e99a7aee1003.jpg', 'image/jpeg', 'روث جيبيت (2).jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/074631d5-c2a5-4ba5-bb41-41acc71fd132.jpg', 'image/jpeg', 'سالم سالم ناصر - لاعب.jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/b86efccd-1ecf-404b-991b-d379c374d03d.jpg', 'image/jpeg', 'سلوى عيد ناصر.jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/d79f577c-3fa6-45b9-bfc6-04e332647b17.png', 'image/png', '5cdea629-fb20-4b3f-b815-08162e5f99e4.png') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/4c3061fe-c790-4050-8b00-08bb06479b18.png', 'image/png', '0abccafa-a84f-4871-b2d5-2cb664048ee3.png') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/0de2117c-c6ba-4e4f-8501-4c6d48745d9e.png', 'image/png', '2251e0bb-6125-4f80-9e61-6b7b0199b691.png') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/60c884d3-d167-43a6-af22-15baadad7531.png', 'image/png', '3173f153-9fec-4b5e-a4ea-306f8161b275.png') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/f165f310-f3fe-4531-b2d5-41d85edc84c4.jpg', 'image/jpeg', 'زينب علي محمد - لاعبة.jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/ef74dcf7-f02c-44e6-bc80-b08aab1e00a0.jpg', 'image/jpeg', 'زينب موسى.jpg') ON CONFLICT (url) DO NOTHING;
+INSERT INTO media (url, content_type, filename) VALUES ('https://team-bahrain-uploads.s3.us-east-2.amazonaws.com/uploads/fede2db5-dbbc-443e-8c5c-b7866036b95b.jpg', 'image/jpeg', 'زهير عواد الصورة...jpg') ON CONFLICT (url) DO NOTHING;
+
 DO $$
 DECLARE target_id INT;
 BEGIN
