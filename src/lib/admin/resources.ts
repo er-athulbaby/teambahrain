@@ -310,7 +310,6 @@ export const RESOURCES: Record<string, ResourceConfig> = {
       { key: "name", label: "Name", type: "text", required: true },
       { key: "sport", label: "Sport", type: "sport", required: true },
       { key: "photo_path", label: "Photo", type: "image" },
-      { key: "sort_order", label: "Sort order", type: "number" },
     ],
   },
   game_edition_events: {

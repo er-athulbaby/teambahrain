@@ -64,7 +64,7 @@ export async function getEditionDelegates(editionId: number) {
 export async function getEditionPlayers(editionId: number) {
   const { rows } = await query<GameEditionPlayer>(
     `SELECT id, name, sport, photo_path FROM game_edition_players
-     WHERE game_edition_id = $1 ORDER BY sort_order ASC`,
+     WHERE game_edition_id = $1 ORDER BY name ASC`,
     [editionId]
   );
   return rows;
