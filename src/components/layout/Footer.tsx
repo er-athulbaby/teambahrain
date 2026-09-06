@@ -1,7 +1,12 @@
 import Image from "next/image";
 import { FOOTER_COLUMNS } from "@/lib/site.config";
+import SocialIcons from "./SocialIcons";
 
-export default function Footer() {
+export default function Footer({
+  socialLinks = {},
+}: {
+  socialLinks?: Partial<Record<string, string>>;
+}) {
   return (
     <footer className="bg-ink text-white">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-10 sm:py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.2fr_repeat(3,0.8fr)] gap-10">
@@ -24,6 +29,7 @@ export default function Footer() {
             <br />
             Kingdom of Bahrain
           </span>
+          <SocialIcons links={socialLinks} />
         </div>
         {FOOTER_COLUMNS.map((col) => (
           <div key={col.title} className="flex flex-col gap-3.5">

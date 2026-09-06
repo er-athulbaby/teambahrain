@@ -42,6 +42,17 @@ export const PAGE_CONTENT_CONFIG: Record<string, PageContentConfig> = {
         default: "2028-07-14",
         hint: "The countdown on the Home and Events pages counts down to midnight UTC on this date.",
       },
+      {
+        key: "instagram_url",
+        label: "Instagram URL",
+        type: "text",
+        default: "",
+        hint: "Shown as an icon in the footer. Leave blank to hide it.",
+      },
+      { key: "x_url", label: "X (Twitter) URL", type: "text", default: "", hint: "Leave blank to hide it." },
+      { key: "facebook_url", label: "Facebook URL", type: "text", default: "", hint: "Leave blank to hide it." },
+      { key: "youtube_url", label: "YouTube URL", type: "text", default: "", hint: "Leave blank to hide it." },
+      { key: "tiktok_url", label: "TikTok URL", type: "text", default: "", hint: "Leave blank to hide it." },
     ],
   },
   home: {

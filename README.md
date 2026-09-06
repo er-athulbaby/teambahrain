@@ -270,6 +270,22 @@ state) render the thumbnail as-is when a row has no `video_path` — identical
 to the site's original thumbnail-only behavior — and swap in a real
 `<video controls autoPlay>` element on click when one is set.
 
+## Social icons (footer)
+
+Five platform icons (Instagram, X, Facebook, YouTube, TikTok) can appear in
+the footer's brand column, each linking out to a URL set at
+`/admin/pages/site` — same `page_content` mechanism as the rest of the site's
+copy. **A platform's icon only shows once its URL field is filled in**; leave
+one blank to hide it rather than link to a dead/placeholder page.
+
+`SocialIcons.tsx` (`src/components/layout/SocialIcons.tsx`) inlines each
+brand mark as a small SVG rather than pulling from an icon package —
+`lucide-react` dropped all brand/logo icons a while back. The path data is
+copied once from [Simple Icons](https://simpleicons.org) (CC0), the same
+self-hosting approach as the flag SVGs under `public/flags/`. To add another
+platform: drop its path into `ICON_PATHS`, add it to `PLATFORMS`, and add a
+matching `..._url` field to the `site` config in `pageContentConfig.ts`.
+
 ## Instagram (Home page)
 
 The home page's Instagram section embeds real Instagram reels rather than

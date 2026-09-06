@@ -35,7 +35,15 @@ export default async function SiteLayout({
       />
       <Ticker items={tickerItems} />
       <div className="flex-1">{children}</div>
-      <Footer />
+      <Footer
+        socialLinks={{
+          instagram: site.instagram_url,
+          x: site.x_url,
+          facebook: site.facebook_url,
+          youtube: site.youtube_url,
+          tiktok: site.tiktok_url,
+        }}
+      />
     </>
   );
 }
