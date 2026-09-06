@@ -51,7 +51,7 @@ export default function Header({
               priority
             />
             <span className="flex flex-col gap-0.5">
-              <span className="font-semibold text-[21px] leading-none capitalize whitespace-nowrap text-ink">
+              <span className="font-heading font-semibold text-[21px] leading-none capitalize whitespace-nowrap text-ink">
                 Team Bahrain
               </span>
               <span className="font-medium text-[10px] leading-none tracking-[0.18em] uppercase text-ink-700 whitespace-nowrap">

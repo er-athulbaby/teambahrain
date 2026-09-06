@@ -20,7 +20,7 @@
   --color-accent-100: #fff2ef;
   --color-accent-800: #7c1405;
 
-  --font-heading: var(--font-quicksand), system-ui, sans-serif;
+  --font-heading: var(--font-cocon), var(--font-quicksand), system-ui, sans-serif;
   --font-body: var(--font-quicksand), system-ui, sans-serif;
 
   --radius-none: 0px;

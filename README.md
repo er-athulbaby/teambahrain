@@ -22,6 +22,11 @@ plus an admin panel for managing all of it.
 - AWS S3 for image/video storage, uploaded directly from the browser via presigned URLs
 - `lucide-react` for admin icons, `recharts` for the analytics chart
 - Self-hosted, privacy-conscious visitor analytics (no third-party tracker, no IP storage)
+- Cocon (`src/app/fonts/cocon.ttf`, self-hosted via `next/font/local`) as the heading/display
+  face — the BOC's own brand/logo font, supplied by the user, not a public font; Quicksand
+  (Google Font) remains the body face. Wired in `src/app/layout.tsx` and
+  `--font-heading`/`--font-cocon` in `globals.css`; every `h1`–`h6` picks it up automatically,
+  plus the header/footer "Team Bahrain" wordmark text via the `font-heading` utility.
 
 ## Getting started
 

@@ -6,13 +6,20 @@ export default function Footer() {
     <footer className="bg-ink text-white">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-10 sm:py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.2fr_repeat(3,0.8fr)] gap-10">
         <div className="flex flex-col gap-4.5">
-          <Image
-            src="/tb-footer-logo.png"
-            alt="Team Bahrain — Bahrain Olympic Committee"
-            width={200}
-            height={96}
-            className="h-24 w-auto block self-start"
-          />
+          <div className="flex items-center gap-3.5">
+            <span className="bg-white p-1.5 flex items-center justify-center flex-none">
+              <Image
+                src="/boc-logo.png"
+                alt="Bahrain Olympic Committee"
+                width={56}
+                height={56}
+                className="h-14 w-auto block"
+              />
+            </span>
+            <span className="font-heading font-semibold text-2xl leading-none capitalize whitespace-nowrap text-white">
+              Team Bahrain
+            </span>
+          </div>
           <span className="text-sm leading-relaxed text-ink-400">
             Bahrain Olympic Committee
             <br />
