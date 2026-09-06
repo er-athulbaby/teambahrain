@@ -12,7 +12,8 @@
     "seed:page-content": "tsx scripts/seed-page-content.ts",
     "seed:games": "tsx scripts/seed-games.ts",
     "backfill:media": "tsx scripts/backfill-media.ts",
-    "import:aichi-nagoya-events": "tsx scripts/import-aichi-nagoya-events.ts"
+    "import:aichi-nagoya-events": "tsx scripts/import-aichi-nagoya-events.ts",
+    "import:athletics-players": "tsx scripts/import-athletics-players.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1124.0",
