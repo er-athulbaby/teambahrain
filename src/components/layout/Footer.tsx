@@ -15,10 +15,10 @@ export default function Footer({
             <Image
               src="/boc-logo-white.svg"
               alt="Bahrain Olympic Committee"
-              width={30}
-              height={64}
+              width={45}
+              height={96}
               unoptimized
-              className="h-16 w-auto block flex-none"
+              className="h-24 w-auto block flex-none"
             />
             <span className="font-heading font-semibold text-2xl leading-none capitalize whitespace-nowrap text-white">
               Team Bahrain
