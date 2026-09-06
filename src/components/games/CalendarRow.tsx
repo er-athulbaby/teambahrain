@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
+import { getCountdownLabel } from "@/lib/countdownLabel";
 import type { GameEdition } from "@/types";
 
 function DateBox({ date, year }: { date: string | null; year: number | null }) {
@@ -30,6 +31,7 @@ function DateBox({ date, year }: { date: string | null; year: number | null }) {
 export default function CalendarRow({ edition }: { edition: GameEdition }) {
   const hasEnd = Boolean(edition.end_date || edition.end_year);
   const isLive = edition.status === "live";
+  const countdown = getCountdownLabel(edition);
   const className =
     "flex flex-col sm:flex-row sm:items-center gap-5 py-8 border-b-2 border-ink last:border-0 text-ink hover:bg-surface";
 
@@ -64,6 +66,16 @@ export default function CalendarRow({ edition }: { edition: GameEdition }) {
         <span className="text-sm text-ink-700">{edition.city}</span>
         <h2 className="m-0 font-bold text-xl sm:text-2xl uppercase leading-tight">{edition.name}</h2>
       </div>
+
+      {countdown && (
+        <span
+          className={`inline-flex w-fit sm:ml-auto flex-none px-3 py-1.5 font-semibold text-xs tracking-[0.1em] uppercase ${
+            countdown.live ? "bg-accent text-white" : "border-2 border-ink text-ink-700"
+          }`}
+        >
+          {countdown.live ? "Live now" : `${countdown.daysToGo} day${countdown.daysToGo === 1 ? "" : "s"} to go`}
+        </span>
+      )}
     </>
   );
 

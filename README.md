@@ -419,6 +419,13 @@ non-`visible`, since the browser then forces `overflow-y` to `auto` too).
   page's own Calendar preview (`CalendarPreview.tsx`, next 3 upcoming,
   gated by `show_calendar_section`) reuses it rather than duplicating the
   JSX.
+- Each calendar row shows a "N days to go" / "Live now" badge, computed by
+  `getCountdownLabel()` (`src/lib/countdownLabel.ts`) — hidden entirely once
+  the edition's end date has passed. Year-only editions (no exact date) are
+  estimated from Jan 1 of the start year / Dec 31 of the end year, per the
+  user's choice when asked; an edition with only a start year and no end
+  year treats the whole calendar year as its window rather than showing a
+  stale countdown for the rest of the year.
 - `game_edition_events` has an optional `opponent_country` (ISO 3166-1
   alpha-2, e.g. `"PH"`). `EventsList.tsx` shows Bahrain's own flag on
   *every* event card, and — only when `opponent_country` is set — a "vs"
