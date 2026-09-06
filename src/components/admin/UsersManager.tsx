@@ -11,11 +11,18 @@ type User = {
   name: string;
   email: string;
   username: string;
-  role: "admin" | "editor";
+  role: "admin" | "editor" | "media" | "sports_editor";
   created_at: string;
 };
 
 const emptyForm = { name: "", email: "", username: "", password: "", role: "editor" as User["role"] };
+
+const ROLE_LABELS: Record<User["role"], string> = {
+  admin: "admin",
+  editor: "editor",
+  media: "media",
+  sports_editor: "sports editor",
+};
 
 const inputClass =
   "w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100";
@@ -127,6 +134,8 @@ export default function UsersManager({ currentUserId }: { currentUserId: string 
               >
                 <option value="editor">Editor — content only</option>
                 <option value="admin">Admin — full access</option>
+                <option value="media">Media — Photos, Videos & Media library only</option>
+                <option value="sports_editor">Sports Editor — Games editions & Media library only</option>
               </select>
             </div>
           </div>
@@ -169,7 +178,7 @@ export default function UsersManager({ currentUserId }: { currentUserId: string 
                   </td>
                   <td className="px-4 py-2.5 text-slate-500">{u.username}</td>
                   <td className="px-4 py-2.5">
-                    <Badge tone={u.role === "admin" ? "indigo" : "slate"}>{u.role}</Badge>
+                    <Badge tone={u.role === "admin" ? "indigo" : "slate"}>{ROLE_LABELS[u.role]}</Badge>
                   </td>
                   <td className="px-4 py-2.5 text-right">
                     <button

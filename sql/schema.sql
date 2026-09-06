@@ -130,7 +130,10 @@ CREATE TABLE admins (
   email TEXT NOT NULL UNIQUE,
   username TEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
-  role TEXT NOT NULL DEFAULT 'admin' CHECK (role IN ('admin', 'editor')),
+  -- media: Photos/Videos/Media library only, no delete (upload-focused role).
+  -- sports_editor: Games editions (+ all its manage sub-resources) + Media
+  -- library only. See src/lib/admin/permissions.ts for the enforcement.
+  role TEXT NOT NULL DEFAULT 'admin' CHECK (role IN ('admin', 'editor', 'media', 'sports_editor')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 

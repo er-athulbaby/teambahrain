@@ -22,7 +22,8 @@ export async function POST(request: Request) {
     return errorResponse("Name, email, username and password are all required");
   }
   if (password.length < 8) return errorResponse("Password must be at least 8 characters");
-  if (role !== "admin" && role !== "editor") return errorResponse("Role must be admin or editor");
+  const validRoles = ["admin", "editor", "media", "sports_editor"];
+  if (!validRoles.includes(role)) return errorResponse(`Role must be one of: ${validRoles.join(", ")}`);
 
   const passwordHash = await bcrypt.hash(password, 10);
 

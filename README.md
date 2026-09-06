@@ -88,12 +88,32 @@ plus an admin panel for managing all of it.
 ## Admin panel
 
 `/admin` is protected by `src/proxy.ts` (Next 16's renamed `middleware.ts`) —
-unauthenticated visitors are redirected to `/login`. `admins.role` is either
-`"admin"` (full access) or `"editor"` (all content — resources, medals, page
-content — but not Users, Analytics, or Site settings; enforced both in
-`requireAdmin({ adminOnly: true })` on the relevant API routes and as a
-`redirect()` guard in the page components themselves, and the sidebar
-(`AdminSidebar.tsx`) hides those nav items for editors). Manage accounts at
+unauthenticated visitors are redirected to `/login`. `admins.role` is one of
+four values:
+
+- `"admin"` — full access.
+- `"editor"` — all content (resources, medals, page content) but not Users,
+  Analytics, or Site settings; enforced both in
+  `requireAdmin({ adminOnly: true })` on the relevant API routes and as a
+  `redirect()` guard in the page components themselves, and the sidebar
+  (`AdminSidebar.tsx`) hides those nav items for editors.
+- `"media"` — **only** Photos, Videos and the Media library; can add/edit but
+  not delete (an upload-focused role).
+- `"sports_editor"` — **only** Games editions (including every sub-resource
+  inside an edition's manage page — Delegation/Sports/Players/Events/Medals)
+  and the Media library; full CRUD there.
+
+`media` and `sports_editor` are enforced by `src/lib/admin/permissions.ts` — a
+small allowlist per role (`pathPrefixes` for pages, `resourceKeys` for the
+generic API, `noDeleteResourceKeys`/`canDeleteMedia` for the delete
+restriction) — checked in **two** places so hiding a nav item is never the
+only thing standing between a restricted role and something it shouldn't
+touch: `proxy.ts` blocks the page route itself (redirecting to
+`landingPathFor(role)`, e.g. `/admin/photos` for `media`), and
+`requireAdmin({ resourceKey })` blocks the underlying `/api/admin/[resource]`
+calls even if someone hits the API directly. The two roles skip the
+dashboard entirely — `AdminSidebar.tsx` hides its link and `proxy.ts`
+redirects `/admin` itself to the role's landing page. Manage accounts at
 `/admin/users` (`UsersManager.tsx`); password resets still go through
 `npm run seed:admin` rather than a UI flow.
 

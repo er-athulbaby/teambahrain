@@ -2,9 +2,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { ArrowRight, ImageOff, Images, Loader2, Pencil, Trash2, UploadCloud, VideoOff } from "lucide-react";
 import type { ResourceConfig } from "@/lib/admin/resources";
 import { uploadFile } from "@/lib/admin/uploadClient";
+import { canDeleteResource } from "@/lib/admin/permissions";
 import Card from "@/components/admin/ui/Card";
 import Button from "@/components/admin/ui/Button";
 import Badge from "@/components/admin/ui/Badge";
@@ -31,6 +33,8 @@ export default function AdminResourceManager({
   /** Required when the resource declares a `scopeField` (e.g. a parent Games edition's id). */
   scopeValue?: string | number;
 }) {
+  const { data: session } = useSession();
+  const canDelete = !session || canDeleteResource(session.user.role, resource.key);
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<Record<string, unknown>>(() => emptyForm(resource));
@@ -419,13 +423,15 @@ export default function AdminResourceManager({
                         <Pencil size={13} strokeWidth={1.75} />
                         Edit
                       </button>
-                      <button
-                        onClick={() => handleDelete(row.id)}
-                        className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-red-600"
-                      >
-                        <Trash2 size={13} strokeWidth={1.75} />
-                        Delete
-                      </button>
+                      {canDelete && (
+                        <button
+                          onClick={() => handleDelete(row.id)}
+                          className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-red-600"
+                        >
+                          <Trash2 size={13} strokeWidth={1.75} />
+                          Delete
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

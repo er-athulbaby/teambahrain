@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { ImageOff, Loader2, Trash2, UploadCloud } from "lucide-react";
 import { uploadFile } from "@/lib/admin/uploadClient";
+import { canDeleteMediaLibraryItem } from "@/lib/admin/permissions";
 import Card from "@/components/admin/ui/Card";
 
 interface MediaItem {
@@ -14,6 +16,8 @@ interface MediaItem {
 }
 
 export default function MediaLibrary() {
+  const { data: session } = useSession();
+  const canDelete = !session || canDeleteMediaLibraryItem(session.user.role);
   const [items, setItems] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -110,13 +114,15 @@ export default function MediaLibrary() {
               <p className="text-xs text-slate-600 truncate" title={item.filename}>
                 {item.filename}
               </p>
-              <button
-                onClick={() => handleDelete(item)}
-                className="inline-flex items-center justify-center gap-1 text-xs text-slate-500 hover:text-red-600"
-              >
-                <Trash2 size={12} strokeWidth={1.75} />
-                Delete
-              </button>
+              {canDelete && (
+                <button
+                  onClick={() => handleDelete(item)}
+                  className="inline-flex items-center justify-center gap-1 text-xs text-slate-500 hover:text-red-600"
+                >
+                  <Trash2 size={12} strokeWidth={1.75} />
+                  Delete
+                </button>
+              )}
             </Card>
           ))}
         </div>

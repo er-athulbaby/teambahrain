@@ -3,7 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { pool } from "@/lib/db";
 
-export type AdminRole = "admin" | "editor";
+export type AdminRole = "admin" | "editor" | "media" | "sports_editor";
 
 declare module "next-auth" {
   interface Session {

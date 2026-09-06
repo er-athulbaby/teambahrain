@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { pool, query, queryOne } from "@/lib/db";
 import { requireAdmin, errorResponse, isUniqueViolation } from "@/lib/admin/api";
+import { isRestrictedRole } from "@/lib/admin/permissions";
 
 export async function GET() {
-  const { error } = await requireAdmin();
+  const { session, error } = await requireAdmin();
   if (error) return error;
+  if (isRestrictedRole(session.user.role)) return errorResponse("Not permitted for this role", 403);
 
   const games = await query(`SELECT id, year, city, sort_order FROM olympic_games ORDER BY sort_order ASC`);
   const medals = await query(
@@ -20,8 +22,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { error } = await requireAdmin();
+  const { session, error } = await requireAdmin();
   if (error) return error;
+  if (isRestrictedRole(session.user.role)) return errorResponse("Not permitted for this role", 403);
 
   const { year, city } = await request.json();
   if (!year || !city) return errorResponse("Year and city are required");

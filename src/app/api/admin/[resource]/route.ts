@@ -4,10 +4,11 @@ import { getResource } from "@/lib/admin/resources";
 import { listRows, createRow } from "@/lib/admin/crud";
 
 export async function GET(request: Request, { params }: { params: Promise<{ resource: string }> }) {
-  const { error } = await requireAdmin();
+  const resourceKey = (await params).resource;
+  const { error } = await requireAdmin({ resourceKey });
   if (error) return error;
 
-  const resource = getResource((await params).resource);
+  const resource = getResource(resourceKey);
   if (!resource) return errorResponse("Unknown resource", 404);
 
   const scope = new URL(request.url).searchParams.get("scope") ?? undefined;
@@ -18,10 +19,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ reso
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ resource: string }> }) {
-  const { error } = await requireAdmin();
+  const resourceKey = (await params).resource;
+  const { error } = await requireAdmin({ resourceKey });
   if (error) return error;
 
-  const resource = getResource((await params).resource);
+  const resource = getResource(resourceKey);
   if (!resource) return errorResponse("Unknown resource", 404);
 
   const scope = new URL(request.url).searchParams.get("scope") ?? undefined;

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { LogOut, Flame } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { ADMIN_NAV } from "@/lib/admin/nav";
+import { canAccessAdminPath } from "@/lib/admin/permissions";
 import type { AdminRole } from "@/auth";
 
 export default function AdminSidebar({
@@ -20,7 +21,9 @@ export default function AdminSidebar({
 
   const visibleNav = ADMIN_NAV.map((group) => ({
     ...group,
-    items: group.items.filter((item) => !item.adminOnly || role === "admin"),
+    items: group.items.filter(
+      (item) => (!item.adminOnly || role === "admin") && canAccessAdminPath(role, item.href)
+    ),
   })).filter((group) => group.items.length > 0);
 
   return (

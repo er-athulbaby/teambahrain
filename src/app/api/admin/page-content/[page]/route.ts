@@ -3,14 +3,16 @@ import { pool } from "@/lib/db";
 import { requireAdmin, errorResponse } from "@/lib/admin/api";
 import { getPageConfig } from "@/lib/admin/pageContentConfig";
 import { getPageContent } from "@/lib/data/pageContent";
+import { isRestrictedRole } from "@/lib/admin/permissions";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ page: string }> }) {
   const { page } = await params;
   const config = getPageConfig(page);
   if (!config) return errorResponse("Unknown page", 404);
 
-  const { error } = await requireAdmin({ adminOnly: config.adminOnly });
+  const { session, error } = await requireAdmin({ adminOnly: config.adminOnly });
   if (error) return error;
+  if (isRestrictedRole(session.user.role)) return errorResponse("Not permitted for this role", 403);
 
   const values = await getPageContent(page);
   return NextResponse.json(values);
@@ -21,8 +23,9 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ pa
   const config = getPageConfig(page);
   if (!config) return errorResponse("Unknown page", 404);
 
-  const { error } = await requireAdmin({ adminOnly: config.adminOnly });
+  const { session, error } = await requireAdmin({ adminOnly: config.adminOnly });
   if (error) return error;
+  if (isRestrictedRole(session.user.role)) return errorResponse("Not permitted for this role", 403);
 
   const body = await request.json();
 

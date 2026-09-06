@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 import { requireAdmin, errorResponse } from "@/lib/admin/api";
+import { isRestrictedRole } from "@/lib/admin/permissions";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { error } = await requireAdmin();
+  const { session, error } = await requireAdmin();
   if (error) return error;
+  if (isRestrictedRole(session.user.role)) return errorResponse("Not permitted for this role", 403);
 
   const { id } = await params;
   const { sport, event_name, athlete_name, medal } = await request.json();
@@ -21,8 +23,9 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 }
 
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { error } = await requireAdmin();
+  const { session, error } = await requireAdmin();
   if (error) return error;
+  if (isRestrictedRole(session.user.role)) return errorResponse("Not permitted for this role", 403);
 
   const { id } = await params;
   await pool.query(`DELETE FROM olympic_medals WHERE id = $1`, [id]);
