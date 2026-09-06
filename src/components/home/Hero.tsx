@@ -35,16 +35,16 @@ export default function Hero({
           <Countdown targetDate={targetDate} />
           <div className="flex gap-3 flex-wrap">
             <Link
-              href="/athletes"
+              href={content.hero_cta1_url}
               className="bg-accent text-white border-2 border-accent px-5 py-3.5 font-semibold text-[13px] tracking-[0.12em] uppercase text-left min-w-[210px] hover:bg-accent-600 hover:border-accent-600"
             >
-              Meet the squad →
+              {content.hero_cta1_label}
             </Link>
             <Link
-              href="/events"
+              href={content.hero_cta2_url}
               className="border-2 border-ink px-5 py-3.5 font-semibold text-[13px] tracking-[0.12em] uppercase text-left min-w-[210px] hover:bg-surface"
             >
-              Competition calendar
+              {content.hero_cta2_label}
             </Link>
           </div>
         </div>

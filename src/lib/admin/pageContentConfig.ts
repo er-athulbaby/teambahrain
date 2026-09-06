@@ -75,6 +75,10 @@ export const PAGE_CONTENT_CONFIG: Record<string, PageContentConfig> = {
       },
       { key: "hero_photo", label: "Hero photo", type: "image", default: "/images/samples/tb-hero.png" },
       { key: "hero_caption", label: "Hero photo caption", type: "text", default: "Paris 2024 · Stade de France" },
+      { key: "hero_cta1_label", label: "Hero button 1 label", type: "text", default: "Meet the squad →" },
+      { key: "hero_cta1_url", label: "Hero button 1 link", type: "text", default: "/athletes" },
+      { key: "hero_cta2_label", label: "Hero button 2 label", type: "text", default: "Competition calendar" },
+      { key: "hero_cta2_url", label: "Hero button 2 link", type: "text", default: "/events" },
       { key: "close_eyebrow", label: "Closing band eyebrow", type: "text", default: "Support the movement" },
       {
         key: "close_headline",
