@@ -36,7 +36,8 @@ export async function getLiveEditions() {
 // directly by URL, same as a fully hidden "draft" one.
 export async function getEditionBySlug(slug: string) {
   return queryOne<GameEdition>(
-    `SELECT id, slug, name, edition_type, city, start_date, start_year, end_date, end_year, logo_path, status
+    `SELECT id, slug, name, edition_type, city, start_date, start_year, end_date, end_year, logo_path, status,
+            gold_medal_image, silver_medal_image, bronze_medal_image
      FROM game_editions WHERE slug = $1 AND status = 'live'`,
     [slug]
   );

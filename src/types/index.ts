@@ -126,6 +126,9 @@ export interface GameEdition {
   /** draft: hidden. announced: shows in listings but isn't a link yet
    * (no micro-site content). live: fully clickable. */
   status: "draft" | "announced" | "live";
+  gold_medal_image: string | null;
+  silver_medal_image: string | null;
+  bronze_medal_image: string | null;
 }
 
 export interface GameEditionSport {

@@ -247,6 +247,14 @@ export const RESOURCES: Record<string, ResourceConfig> = {
       { key: "end_year", label: "End year", type: "year", hiddenInForm: true },
       { key: "logo_path", label: "Logo", type: "image" },
       {
+        key: "gold_medal_image",
+        label: "Gold medal image",
+        type: "image",
+        hint: "Shown on this edition's Medals tab. Each Games has its own medal design.",
+      },
+      { key: "silver_medal_image", label: "Silver medal image", type: "image" },
+      { key: "bronze_medal_image", label: "Bronze medal image", type: "image" },
+      {
         key: "status",
         label: "Status",
         type: "select",

@@ -186,7 +186,13 @@ CREATE TABLE game_editions (
   -- but isn't a link — no micro-site content yet. live: fully clickable,
   -- same as the old is_published = true.
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'announced', 'live')),
-  sort_order INT NOT NULL DEFAULT 0
+  sort_order INT NOT NULL DEFAULT 0,
+  -- Each Games edition has its own medal design (different ribbon/disc art),
+  -- shown on that edition's Medals tab — not shared across editions like
+  -- game_edition_sports icons are.
+  gold_medal_image TEXT,
+  silver_medal_image TEXT,
+  bronze_medal_image TEXT
 );
 
 CREATE TABLE game_edition_sports (

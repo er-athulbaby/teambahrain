@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getEditionBySlug, getEditionMedals } from "@/lib/data/games";
 import { countMedals } from "@/lib/medals";
@@ -18,10 +19,10 @@ export default async function EditionMedalsPage({ params }: { params: Promise<{ 
   const totals = countMedals(medals);
 
   const cells = [
-    { label: "Gold", value: totals.gold, color: "text-accent" },
-    { label: "Silver", value: totals.silver, color: "text-ink" },
-    { label: "Bronze", value: totals.bronze, color: "text-ink-500" },
-    { label: "Total", value: totals.total, color: "text-ink" },
+    { label: "Gold", value: totals.gold, color: "text-accent", image: edition.gold_medal_image },
+    { label: "Silver", value: totals.silver, color: "text-ink", image: edition.silver_medal_image },
+    { label: "Bronze", value: totals.bronze, color: "text-ink-500", image: edition.bronze_medal_image },
+    { label: "Total", value: totals.total, color: "text-ink", image: null },
   ];
 
   return (
@@ -35,6 +36,15 @@ export default async function EditionMedalsPage({ params }: { params: Promise<{ 
                 i % 2 === 0 ? "border-r-2" : ""
               } ${i < 2 ? "border-b-2" : ""} ${i === 3 ? "lg:border-r-0" : "lg:border-r-2"}`}
             >
+              {c.image && (
+                <Image
+                  src={c.image}
+                  alt={`${c.label} medal — ${edition.name}`}
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 object-contain"
+                />
+              )}
               <span className={`font-bold text-4xl sm:text-[52px] leading-[0.9] tracking-[-0.02em] tabular-nums ${c.color}`}>
                 {c.value}
               </span>

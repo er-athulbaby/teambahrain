@@ -318,6 +318,11 @@ non-`visible`, since the browser then forces `overflow-y` to `auto` too).
   `game_edition_id`. `game_edition_events` covers **both** the Events and
   Results public pages — a row with `result_time`/`result_rank` filled in
   is a result, blank is still upcoming; there's no separate results table.
+- `game_editions` has `gold_medal_image`/`silver_medal_image`/
+  `bronze_medal_image` — each Games has its own medal design, so these
+  live on the edition itself rather than being shared. Shown on that
+  edition's Medals tab (`games/[slug]/medals/page.tsx`) inside the
+  existing Gold/Silver/Bronze/Total tiles, above the count.
 - `start_date`/`end_date` are nullable, each paired with a `start_year`/
   `end_year` fallback for a future edition whose exact dates aren't
   announced yet — exactly one of the pair should be set at a time. This is
