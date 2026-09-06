@@ -20,10 +20,10 @@ export default function RedClose({ content }: { content: Record<string, string> 
         <div className="flex flex-col gap-4.5">
           <p className="m-0 text-[17px] leading-[1.5]">{content.close_body}</p>
           <Link
-            href="/sports"
+            href={content.close_cta_url}
             className="bg-white text-ink border-2 border-white px-5 py-3.5 font-semibold text-[13px] tracking-[0.12em] uppercase self-start hover:bg-surface"
           >
-            Explore the sports →
+            {content.close_cta_label}
           </Link>
         </div>
       </div>

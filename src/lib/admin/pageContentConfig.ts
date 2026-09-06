@@ -93,6 +93,8 @@ export const PAGE_CONTENT_CONFIG: Record<string, PageContentConfig> = {
         type: "textarea",
         default: "Fifteen federations, one development pathway. Follow the squad, or find a club near you.",
       },
+      { key: "close_cta_label", label: "Closing band button label", type: "text", default: "Explore the sports →" },
+      { key: "close_cta_url", label: "Closing band button link", type: "text", default: "/sports" },
       {
         key: "show_figures_strip",
         label: "Show the figures strip (First games / Olympic titles / Federations / Athletes)",
