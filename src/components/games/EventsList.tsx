@@ -95,6 +95,7 @@ export default function EventsList({
                           <span className="inline-flex items-center gap-1.5">
                             <Clock size={14} className="text-accent" />
                             {e.event_time}
+                            <span className="text-ink-400">(Bahrain time)</span>
                           </span>
                         )}
                       </span>
