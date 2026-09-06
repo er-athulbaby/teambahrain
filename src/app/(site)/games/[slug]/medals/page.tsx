@@ -19,9 +19,9 @@ export default async function EditionMedalsPage({ params }: { params: Promise<{ 
   const totals = countMedals(medals);
 
   const cells = [
-    { label: "Gold", value: totals.gold, color: "text-accent", image: edition.gold_medal_image },
-    { label: "Silver", value: totals.silver, color: "text-ink", image: edition.silver_medal_image },
-    { label: "Bronze", value: totals.bronze, color: "text-ink-500", image: edition.bronze_medal_image },
+    { label: "Gold", value: totals.gold, color: "text-[#B8860B]", image: edition.gold_medal_image },
+    { label: "Silver", value: totals.silver, color: "text-[#71797E]", image: edition.silver_medal_image },
+    { label: "Bronze", value: totals.bronze, color: "text-[#A0522D]", image: edition.bronze_medal_image },
     { label: "Total", value: totals.total, color: "text-ink", image: null },
   ];
 
@@ -40,16 +40,16 @@ export default async function EditionMedalsPage({ params }: { params: Promise<{ 
                 <Image
                   src={c.image}
                   alt={`${c.label} medal — ${edition.name}`}
-                  width={72}
-                  height={72}
-                  className="h-16 w-16 sm:h-[72px] sm:w-[72px] object-contain flex-none"
+                  width={104}
+                  height={104}
+                  className="h-20 w-20 sm:h-[104px] sm:w-[104px] object-contain flex-none"
                 />
               )}
               <div className="flex flex-col gap-1.5">
                 <span className={`font-bold text-4xl sm:text-[52px] leading-[0.9] tracking-[-0.02em] tabular-nums ${c.color}`}>
                   {c.value}
                 </span>
-                <span className="font-semibold text-[13px] tracking-[0.14em] uppercase">{c.label}</span>
+                <span className={`font-semibold text-[13px] tracking-[0.14em] uppercase ${c.color}`}>{c.label}</span>
               </div>
             </div>
           ))}
