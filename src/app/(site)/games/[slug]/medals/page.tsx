@@ -32,7 +32,7 @@ export default async function EditionMedalsPage({ params }: { params: Promise<{ 
           {cells.map((c, i) => (
             <div
               key={c.label}
-              className={`py-9 pr-7 flex flex-col gap-2.5 border-divider lg:border-b-0 ${
+              className={`py-9 pr-7 flex items-center gap-5 border-divider lg:border-b-0 ${
                 i % 2 === 0 ? "border-r-2" : ""
               } ${i < 2 ? "border-b-2" : ""} ${i === 3 ? "lg:border-r-0" : "lg:border-r-2"}`}
             >
@@ -40,15 +40,17 @@ export default async function EditionMedalsPage({ params }: { params: Promise<{ 
                 <Image
                   src={c.image}
                   alt={`${c.label} medal — ${edition.name}`}
-                  width={40}
-                  height={40}
-                  className="h-10 w-10 object-contain"
+                  width={72}
+                  height={72}
+                  className="h-16 w-16 sm:h-[72px] sm:w-[72px] object-contain flex-none"
                 />
               )}
-              <span className={`font-bold text-4xl sm:text-[52px] leading-[0.9] tracking-[-0.02em] tabular-nums ${c.color}`}>
-                {c.value}
-              </span>
-              <span className="font-semibold text-[13px] tracking-[0.14em] uppercase">{c.label}</span>
+              <div className="flex flex-col gap-1.5">
+                <span className={`font-bold text-4xl sm:text-[52px] leading-[0.9] tracking-[-0.02em] tabular-nums ${c.color}`}>
+                  {c.value}
+                </span>
+                <span className="font-semibold text-[13px] tracking-[0.14em] uppercase">{c.label}</span>
+              </div>
             </div>
           ))}
         </div>
