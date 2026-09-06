@@ -1,12 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown } from "lucide-react";
-import { NAV_ITEMS } from "@/lib/site.config";
+import { NAV_ITEMS, GALLERY_ITEMS } from "@/lib/site.config";
+import HeaderDropdown from "./HeaderDropdown";
 import MobileNavDrawer from "./MobileNavDrawer";
 
 interface GamesNavEdition {
@@ -23,16 +22,8 @@ export default function Header({
 }) {
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [gamesOpen, setGamesOpen] = useState(false);
-  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
-  const gamesWrapperRef = useRef<HTMLDivElement>(null);
   const gamesActive = pathname.startsWith("/games");
-
-  function openGamesDropdown() {
-    const rect = gamesWrapperRef.current?.getBoundingClientRect();
-    if (rect) setDropdownPos({ top: rect.bottom, left: rect.left });
-    setGamesOpen(true);
-  }
+  const galleryActive = pathname.startsWith("/gallery");
 
   return (
     <>
@@ -61,27 +52,18 @@ export default function Header({
           </Link>
 
           <nav className="hidden md:flex items-stretch gap-0 flex-1 min-w-0 justify-end overflow-x-auto scroll-hidden">
-            {gamesEditions.length > 0 && (
-              <div
-                ref={gamesWrapperRef}
-                className="relative flex-none"
-                onMouseEnter={openGamesDropdown}
-                onMouseLeave={() => setGamesOpen(false)}
-              >
-                <Link
-                  href="/games"
-                  className={`flex flex-col justify-end gap-0 px-[13px] h-full flex-none hover:bg-surface ${
-                    gamesActive ? "text-ink" : "text-ink-700"
-                  }`}
-                >
-                  <span className="font-semibold text-[11px] tracking-[0.12em] uppercase pb-3.5 flex items-center gap-1 whitespace-nowrap">
-                    Games
-                    <ChevronDown size={12} strokeWidth={2} />
-                  </span>
-                  <span className={`h-1 w-full ${gamesActive ? "bg-accent" : "bg-transparent"}`} />
-                </Link>
-              </div>
-            )}
+            <HeaderDropdown
+              label="Games"
+              linkHref="/games"
+              active={gamesActive}
+              items={gamesEditions.map((e) => ({ key: e.slug, href: `/games/${e.slug}`, label: e.name }))}
+            />
+            <HeaderDropdown
+              label="Gallery"
+              linkHref="/gallery/videos"
+              active={galleryActive}
+              items={GALLERY_ITEMS.map((g) => ({ key: g.href, href: g.href, label: g.label }))}
+            />
             {NAV_ITEMS.map((item) => {
               const active = pathname === item.href;
               return (
@@ -114,29 +96,6 @@ export default function Header({
           </button>
         </div>
       </div>
-
-      {gamesOpen &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <div
-            onMouseEnter={openGamesDropdown}
-            onMouseLeave={() => setGamesOpen(false)}
-            className="fixed bg-ground border-2 border-ink min-w-[220px] z-50"
-            style={{ top: dropdownPos.top, left: dropdownPos.left }}
-          >
-            {gamesEditions.map((e) => (
-              <Link
-                key={e.slug}
-                href={`/games/${e.slug}`}
-                onClick={() => setGamesOpen(false)}
-                className="block px-4 py-3 font-semibold text-xs tracking-[0.08em] uppercase text-ink hover:bg-surface border-b-2 border-divider last:border-0"
-              >
-                {e.name}
-              </Link>
-            ))}
-          </div>,
-          document.body
-        )}
 
       <MobileNavDrawer
         open={drawerOpen}

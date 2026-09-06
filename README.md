@@ -286,6 +286,27 @@ self-hosting approach as the flag SVGs under `public/flags/`. To add another
 platform: drop its path into `ICON_PATHS`, add it to `PLATFORMS`, and add a
 matching `..._url` field to the `site` config in `pageContentConfig.ts`.
 
+## Gallery (`/gallery/videos`, `/gallery/photos`)
+
+The header's flat "Videos" link became a "Gallery" dropdown (mirroring the
+"Games" dropdown's hover/portal pattern) with two sub-items: **Video** (the
+existing Videos page, relocated from `/videos`) and **Photo** (new — a flat,
+newest-first grid, no albums, per the user's choice when asked).
+
+- `src/components/layout/HeaderDropdown.tsx` — extracted from the inline
+  Games dropdown markup once Gallery needed the same hover/portal behavior
+  for a second nav item; takes a static `items` list, so it works for both
+  Games' dynamic edition list and Gallery's fixed Video/Photo pair.
+- `photos` table (`image_path`, `caption`, `sort_order`, `created_at`) +
+  `photos` admin resource. `sort_order` exists only because the generic
+  admin list view (`crud.ts`) always orders by it — the public grid orders
+  by `created_at DESC` instead, so there's no "Sort order" field in the
+  admin form.
+- Moving `/videos` → `/gallery/videos` was a plain file move (`git mv`) —
+  the page has no relative imports and `getPageContent("videos")` is keyed
+  by name, not URL, so nothing inside it needed to change. The only other
+  reference to the old URL was `NAV_ITEMS` itself.
+
 ## Instagram (Home page)
 
 The home page's Instagram section embeds real Instagram reels rather than

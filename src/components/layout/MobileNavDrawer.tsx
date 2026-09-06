@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { NAV_ITEMS } from "@/lib/site.config";
+import { NAV_ITEMS, GALLERY_ITEMS } from "@/lib/site.config";
 
 export default function MobileNavDrawer({
   open,
@@ -50,6 +50,21 @@ export default function MobileNavDrawer({
               Games
             </Link>
           )}
+          {GALLERY_ITEMS.map((item) => {
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={onClose}
+                className={`px-5 py-4 border-b-2 border-divider font-semibold text-[13px] tracking-[0.12em] uppercase ${
+                  active ? "text-ink bg-surface" : "text-ink-700"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
           {NAV_ITEMS.map((item) => {
             const active = pathname === item.href;
             return (

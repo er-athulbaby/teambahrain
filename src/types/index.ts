@@ -40,6 +40,12 @@ export interface Video {
   is_feature: boolean;
 }
 
+export interface Photo {
+  id: number;
+  image_path: string;
+  caption: string | null;
+}
+
 export type EventStatusType = "key" | "progress" | "confirmed";
 
 export interface EventItem {

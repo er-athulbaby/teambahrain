@@ -1,8 +1,12 @@
 export const NAV_ITEMS = [
   { href: "/", label: "Home" },
   { href: "/calendar", label: "Calendar" },
-  { href: "/videos", label: "Videos" },
   { href: "/contact", label: "Contact" },
+] as const;
+
+export const GALLERY_ITEMS = [
+  { href: "/gallery/videos", label: "Video" },
+  { href: "/gallery/photos", label: "Photo" },
 ] as const;
 
 export const FOOTER_COLUMNS = [

@@ -220,6 +220,13 @@ export const PAGE_CONTENT_CONFIG: Record<string, PageContentConfig> = {
       { key: "headline", label: "Headline", type: "text", default: "Videos" },
     ],
   },
+  photos: {
+    label: "Photos",
+    fields: [
+      { key: "eyebrow", label: "Eyebrow", type: "text", default: "Team Bahrain in pictures" },
+      { key: "headline", label: "Headline", type: "text", default: "Photos" },
+    ],
+  },
   contact: {
     label: "Contact",
     fields: [

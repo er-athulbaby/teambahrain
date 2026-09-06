@@ -121,6 +121,17 @@ export const RESOURCES: Record<string, ResourceConfig> = {
       { key: "sort_order", label: "Sort order", type: "number" },
     ],
   },
+  photos: {
+    key: "photos",
+    table: "photos",
+    label: "Photo",
+    pluralLabel: "Photos",
+    titleField: "caption",
+    fields: [
+      { key: "image_path", label: "Photo", type: "image", required: true },
+      { key: "caption", label: "Caption", type: "text" },
+    ],
+  },
   events: {
     key: "events",
     table: "events",

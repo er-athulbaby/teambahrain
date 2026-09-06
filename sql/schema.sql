@@ -62,6 +62,18 @@ CREATE TABLE videos (
   sort_order INT NOT NULL DEFAULT 0
 );
 
+-- Gallery > Photo: a flat, newest-first grid (no albums) — see README "Gallery".
+-- sort_order exists only because the generic admin list view (crud.ts) always
+-- orders by it; the public grid orders by created_at instead, so there's no
+-- "Sort order" field exposed in the admin form.
+CREATE TABLE photos (
+  id SERIAL PRIMARY KEY,
+  image_path TEXT NOT NULL,
+  caption TEXT,
+  sort_order INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE TABLE events (
   id SERIAL PRIMARY KEY,
   date DATE NOT NULL,
