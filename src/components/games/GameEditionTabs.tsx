@@ -24,14 +24,14 @@ export default function GameEditionTabs({ slug }: { slug: string }) {
           <Link
             key={tab.segment}
             href={href}
-            className={`flex flex-col justify-end gap-0 px-4 flex-none hover:bg-surface ${
+            className={`relative flex items-center justify-center px-4 py-4 flex-none hover:bg-surface ${
               active ? "text-ink" : "text-ink-700"
             }`}
           >
-            <span className="font-semibold text-[11px] tracking-[0.12em] uppercase pb-3.5 whitespace-nowrap">
+            <span className="font-semibold text-[13px] tracking-[0.12em] uppercase whitespace-nowrap">
               {tab.label}
             </span>
-            <span className={`h-1 w-full ${active ? "bg-accent" : "bg-transparent"}`} />
+            <span className={`absolute left-0 bottom-0 h-1 w-full ${active ? "bg-accent" : "bg-transparent"}`} />
           </Link>
         );
       })}

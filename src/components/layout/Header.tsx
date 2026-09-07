@@ -25,6 +25,24 @@ export default function Header({
   const gamesActive = pathname.startsWith("/games");
   const galleryActive = pathname.startsWith("/gallery");
 
+  function renderNavLink(item: (typeof NAV_ITEMS)[number]) {
+    const active = pathname === item.href;
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        className={`flex flex-col justify-end gap-0 px-[13px] flex-none hover:bg-surface ${
+          active ? "text-ink" : "text-ink-700"
+        }`}
+      >
+        <span className="font-semibold text-[11px] tracking-[0.12em] uppercase pb-3.5 whitespace-nowrap">
+          {item.label}
+        </span>
+        <span className={`h-1 w-full ${active ? "bg-accent" : "bg-transparent"}`} />
+      </Link>
+    );
+  }
+
   return (
     <>
       <div className="border-b-2 border-ink bg-ground sticky top-0 z-50">
@@ -45,13 +63,14 @@ export default function Header({
               <span className="font-heading font-semibold text-[21px] leading-none capitalize whitespace-nowrap text-ink">
                 Team Bahrain
               </span>
-              <span className="font-medium text-[10px] leading-none tracking-[0.18em] uppercase text-ink-700 whitespace-nowrap">
+              <span className="font-medium text-[12px] leading-none tracking-[0.18em] uppercase text-ink-700 whitespace-nowrap">
                 {tagline}
               </span>
             </span>
           </Link>
 
           <nav className="hidden md:flex items-stretch gap-0 flex-1 min-w-0 justify-end overflow-x-auto scroll-hidden">
+            {renderNavLink(NAV_ITEMS[0])}
             <HeaderDropdown
               label="Games"
               linkHref="/games"
@@ -64,25 +83,7 @@ export default function Header({
               active={galleryActive}
               items={GALLERY_ITEMS.map((g) => ({ key: g.href, href: g.href, label: g.label }))}
             />
-            {NAV_ITEMS.map((item) => {
-              const active = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex flex-col justify-end gap-0 px-[13px] flex-none hover:bg-surface ${
-                    active ? "text-ink" : "text-ink-700"
-                  }`}
-                >
-                  <span className="font-semibold text-[11px] tracking-[0.12em] uppercase pb-3.5 whitespace-nowrap">
-                    {item.label}
-                  </span>
-                  <span
-                    className={`h-1 w-full ${active ? "bg-accent" : "bg-transparent"}`}
-                  />
-                </Link>
-              );
-            })}
+            {NAV_ITEMS.slice(1).map(renderNavLink)}
           </nav>
 
           <button

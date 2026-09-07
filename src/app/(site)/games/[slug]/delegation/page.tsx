@@ -22,7 +22,7 @@ function DelegateGrid({ delegates }: { delegates: GameEditionDelegate[] }) {
           />
           <div>
             <h3 className="m-0 font-bold text-base leading-tight uppercase">{d.name}</h3>
-            <p className="m-0 text-sm text-ink-700">{d.title}</p>
+            <p className="m-0 text-base text-ink-700">{d.title}</p>
           </div>
         </article>
       ))}

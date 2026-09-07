@@ -16,6 +16,21 @@ export default function MobileNavDrawer({
 }) {
   if (!open) return null;
 
+  function renderLink(href: string, label: string, active: boolean) {
+    return (
+      <Link
+        key={href}
+        href={href}
+        onClick={onClose}
+        className={`px-5 py-4 border-b-2 border-divider font-semibold text-[13px] tracking-[0.12em] uppercase ${
+          active ? "text-ink bg-surface" : "text-ink-700"
+        }`}
+      >
+        {label}
+      </Link>
+    );
+  }
+
   return (
     <div className="md:hidden fixed inset-0 z-[60]">
       <button
@@ -39,47 +54,10 @@ export default function MobileNavDrawer({
           </button>
         </div>
         <nav className="flex flex-col">
-          {showGames && (
-            <Link
-              href="/games"
-              onClick={onClose}
-              className={`px-5 py-4 border-b-2 border-divider font-semibold text-[13px] tracking-[0.12em] uppercase ${
-                pathname.startsWith("/games") ? "text-ink bg-surface" : "text-ink-700"
-              }`}
-            >
-              Games
-            </Link>
-          )}
-          {GALLERY_ITEMS.map((item) => {
-            const active = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onClose}
-                className={`px-5 py-4 border-b-2 border-divider font-semibold text-[13px] tracking-[0.12em] uppercase ${
-                  active ? "text-ink bg-surface" : "text-ink-700"
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-          {NAV_ITEMS.map((item) => {
-            const active = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onClose}
-                className={`px-5 py-4 border-b-2 border-divider font-semibold text-[13px] tracking-[0.12em] uppercase ${
-                  active ? "text-ink bg-surface" : "text-ink-700"
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
+          {renderLink(NAV_ITEMS[0].href, NAV_ITEMS[0].label, pathname === NAV_ITEMS[0].href)}
+          {showGames && renderLink("/games", "Games", pathname.startsWith("/games"))}
+          {GALLERY_ITEMS.map((item) => renderLink(item.href, item.label, pathname === item.href))}
+          {NAV_ITEMS.slice(1).map((item) => renderLink(item.href, item.label, pathname === item.href))}
         </nav>
       </div>
     </div>
