@@ -1,14 +1,18 @@
 import type { InstagramPost } from "@/types";
 
-function extractInstagramCode(url: string): string | null {
-  const match = url.match(/instagram\.com\/(?:reel|p|tv)\/([A-Za-z0-9_-]+)/);
-  return match ? match[1] : null;
+/** Instagram's embed iframe path must match the link's own type — a regular
+ * post (/p/) embedded via the /reel/ path (or vice versa) renders as a
+ * degraded, broken-looking iframe (seen with a real post whose link wasn't
+ * a Reel), even though the code itself is valid. */
+function parseInstagramUrl(url: string): { type: "reel" | "p" | "tv"; code: string } | null {
+  const match = url.match(/instagram\.com\/(reel|p|tv)\/([A-Za-z0-9_-]+)/);
+  return match ? { type: match[1] as "reel" | "p" | "tv", code: match[2] } : null;
 }
 
 export default function InstagramGrid({ posts }: { posts: InstagramPost[] }) {
   const embeddable = posts
-    .map((p) => ({ id: p.id, code: extractInstagramCode(p.reel_url) }))
-    .filter((p): p is { id: number; code: string } => p.code !== null);
+    .map((p) => ({ id: p.id, parsed: parseInstagramUrl(p.reel_url) }))
+    .filter((p): p is { id: number; parsed: { type: "reel" | "p" | "tv"; code: string } } => p.parsed !== null);
 
   if (embeddable.length === 0) return null;
 
@@ -40,7 +44,7 @@ export default function InstagramGrid({ posts }: { posts: InstagramPost[] }) {
               className="border-2 border-ink bg-ink overflow-hidden aspect-[9/16] max-h-[560px]"
             >
               <iframe
-                src={`https://www.instagram.com/reel/${p.code}/embed/`}
+                src={`https://www.instagram.com/${p.parsed.type}/${p.parsed.code}/embed/`}
                 className="h-full w-full border-0"
                 allowFullScreen
                 scrolling="no"
