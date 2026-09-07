@@ -25,9 +25,7 @@ export default function Footer({
             </span>
           </div>
           <span className="text-sm leading-relaxed text-ink-400">
-            Bahrain Olympic Committee
-            <br />
-            Kingdom of Bahrain
+            Promoting Sportsmanship, Fairness, and Excellence in Bahrain and Beyond
           </span>
           <SocialIcons links={socialLinks} />
         </div>
