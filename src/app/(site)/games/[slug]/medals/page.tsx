@@ -32,7 +32,7 @@ export default async function EditionMedalsPage({ params }: { params: Promise<{ 
           {cells.map((c, i) => (
             <div
               key={c.label}
-              className={`py-9 pr-7 flex items-center gap-5 border-divider lg:border-b-0 ${
+              className={`py-9 px-4 flex items-center justify-center gap-5 border-divider lg:border-b-0 ${
                 i % 2 === 0 ? "border-r-2" : ""
               } ${i < 2 ? "border-b-2" : ""} ${i === 3 ? "lg:border-r-0" : "lg:border-r-2"}`}
             >
@@ -45,7 +45,7 @@ export default async function EditionMedalsPage({ params }: { params: Promise<{ 
                   className="h-20 w-20 sm:h-[104px] sm:w-[104px] object-contain flex-none"
                 />
               )}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col items-center text-center gap-1.5">
                 <span className={`font-bold text-4xl sm:text-[52px] leading-[0.9] tracking-[-0.02em] tabular-nums ${c.color}`}>
                   {c.value}
                 </span>
