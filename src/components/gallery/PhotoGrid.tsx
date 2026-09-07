@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Lightbox, { type LightboxItem } from "./Lightbox";
 import type { Photo } from "@/types";
 
@@ -16,23 +15,19 @@ export default function PhotoGrid({ photos }: { photos: Photo[] }) {
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* Masonry via CSS columns — each photo keeps its own natural aspect
+          ratio (no cropping, no letterbox gaps), since box heights can't be
+          uniform without either cropping content or leaving empty space. */}
+      <div className="columns-1 sm:columns-2 lg:columns-3 gap-8">
         {photos.map((p, i) => (
           <button
             key={p.id}
             type="button"
             onClick={() => setOpenIndex(i)}
-            className="border-2 border-ink bg-ground flex flex-col text-left"
+            className="border-2 border-ink bg-ground flex flex-col text-left w-full mb-8 break-inside-avoid"
           >
-            <span className="relative w-full aspect-[4/3] bg-surface overflow-hidden">
-              <Image
-                src={p.image_path}
-                alt={p.caption ?? ""}
-                fill
-                sizes="(max-width: 1024px) 50vw, 33vw"
-                className="object-contain"
-              />
-            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={p.image_path} alt={p.caption ?? ""} loading="lazy" className="w-full h-auto block" />
             {p.caption && <span className="p-4 text-sm text-ink-700">{p.caption}</span>}
           </button>
         ))}

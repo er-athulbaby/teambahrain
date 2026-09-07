@@ -45,6 +45,10 @@ CREATE TABLE news (
   kicker TEXT NOT NULL,
   title TEXT NOT NULL,
   blurb TEXT NOT NULL,
+  -- Full article text for /news/[slug], shown as paragraphs split on blank
+  -- lines. Nullable since older rows predate this field — the article page
+  -- falls back to just the blurb when empty.
+  body TEXT,
   photo_path TEXT NOT NULL,
   is_lead BOOLEAN NOT NULL DEFAULT FALSE,
   sort_order INT NOT NULL DEFAULT 0

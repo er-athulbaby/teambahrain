@@ -29,6 +29,10 @@ export interface NewsItem {
   is_lead: boolean;
 }
 
+export interface NewsArticle extends NewsItem {
+  body: string | null;
+}
+
 export interface Video {
   id: number;
   slug: string;

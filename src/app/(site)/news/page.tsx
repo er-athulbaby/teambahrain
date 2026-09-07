@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import ImageTile from "@/components/shared/ImageTile";
+import NewsCard from "@/components/news/NewsCard";
 import { getLeadNews, getNewsList } from "@/lib/data/news";
 import { getPageContent } from "@/lib/data/pageContent";
 
@@ -34,7 +36,10 @@ export default async function NewsPage() {
 
       {lead && (
         <section className="border-b-2 border-ink">
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+          <Link
+            href={`/news/${lead.slug}`}
+            className="block max-w-[1400px] mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] text-ink hover:bg-surface"
+          >
             <div className="py-10 lg:py-12 lg:pr-12 flex flex-col gap-5 justify-center">
               <span className="bg-accent text-white px-2.5 py-1.5 font-semibold text-[10px] tracking-[0.16em] uppercase self-start">
                 Lead story
@@ -55,34 +60,20 @@ export default async function NewsPage() {
               aspect="auto"
               className="lg:border-l-2 border-ink min-h-[280px] lg:min-h-[460px]"
             />
-          </div>
+          </Link>
         </section>
       )}
 
-      <section className="border-b-2 border-ink">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-8">
-          {news.map((n) => (
-            <div
-              key={n.id}
-              className="w-full text-left border-b-2 border-divider py-7 grid grid-cols-1 sm:grid-cols-[minmax(110px,140px)_minmax(90px,130px)_minmax(0,1fr)_40px] gap-2 sm:gap-7 sm:items-center hover:bg-surface"
-            >
-              <span className="font-semibold text-xs tracking-[0.1em] uppercase text-ink-700">
-                {formatDate(n.date)}
-              </span>
-              <span className="font-semibold text-[10px] tracking-[0.14em] uppercase text-accent-700">
-                {n.kicker}
-              </span>
-              <span className="flex flex-col gap-1.5">
-                <span className="font-semibold text-2xl leading-[1.1] tracking-[-0.02em]">
-                  {n.title}
-                </span>
-                <span className="text-[15px] leading-[1.5] text-ink-700 max-w-[80ch]">
-                  {n.blurb}
-                </span>
-              </span>
-              <span className="hidden sm:block font-semibold text-xl text-accent">→</span>
-            </div>
-          ))}
+      <section className="border-b-2 border-ink bg-surface">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-10 sm:py-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {news.map((n) => (
+              <NewsCard key={n.id} item={n} />
+            ))}
+          </div>
+          {news.length === 0 && !lead && (
+            <p className="text-ink-700 text-base py-8">No news published yet.</p>
+          )}
         </div>
       </section>
     </main>

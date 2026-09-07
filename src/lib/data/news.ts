@@ -1,5 +1,5 @@
 import { query, queryOne } from "@/lib/db";
-import type { NewsItem } from "@/types";
+import type { NewsItem, NewsArticle } from "@/types";
 
 export async function getLeadNews() {
   return queryOne<NewsItem>(
@@ -14,4 +14,12 @@ export async function getNewsList() {
      FROM news WHERE is_lead = FALSE ORDER BY sort_order ASC`
   );
   return rows;
+}
+
+export async function getNewsBySlug(slug: string) {
+  return queryOne<NewsArticle>(
+    `SELECT id, slug, date, kicker, title, blurb, body, photo_path, is_lead
+     FROM news WHERE slug = $1`,
+    [slug]
+  );
 }

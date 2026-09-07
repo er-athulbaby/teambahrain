@@ -94,6 +94,12 @@ export const RESOURCES: Record<string, ResourceConfig> = {
       { key: "kicker", label: "Kicker", type: "text", required: true },
       { key: "title", label: "Title", type: "text", required: true },
       { key: "blurb", label: "Blurb", type: "textarea", required: true },
+      {
+        key: "body",
+        label: "Full article",
+        type: "textarea",
+        hint: "Shown on the article's own page. Leave a blank line between paragraphs.",
+      },
       { key: "photo_path", label: "Photo", type: "image" },
       { key: "is_lead", label: "Lead story (News page)", type: "boolean" },
       { key: "sort_order", label: "Sort order", type: "number" },

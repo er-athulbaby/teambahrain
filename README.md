@@ -329,9 +329,15 @@ newest-first grid, no albums, per the user's choice when asked).
 - Both grids open a shared full-screen `Lightbox` (`src/components/gallery/
   Lightbox.tsx`, portaled to `document.body`) on click — arrow-key/on-screen
   prev-next navigation (wraps around), Escape to close, and a download link.
-  Photos use `object-contain` in the grid too (was `object-cover`, which
-  cropped anything that wasn't 4:3 — wrong for a gallery where seeing the
-  whole photo matters, unlike a headshot thumbnail).
+  The photo grid itself (`PhotoGrid.tsx`) is a CSS-columns masonry layout —
+  went through `object-cover` (cropped anything not 4:3) then
+  `object-contain` (no crop, but letterboxed anything not 4:3) before
+  landing here: a plain `<img>` at `w-full h-auto` inside a `columns-*`
+  container, so each tile is exactly the photo's own aspect ratio — no
+  cropping and no empty space either. Plain `<img>` instead of `next/image`
+  since masonry needs the browser's own natural intrinsic sizing, which
+  `next/image` can't provide without already knowing each photo's pixel
+  dimensions (not stored on `photos` today).
   `FeatureVideo`/`VideoGridTile` no longer manage their own "now playing"
   state; they're presentational buttons that call an `onPlay` prop, and
   `VideoGallery.tsx` (the page's client wrapper) owns the lightbox state,
@@ -339,6 +345,26 @@ newest-first grid, no albums, per the user's choice when asked).
   next/prev moves through every playable video on the page, not just the
   grid. A video tile with no `video_path` renders as a plain non-interactive
   thumbnail, same as before.
+
+## News (`/news`, `/news/[slug]`)
+
+News items previously had no full article — just a short `blurb` teaser,
+and clicking a card anywhere on the site (Home preview, the `/news` list)
+went nowhere useful. Added:
+
+- `news.body` (nullable `TEXT`) — the full article, admin-editable as plain
+  paragraphs (blank line = new paragraph, per the user's choice when asked —
+  no rich-text editor). `getNewsBySlug()` fetches it; the detail page falls
+  back to the `blurb` when `body` is empty (`?.trim()`, not `??` — an
+  intentionally-blank textarea saves as `""`, not `null`, so a plain
+  nullish-coalescing fallback wouldn't have caught it).
+- `src/components/news/NewsCard.tsx` — extracted once the Home preview and
+  the `/news` grid needed the identical card linking to `/news/[slug]`
+  (same `headingLevel` prop pattern as `GameEditionCard`). The `/news` page's
+  "all news" section was previously a plain row-list with a decorative,
+  non-clickable arrow; it's now the same grid as the Home preview.
+- The lead story banner and every Home preview card now link to their own
+  article too, not just to `/news` in general.
 
 ## Instagram (Home page)
 
