@@ -54,6 +54,7 @@ export default async function NewsArticlePage({ params }: { params: Promise<{ sl
             src={article.photo_path}
             alt={article.title}
             aspect="16/9"
+            fit="contain"
             className="border-2 border-ink mb-10"
           />
           <div className="flex flex-col gap-5">
