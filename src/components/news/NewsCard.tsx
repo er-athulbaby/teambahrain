@@ -1,5 +1,4 @@
 import Link from "next/link";
-import ImageTile from "@/components/shared/ImageTile";
 import type { NewsItem } from "@/types";
 
 function formatDate(d: string) {
@@ -20,13 +19,16 @@ export default function NewsCard({
   headingLevel?: "h2" | "h3";
 }) {
   return (
-    <Link href={`/news/${item.slug}`} className="flex flex-col gap-4 text-ink">
-      <ImageTile
+    <Link href={`/news/${item.slug}`} className="flex flex-col gap-4 text-ink mb-8 break-inside-avoid">
+      {/* Plain <img> at natural aspect ratio (masonry) — a fixed-aspect box
+          here would either crop or letterpad photos that aren't 4:3, per
+          the user's choice when asked, same as the Photo gallery grid. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
         src={item.photo_path}
         alt={item.title}
-        aspect="4/3"
-        sizes="(max-width: 1024px) 100vw, 33vw"
-        className="border-2 border-ink"
+        loading="lazy"
+        className="w-full h-auto block border-2 border-ink"
       />
       <div className="flex gap-2.5 items-center">
         <span className="bg-accent-200 text-accent-800 px-2.5 py-1 font-semibold text-[10px] tracking-[0.14em] uppercase">

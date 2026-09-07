@@ -66,7 +66,7 @@ export default async function NewsPage() {
 
       <section className="border-b-2 border-ink bg-surface">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-10 sm:py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-8">
             {news.map((n) => (
               <NewsCard key={n.id} item={n} />
             ))}
