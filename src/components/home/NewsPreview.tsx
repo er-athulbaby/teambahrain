@@ -3,6 +3,8 @@ import NewsCard from "@/components/news/NewsCard";
 import type { NewsItem } from "@/types";
 
 export default function NewsPreview({ news }: { news: NewsItem[] }) {
+  if (news.length === 0) return null;
+
   return (
     <section className="border-b-2 border-ink">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-10 sm:py-14">
