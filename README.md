@@ -326,6 +326,19 @@ newest-first grid, no albums, per the user's choice when asked).
   the page has no relative imports and `getPageContent("videos")` is keyed
   by name, not URL, so nothing inside it needed to change. The only other
   reference to the old URL was `NAV_ITEMS` itself.
+- Both grids open a shared full-screen `Lightbox` (`src/components/gallery/
+  Lightbox.tsx`, portaled to `document.body`) on click — arrow-key/on-screen
+  prev-next navigation (wraps around), Escape to close, and a download link.
+  Photos use `object-contain` in the grid too (was `object-cover`, which
+  cropped anything that wasn't 4:3 — wrong for a gallery where seeing the
+  whole photo matters, unlike a headshot thumbnail).
+  `FeatureVideo`/`VideoGridTile` no longer manage their own "now playing"
+  state; they're presentational buttons that call an `onPlay` prop, and
+  `VideoGallery.tsx` (the page's client wrapper) owns the lightbox state,
+  combining the feature video and grid into one ordered sequence so
+  next/prev moves through every playable video on the page, not just the
+  grid. A video tile with no `video_path` renders as a plain non-interactive
+  thumbnail, same as before.
 
 ## Instagram (Home page)
 

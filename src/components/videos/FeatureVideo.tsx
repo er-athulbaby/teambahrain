@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import ImageTile from "@/components/shared/ImageTile";
 import type { Video } from "@/types";
 
@@ -26,25 +23,8 @@ function Caption({ video, interactive }: { video: Video; interactive: boolean })
   );
 }
 
-export default function FeatureVideo({ video }: { video: Video }) {
-  const [playing, setPlaying] = useState(false);
-
-  if (playing && video.video_path) {
-    return (
-      <div className="relative border-2 border-ink">
-        <div className="relative w-full overflow-hidden" style={{ aspectRatio: "21/9" }}>
-          <video
-            src={video.video_path}
-            controls
-            autoPlay
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        </div>
-      </div>
-    );
-  }
-
-  if (!video.video_path) {
+export default function FeatureVideo({ video, onPlay }: { video: Video; onPlay?: () => void }) {
+  if (!video.video_path || !onPlay) {
     return (
       <div className="relative border-2 border-ink">
         <ImageTile src={video.photo_path} alt={video.title} aspect="21/9" />
@@ -54,11 +34,7 @@ export default function FeatureVideo({ video }: { video: Video }) {
   }
 
   return (
-    <button
-      type="button"
-      onClick={() => setPlaying(true)}
-      className="relative block w-full border-2 border-ink text-left"
-    >
+    <button type="button" onClick={onPlay} className="relative block w-full border-2 border-ink text-left">
       <ImageTile src={video.photo_path} alt={video.title} aspect="21/9" />
       <Caption video={video} interactive />
     </button>

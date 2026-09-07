@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import ImageTile from "@/components/shared/ImageTile";
 import type { Video } from "@/types";
 
@@ -20,25 +17,7 @@ function VideoMeta({ video }: { video: Video }) {
   );
 }
 
-export default function VideoGridTile({ video }: { video: Video }) {
-  const [playing, setPlaying] = useState(false);
-
-  if (playing && video.video_path) {
-    return (
-      <div className="flex flex-col gap-3.5">
-        <div className="relative w-full overflow-hidden border-2 border-ink" style={{ aspectRatio: "16/9" }}>
-          <video
-            src={video.video_path}
-            controls
-            autoPlay
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        </div>
-        <VideoMeta video={video} />
-      </div>
-    );
-  }
-
+export default function VideoGridTile({ video, onPlay }: { video: Video; onPlay?: () => void }) {
   const thumbnail = (
     <ImageTile
       src={video.photo_path}
@@ -51,8 +30,8 @@ export default function VideoGridTile({ video }: { video: Video }) {
 
   return (
     <div className="flex flex-col gap-3.5">
-      {video.video_path ? (
-        <button type="button" onClick={() => setPlaying(true)} className="relative block w-full text-left">
+      {video.video_path && onPlay ? (
+        <button type="button" onClick={onPlay} className="relative block w-full text-left">
           {thumbnail}
           <span className="absolute inset-0 flex items-center justify-center">
             <span className="w-12 h-12 bg-accent text-white flex items-center justify-center text-lg">▶</span>
