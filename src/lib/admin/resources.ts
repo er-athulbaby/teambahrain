@@ -350,9 +350,16 @@ export const RESOURCES: Record<string, ResourceConfig> = {
       },
       {
         key: "result_time",
-        label: "Result — time/score",
+        label: "Result value",
         type: "text",
         hint: "Leave blank until the event has happened; filling this in moves it from Events to Results.",
+      },
+      {
+        key: "result_type",
+        label: "Result type",
+        type: "select",
+        options: ["Time", "Score", "Points"],
+        hint: "How the result value above should be labeled on the public site.",
       },
       { key: "result_rank", label: "Result — rank", type: "text" },
       { key: "sort_order", label: "Sort order", type: "number" },

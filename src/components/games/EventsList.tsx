@@ -66,7 +66,9 @@ export default function EventsList({
                 {showResults && (
                   <div className="flex gap-3">
                     {e.result_time && (
-                      <span className="bg-ink-700 text-white px-4 py-2.5 font-bold text-lg">Time : {e.result_time}</span>
+                      <span className="bg-ink-700 text-white px-4 py-2.5 font-bold text-lg">
+                        {e.result_type} : {e.result_time}
+                      </span>
                     )}
                     {e.result_rank && (
                       <span className="bg-ink-700 text-white px-4 py-2.5 font-bold text-lg">Rank : {e.result_rank}</span>

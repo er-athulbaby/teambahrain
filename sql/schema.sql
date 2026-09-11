@@ -252,9 +252,14 @@ CREATE TABLE game_edition_events (
   -- ISO 3166-1 alpha-2 code for a team fixture's opponent (e.g. "PH"),
   -- rendered as a flag next to the title. Null for individual events, or
   -- for an opponent with no fitting flag (e.g. Chinese Taipei — see
-  -- src/lib/flagEmoji.ts).
+  -- src/lib/flags.ts).
   opponent_country TEXT,
   result_time TEXT,
+  -- What result_time actually represents — a race clock time, a match
+  -- score, or a points tally — so the public label matches (was always
+  -- shown as "Time :" regardless of content, wrong for e.g. a basketball
+  -- score). Existing rows default to 'Time', matching prior behavior.
+  result_type TEXT NOT NULL DEFAULT 'Time' CHECK (result_type IN ('Time', 'Score', 'Points')),
   result_rank TEXT,
   sort_order INT NOT NULL DEFAULT 0
 );

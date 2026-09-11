@@ -398,6 +398,10 @@ non-`visible`, since the browser then forces `overflow-y` to `auto` too).
   `game_edition_id`. `game_edition_events` covers **both** the Events and
   Results public pages — a row with `result_time`/`result_rank` filled in
   is a result, blank is still upcoming; there's no separate results table.
+  `result_time` is paired with `result_type` (`"Time" | "Score" | "Points"`,
+  admin select field, defaults to `"Time"`) — the public badge was always
+  labeled "Time :" regardless of content, wrong for e.g. a basketball score
+  like "89-85"; it now reads `{result_type} : {result_time}`.
 - `game_editions` has `gold_medal_image`/`silver_medal_image`/
   `bronze_medal_image` — each Games has its own medal design, so these
   live on the edition itself rather than being shared. Shown on that
