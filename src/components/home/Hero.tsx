@@ -52,7 +52,7 @@ export default function Hero({
             </Link>
           </div>
         </div>
-        <div className="order-1 lg:order-2 border-t-2 lg:border-t-0 lg:border-l-2 border-ink relative min-h-[320px] sm:min-h-[460px] lg:min-h-[660px]">
+        <div className="order-1 lg:order-2 border-t-2 lg:border-t-0 lg:border-l-2 border-ink relative overflow-hidden min-h-[320px] sm:min-h-[460px] lg:min-h-[660px]">
           <div className="absolute inset-0">
             {slides.length > 0 ? (
               <HeroSlideshow slides={slides} />
