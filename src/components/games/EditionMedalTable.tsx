@@ -8,6 +8,10 @@ import type { GameEditionMedalRecord, GameEditionSport, MedalCounts } from "@/ty
 const DISC = "●";
 const DASH = "–";
 
+const GOLD = "text-[#B8860B]";
+const SILVER = "text-[#71797E]";
+const BRONZE = "text-[#A0522D]";
+
 function countClass(n: number, color: string) {
   return n > 0 ? color : "text-ink-400";
 }
@@ -35,9 +39,9 @@ function countsToCells(c: MedalCounts) {
     silver: String(c.silver),
     bronze: String(c.bronze),
     total: String(c.total),
-    goldClass: countClass(c.gold, "text-accent"),
-    silverClass: countClass(c.silver, "text-ink"),
-    bronzeClass: countClass(c.bronze, "text-ink-700"),
+    goldClass: countClass(c.gold, GOLD),
+    silverClass: countClass(c.silver, SILVER),
+    bronzeClass: countClass(c.bronze, BRONZE),
     totalClass: countClass(c.total, "text-ink font-bold"),
   };
 }
@@ -93,9 +97,9 @@ export default function EditionMedalTable({
           silver: a.medal === "S" ? DISC : DASH,
           bronze: a.medal === "B" ? DISC : DASH,
           total: DASH,
-          goldClass: a.medal === "G" ? "text-accent" : "text-ink-400",
-          silverClass: a.medal === "S" ? "text-ink" : "text-ink-400",
-          bronzeClass: a.medal === "B" ? "text-ink-700" : "text-ink-400",
+          goldClass: a.medal === "G" ? GOLD : "text-ink-400",
+          silverClass: a.medal === "S" ? SILVER : "text-ink-400",
+          bronzeClass: a.medal === "B" ? BRONZE : "text-ink-400",
           totalClass: "text-ink-400",
           chevron: "",
         });
