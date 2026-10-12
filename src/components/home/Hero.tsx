@@ -1,13 +1,17 @@
 import Link from "next/link";
 import Countdown from "@/components/shared/Countdown";
 import ImageTile from "@/components/shared/ImageTile";
+import HeroSlideshow from "@/components/home/HeroSlideshow";
+import type { HeroSlide } from "@/types";
 
 export default function Hero({
   content,
   targetDate,
+  slides = [],
 }: {
   content: Record<string, string>;
   targetDate?: string;
+  slides?: HeroSlide[];
 }) {
   const headlineLines = content.hero_headline.split("\n");
 
@@ -50,12 +54,16 @@ export default function Hero({
         </div>
         <div className="order-1 lg:order-2 border-t-2 lg:border-t-0 lg:border-l-2 border-ink relative min-h-[320px] sm:min-h-[460px] lg:min-h-[660px]">
           <div className="absolute inset-0">
-            <ImageTile
-              src={content.hero_photo}
-              alt="Hero portrait — flagbearer, Paris 2024"
-              aspect="auto"
-              className="h-full"
-            />
+            {slides.length > 0 ? (
+              <HeroSlideshow slides={slides} />
+            ) : (
+              <ImageTile
+                src={content.hero_photo}
+                alt="Hero portrait — flagbearer, Paris 2024"
+                aspect="auto"
+                className="h-full"
+              />
+            )}
           </div>
           <div className="absolute left-0 bottom-0 bg-ground border-t-2 border-r-2 border-ink px-5 py-3.5 pointer-events-none">
             <span className="font-semibold text-[11px] tracking-[0.16em] uppercase text-ink-700">

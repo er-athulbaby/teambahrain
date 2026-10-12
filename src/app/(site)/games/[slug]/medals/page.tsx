@@ -1,21 +1,20 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getEditionBySlug, getEditionMedals } from "@/lib/data/games";
+import { getEditionBySlug, getEditionMedals, getEditionSports } from "@/lib/data/games";
 import { countMedals } from "@/lib/medals";
+import EditionMedalTable from "@/components/games/EditionMedalTable";
 
 export const metadata: Metadata = {
   title: "Medals — Team Bahrain",
 };
-
-const MEDAL_LABEL = { G: "Gold", S: "Silver", B: "Bronze" } as const;
 
 export default async function EditionMedalsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const edition = await getEditionBySlug(slug);
   if (!edition) notFound();
 
-  const medals = await getEditionMedals(edition.id);
+  const [medals, sports] = await Promise.all([getEditionMedals(edition.id), getEditionSports(edition.id)]);
   const totals = countMedals(medals);
 
   const cells = [
@@ -58,26 +57,7 @@ export default async function EditionMedalsPage({ params }: { params: Promise<{ 
 
       <section className="border-b-2 border-ink">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-10 sm:py-12">
-          {medals.length === 0 ? (
-            <p className="text-ink-700 text-base">No medals recorded for this edition yet.</p>
-          ) : (
-            <div className="flex flex-col">
-              {medals.map((m, i) => (
-                <div
-                  key={i}
-                  className="grid grid-cols-[80px_1fr_1fr] gap-4 items-center py-4 border-b-2 border-divider"
-                >
-                  <span className="font-semibold text-xs tracking-[0.1em] uppercase text-accent-700">
-                    {MEDAL_LABEL[m.medal]}
-                  </span>
-                  <span className="font-semibold text-base">{m.athlete_name}</span>
-                  <span className="text-sm text-ink-700">
-                    {m.sport} · {m.event_name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
+          <EditionMedalTable medals={medals} sports={sports} />
         </div>
       </section>
     </>

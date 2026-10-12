@@ -48,6 +48,13 @@ export interface Photo {
   id: number;
   image_path: string;
   caption: string | null;
+  game_edition_id: number | null;
+  game_edition_name: string | null;
+}
+
+export interface HeroSlide {
+  id: number;
+  image_path: string;
 }
 
 export type EventStatusType = "key" | "progress" | "confirmed";

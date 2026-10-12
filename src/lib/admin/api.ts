@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { canAccessResource } from "@/lib/admin/permissions";
 
-export async function requireAdmin(options?: { adminOnly?: boolean; resourceKey?: string }) {
+export async function requireAdmin(options?: { adminOnly?: boolean; resourceKey?: string; method?: string }) {
   const session = await auth();
   if (!session) {
     return { session: null, error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
@@ -10,7 +10,7 @@ export async function requireAdmin(options?: { adminOnly?: boolean; resourceKey?
   if (options?.adminOnly && session.user.role !== "admin") {
     return { session: null, error: NextResponse.json({ error: "Admins only" }, { status: 403 }) };
   }
-  if (options?.resourceKey && !canAccessResource(session.user.role, options.resourceKey)) {
+  if (options?.resourceKey && !canAccessResource(session.user.role, options.resourceKey, options.method)) {
     return { session: null, error: NextResponse.json({ error: "Not permitted for this role" }, { status: 403 }) };
   }
   return { session, error: null };

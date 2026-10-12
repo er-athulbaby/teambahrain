@@ -16,7 +16,11 @@ export type FieldType =
   | "date_or_year"
   /** A nullable year number — unlike "number" (which defaults empty to 0, correct
    * for sort_order), empty here must mean "not set", not the year 0. */
-  | "year";
+  | "year"
+  /** A dropdown of all Games editions (game_editions.id), for optionally tagging
+   * a top-level resource (e.g. a gallery photo) to one — unlike "sport" this
+   * isn't scoped to a parent edition, it lists every edition. */
+  | "game_edition";
 
 export interface FieldConfig {
   key: string;
@@ -136,6 +140,18 @@ export const RESOURCES: Record<string, ResourceConfig> = {
     fields: [
       { key: "image_path", label: "Photo", type: "image", required: true },
       { key: "caption", label: "Caption", type: "text" },
+      { key: "game_edition_id", label: "Game edition", type: "game_edition" },
+    ],
+  },
+  hero_slides: {
+    key: "hero_slides",
+    table: "hero_slides",
+    label: "Hero slide",
+    pluralLabel: "Hero slides",
+    titleField: "image_path",
+    fields: [
+      { key: "image_path", label: "Image", type: "image", required: true },
+      { key: "sort_order", label: "Sort order", type: "number" },
     ],
   },
   events: {

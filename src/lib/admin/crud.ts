@@ -5,7 +5,8 @@ function coerceValue(type: string, raw: unknown) {
   if (type === "number") return raw === "" || raw === null || raw === undefined ? 0 : Number(raw);
   // Unlike "number", empty here must mean "not set" (e.g. a start_year that
   // isn't applicable because the exact date is known instead) — not 0.
-  if (type === "year") return raw === "" || raw === null || raw === undefined ? null : Number(raw);
+  if (type === "year" || type === "game_edition")
+    return raw === "" || raw === null || raw === undefined ? null : Number(raw);
   if (type === "boolean") return Boolean(raw);
   // An empty string is not a valid Postgres date — treat it as "not set"
   // for optional date fields (required ones are already rejected earlier).

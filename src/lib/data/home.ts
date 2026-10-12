@@ -1,5 +1,12 @@
 import { query } from "@/lib/db";
-import type { HomeFigure, NewsItem, Athlete, InstagramPost } from "@/types";
+import type { HomeFigure, NewsItem, Athlete, InstagramPost, HeroSlide } from "@/types";
+
+export async function getHeroSlides() {
+  const { rows } = await query<HeroSlide>(
+    `SELECT id, image_path FROM hero_slides ORDER BY sort_order ASC`
+  );
+  return rows;
+}
 
 export async function getTickerItems() {
   const { rows } = await query<{ text: string }>(

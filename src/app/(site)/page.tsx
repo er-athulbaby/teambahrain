@@ -7,13 +7,13 @@ import AthletesPreview from "@/components/home/AthletesPreview";
 import MedalsBand from "@/components/home/MedalsBand";
 import InstagramGrid from "@/components/home/InstagramGrid";
 import RedClose from "@/components/home/RedClose";
-import { getHomeFigures, getHomeNews, getFeaturedAthletes, getInstagramPosts } from "@/lib/data/home";
+import { getHomeFigures, getHomeNews, getFeaturedAthletes, getInstagramPosts, getHeroSlides } from "@/lib/data/home";
 import { getMedalTotals } from "@/lib/data/medals";
 import { getPageContent } from "@/lib/data/pageContent";
 import { getPublishedEditions, getLiveEditions } from "@/lib/data/games";
 
 export default async function HomePage() {
-  const [figures, news, athletes, instagram, medalTotals, liveEditions, calendarEditions, content, site] =
+  const [figures, news, athletes, instagram, medalTotals, liveEditions, calendarEditions, content, site, slides] =
     await Promise.all([
       getHomeFigures(),
       getHomeNews(),
@@ -24,11 +24,12 @@ export default async function HomePage() {
       getPublishedEditions(),
       getPageContent("home"),
       getPageContent("site"),
+      getHeroSlides(),
     ]);
 
   return (
     <main>
-      <Hero content={content} targetDate={site.games_date} />
+      <Hero content={content} targetDate={site.games_date} slides={slides} />
       {content.show_figures_strip !== "false" && <FiguresStrip figures={figures} />}
       {content.show_games_section !== "false" && <GamesPreview editions={liveEditions} />}
       {content.show_calendar_section !== "false" && <CalendarPreview editions={calendarEditions} />}

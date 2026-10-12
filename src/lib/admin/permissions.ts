@@ -6,6 +6,9 @@ interface RestrictedRoleConfig {
   /** Resource keys (see resources.ts) this role may read/create/update via
    * the generic admin API. */
   resourceKeys: string[];
+  /** Resource keys this role may only read (e.g. a lookup list for a form
+   * dropdown) — not create/update/delete. */
+  readOnlyResourceKeys: string[];
   /** Resource keys this role may add/edit but not delete rows from. */
   noDeleteResourceKeys: string[];
   /** Whether this role may delete items from the shared Media library. */
@@ -30,6 +33,8 @@ const RESTRICTED_ROLES: Partial<Record<AdminRole, RestrictedRoleConfig>> = {
   media: {
     pathPrefixes: ["/admin/photos", "/admin/videos", "/admin/media"],
     resourceKeys: ["photos", "videos"],
+    // Needed to populate the "Game edition" dropdown on the Photo form.
+    readOnlyResourceKeys: ["game_editions"],
     noDeleteResourceKeys: ["photos", "videos"],
     canDeleteMedia: false,
     landingPath: "/admin/photos",
@@ -37,6 +42,7 @@ const RESTRICTED_ROLES: Partial<Record<AdminRole, RestrictedRoleConfig>> = {
   sports_editor: {
     pathPrefixes: ["/admin/game_editions", "/admin/media"],
     resourceKeys: GAME_EDITION_RESOURCE_KEYS,
+    readOnlyResourceKeys: [],
     noDeleteResourceKeys: [],
     canDeleteMedia: true,
     landingPath: "/admin/game_editions",
@@ -55,11 +61,12 @@ export function canAccessAdminPath(role: AdminRole, pathname: string): boolean {
 }
 
 /** Whether this role may read/create/update rows of this resource via the
- * generic admin API. */
-export function canAccessResource(role: AdminRole, resourceKey: string): boolean {
+ * generic admin API. `method` "GET" also allows a read-only lookup list. */
+export function canAccessResource(role: AdminRole, resourceKey: string, method = "GET"): boolean {
   const config = RESTRICTED_ROLES[role];
   if (!config) return true;
-  return config.resourceKeys.includes(resourceKey);
+  if (config.resourceKeys.includes(resourceKey)) return true;
+  return method === "GET" && config.readOnlyResourceKeys.includes(resourceKey);
 }
 
 /** Whether this role may delete rows of this resource (assumes it can

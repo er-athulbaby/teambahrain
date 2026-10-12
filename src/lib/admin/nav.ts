@@ -13,6 +13,7 @@ import {
   Camera,
   Images,
   ImagePlus,
+  GalleryHorizontal,
   Rss,
   Globe2,
   FileText,
@@ -92,6 +93,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
   {
     section: "Home page",
     items: [
+      { href: "/admin/hero_slides", label: "Hero slider", icon: GalleryHorizontal },
       { href: "/admin/home_figures", label: "Figures strip", icon: BarChart3 },
       { href: "/admin/instagram_posts", label: "Instagram", icon: Camera },
       { href: "/admin/ticker_items", label: "Ticker", icon: Rss },

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { queryOne } from "@/lib/db";
 import { RESOURCES } from "@/lib/admin/resources";
-import AdminResourceManager from "@/components/admin/AdminResourceManager";
+import ManageTabs from "@/components/admin/ManageTabs";
 
 export default async function ManageGameEditionPage({
   params,
@@ -31,14 +31,17 @@ export default async function ManageGameEditionPage({
         Manage this edition&apos;s Delegation, Sports, Players, Events &amp; Results, and Medals.
       </p>
 
-      <div className="flex flex-col gap-12">
-        <AdminResourceManager resource={RESOURCES.game_edition_delegates} scopeValue={edition.id} />
-        {/* Sports before Players: Players' Sport field is a dropdown fed from this list. */}
-        <AdminResourceManager resource={RESOURCES.game_edition_sports} scopeValue={edition.id} />
-        <AdminResourceManager resource={RESOURCES.game_edition_players} scopeValue={edition.id} />
-        <AdminResourceManager resource={RESOURCES.game_edition_events} scopeValue={edition.id} />
-        <AdminResourceManager resource={RESOURCES.game_edition_medals} scopeValue={edition.id} />
-      </div>
+      <ManageTabs
+        scopeValue={edition.id}
+        tabs={[
+          { label: "Delegation", resource: RESOURCES.game_edition_delegates },
+          // Sports before Players: Players' Sport field is a dropdown fed from this list.
+          { label: "Sports", resource: RESOURCES.game_edition_sports },
+          { label: "Players", resource: RESOURCES.game_edition_players },
+          { label: "Events & Results", resource: RESOURCES.game_edition_events },
+          { label: "Medals", resource: RESOURCES.game_edition_medals },
+        ]}
+      />
     </div>
   );
 }

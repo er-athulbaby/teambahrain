@@ -74,8 +74,20 @@ CREATE TABLE photos (
   id SERIAL PRIMARY KEY,
   image_path TEXT NOT NULL,
   caption TEXT,
+  -- Optional Games edition tag, for the public gallery's filter — FK added
+  -- after game_editions is created further down this file.
+  game_edition_id INT,
   sort_order INT NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Home hero: admin-managed slideshow. Falls back to page_content's single
+-- hero_photo when empty (see Hero.tsx) so nothing breaks before any slides
+-- are added.
+CREATE TABLE hero_slides (
+  id SERIAL PRIMARY KEY,
+  image_path TEXT NOT NULL,
+  sort_order INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE events (
@@ -213,6 +225,10 @@ CREATE TABLE game_editions (
   silver_medal_image TEXT,
   bronze_medal_image TEXT
 );
+
+ALTER TABLE photos
+  ADD CONSTRAINT photos_game_edition_id_fkey
+  FOREIGN KEY (game_edition_id) REFERENCES game_editions(id) ON DELETE SET NULL;
 
 CREATE TABLE game_edition_sports (
   id SERIAL PRIMARY KEY,

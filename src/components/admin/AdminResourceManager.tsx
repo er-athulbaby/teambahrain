@@ -44,10 +44,12 @@ export default function AdminResourceManager({
   const [error, setError] = useState<string | null>(null);
   const [pickerFieldKey, setPickerFieldKey] = useState<string | null>(null);
   const [sportOptions, setSportOptions] = useState<string[]>([]);
+  const [gameEditionOptions, setGameEditionOptions] = useState<{ id: number; name: string }[]>([]);
   const [yearMode, setYearMode] = useState<Record<string, boolean>>({});
 
   const imageField = resource.fields.find((f) => f.type === "image");
   const hasSportField = resource.fields.some((f) => f.type === "sport");
+  const hasGameEditionField = resource.fields.some((f) => f.type === "game_edition");
   const scopeQuery = scopeValue !== undefined ? `?scope=${encodeURIComponent(scopeValue)}` : "";
 
   const load = useCallback(async () => {
@@ -68,6 +70,13 @@ export default function AdminResourceManager({
       .then((res) => res.json())
       .then((sports: { name: string }[]) => setSportOptions(sports.map((s) => s.name)));
   }, [hasSportField, scopeValue]);
+
+  useEffect(() => {
+    if (!hasGameEditionField) return;
+    fetch(`/api/admin/game_editions`)
+      .then((res) => res.json())
+      .then((editions: { id: number; name: string }[]) => setGameEditionOptions(editions));
+  }, [hasGameEditionField]);
 
   function startAdd() {
     setEditingId(null);
@@ -203,6 +212,22 @@ export default function AdminResourceManager({
             {sportOptions.map((name) => (
               <option key={name} value={name}>
                 {name}
+              </option>
+            ))}
+          </select>
+        )}
+
+        {field.type === "game_edition" && (
+          <select
+            required={field.required}
+            value={String(form[field.key] ?? "")}
+            onChange={(e) => setForm((f) => ({ ...f, [field.key]: e.target.value }))}
+            className={inputClass}
+          >
+            <option value="">None</option>
+            {gameEditionOptions.map((edition) => (
+              <option key={edition.id} value={edition.id}>
+                {edition.name}
               </option>
             ))}
           </select>

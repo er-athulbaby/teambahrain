@@ -5,7 +5,7 @@ import { listRows, createRow } from "@/lib/admin/crud";
 
 export async function GET(request: Request, { params }: { params: Promise<{ resource: string }> }) {
   const resourceKey = (await params).resource;
-  const { error } = await requireAdmin({ resourceKey });
+  const { error } = await requireAdmin({ resourceKey, method: "GET" });
   if (error) return error;
 
   const resource = getResource(resourceKey);

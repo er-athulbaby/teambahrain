@@ -345,6 +345,41 @@ newest-first grid, no albums, per the user's choice when asked).
   next/prev moves through every playable video on the page, not just the
   grid. A video tile with no `video_path` renders as a plain non-interactive
   thumbnail, same as before.
+- `photos.game_edition_id` (nullable FK to `game_editions`) optionally tags a
+  photo to a Games edition — a new `"game_edition"` field type in
+  `resources.ts`/`AdminResourceManager.tsx`, parallel to the existing
+  `"sport"` field but unscoped (lists every edition, not just one edition's
+  sports). `PhotoGrid.tsx` shows a plain `<select>` above the grid, built
+  from the distinct `game_edition_name` values already on the page's
+  `photos` prop, filtering client-side — no new route or query param.
+
+## Home hero slider
+
+`hero_slides` table (`image_path`, `sort_order`) + admin resource, under
+"Home page" in the sidebar. `Hero.tsx` takes an optional `slides` prop and
+renders a small hand-rolled client slider (`HeroSlideshow.tsx` —
+`setInterval` auto-advance + prev/next buttons, no carousel dependency) only
+when slides exist; with zero slides it falls back to the original single
+`hero_photo` field untouched, so a fresh install with no slides added yet
+still renders correctly.
+
+## Games edition manage page tabs
+
+`/admin/game_editions/[id]/manage` used to stack all five resource managers
+(Delegation/Sports/Players/Events/Medals) on one long page. `ManageTabs.tsx`
+is a small client wrapper that renders the same five `AdminResourceManager`
+instances but only mounts the active tab, matching the public site's
+`GameEditionTabs.tsx` visually. No new routes — just local tab state.
+
+### Per-edition medals table (`/games/[slug]/medals`)
+
+Was a flat list of every medal row. `EditionMedalTable.tsx` groups them by
+sport (counts + sport icon from `game_edition_sports`), expanding to events
+then individual athletes on click — same row-depth/expand pattern as the
+all-time medals table (`MedalTable.tsx`), one level shallower since this
+page is already scoped to one edition. `lib/medals.ts`'s game-grouping
+helper was split so both tables share the same sport/event nesting logic
+(`groupMedalsBySport`).
 
 ## News (`/news`, `/news/[slug]`)
 
