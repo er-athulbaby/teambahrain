@@ -85,6 +85,21 @@ export async function getEditionEvents(editionId: number, onlyResults: boolean) 
   return rows;
 }
 
+// Team Bahrain's own events that have a live_url attached (see
+// dakar_2026_live_urls.sql) — these render as the Olympics.com-style
+// cards on the Live tab, as distinct from the raw syndicated embeds in
+// game_edition_live_sessions.
+export async function getEditionLiveEvents(editionId: number) {
+  const { rows } = await query<GameEditionEvent>(
+    `SELECT id, sport, title, venue, event_date, event_time, opponent_country, result_time, result_type, result_rank, live_url
+     FROM game_edition_events
+     WHERE game_edition_id = $1 AND live_url IS NOT NULL
+     ORDER BY sort_order ASC`,
+    [editionId]
+  );
+  return rows;
+}
+
 export async function getEditionLiveSessions(editionId: number) {
   const { rows } = await query<GameEditionLiveSession>(
     `SELECT id, title, slug, series_title, episode_number, frontend_url, tags,
