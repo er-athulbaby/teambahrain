@@ -28,7 +28,13 @@ export default function PlayerRoster({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7">
             {roster.map((p) => (
               <article key={p.id} className="border-2 border-ink bg-ground flex flex-col">
-                <ImageTile src={p.photo_path} alt={p.name} aspect="3/4" className="border-b-2 border-ink" />
+                <ImageTile
+                  src={p.photo_path}
+                  alt={p.name}
+                  aspect="3/4"
+                  objectPosition="top"
+                  className="border-b-2 border-ink"
+                />
                 <div className="p-4.5 flex flex-col gap-2">
                   <span className="font-semibold text-[10px] tracking-[0.16em] uppercase text-accent-700">
                     {p.sport}
