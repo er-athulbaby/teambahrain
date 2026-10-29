@@ -26,7 +26,7 @@ export default async function GameEditionLayout({
       <section className="border-b-2 border-ink">
         <div className="relative max-w-[1400px] mx-auto px-4 sm:px-8">
           <div
-            className={`py-10 sm:py-14 flex flex-wrap items-center gap-6 sm:gap-8 ${
+            className={`py-10 sm:py-14 flex flex-wrap sm:flex-nowrap items-center gap-6 sm:gap-8 ${
               edition.mascot_image ? "sm:pr-40" : ""
             }`}
           >
@@ -39,7 +39,7 @@ export default async function GameEditionLayout({
                 className="h-16 w-16 sm:h-[72px] sm:w-[72px] object-contain flex-none"
               />
             )}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 min-w-0">
               <span className="font-semibold text-xs tracking-[0.2em] uppercase text-accent-700">
                 {edition.edition_type}
               </span>
