@@ -40,7 +40,6 @@ export default async function ManageGameEditionPage({
           { label: "Players", resource: RESOURCES.game_edition_players },
           { label: "Events & Results", resource: RESOURCES.game_edition_events },
           { label: "Medals", resource: RESOURCES.game_edition_medals },
-          { label: "Live", resource: RESOURCES.game_edition_live_sessions },
         ]}
       />
     </div>
