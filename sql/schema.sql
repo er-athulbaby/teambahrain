@@ -150,7 +150,12 @@ CREATE TABLE admins (
   -- sports_editor: Games editions (+ all its manage sub-resources) + Media
   -- library only. See src/lib/admin/permissions.ts for the enforcement.
   role TEXT NOT NULL DEFAULT 'admin' CHECK (role IN ('admin', 'editor', 'media', 'sports_editor')),
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  -- TOTP (authenticator app) MFA, required for every admin role. totp_secret
+  -- is written as soon as a QR is generated for setup; totp_enabled flips to
+  -- true only once the user proves they scanned it by entering a valid code.
+  totp_secret TEXT,
+  totp_enabled BOOLEAN NOT NULL DEFAULT false
 );
 
 CREATE TABLE continental_stats (

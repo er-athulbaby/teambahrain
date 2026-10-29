@@ -2,6 +2,8 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { pool } from "@/lib/db";
+import { verifyTotp } from "@/lib/mfa";
+import { isRateLimited, recordFailedAttempt, clearAttempts } from "@/lib/loginRateLimit";
 
 export type AdminRole = "admin" | "editor" | "media" | "sports_editor";
 
@@ -29,21 +31,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       credentials: {
         username: {},
         password: {},
+        totp: {},
       },
       authorize: async (credentials) => {
         const username = credentials?.username as string | undefined;
         const password = credentials?.password as string | undefined;
-        if (!username || !password) return null;
+        const totp = credentials?.totp as string | undefined;
+        if (!username || !password || !totp) return null;
+        if (isRateLimited(username)) return null;
 
         const result = await pool.query(
-          "SELECT id, name, password_hash, role FROM admins WHERE username = $1",
+          "SELECT id, name, password_hash, role, totp_secret, totp_enabled FROM admins WHERE username = $1",
           [username]
         );
         const admin = result.rows[0];
-        if (!admin) return null;
+        if (!admin) {
+          recordFailedAttempt(username);
+          return null;
+        }
 
         const valid = await bcrypt.compare(password, admin.password_hash);
-        if (!valid) return null;
+        // MFA is required for every role — this never falls through
+        // unverified even if totp_enabled is somehow still false, since
+        // verifyTotp against a null secret just fails closed.
+        if (!valid || !admin.totp_enabled || !verifyTotp(admin.totp_secret, totp)) {
+          recordFailedAttempt(username);
+          return null;
+        }
+        clearAttempts(username);
 
         return { id: String(admin.id), name: admin.name, role: admin.role as AdminRole };
       },
