@@ -6,6 +6,7 @@ import type {
   GameEditionPlayer,
   GameEditionEvent,
   GameEditionMedalRecord,
+  GameEditionLiveSession,
 } from "@/types";
 
 // For /calendar and its Home preview — both announced and live editions,
@@ -79,6 +80,17 @@ export async function getEditionEvents(editionId: number, onlyResults: boolean) 
      FROM game_edition_events
      WHERE game_edition_id = $1 ${resultFilter}
      ORDER BY sort_order ASC`,
+    [editionId]
+  );
+  return rows;
+}
+
+export async function getEditionLiveSessions(editionId: number) {
+  const { rows } = await query<GameEditionLiveSession>(
+    `SELECT id, title, slug, series_title, episode_number, frontend_url, tags,
+            announced_start_time, announced_end_time, actual_start_time, actual_end_time, embed_code
+     FROM game_edition_live_sessions
+     WHERE game_edition_id = $1 ORDER BY sort_order ASC`,
     [editionId]
   );
   return rows;

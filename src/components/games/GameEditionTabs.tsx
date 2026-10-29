@@ -10,6 +10,7 @@ const TABS = [
   { segment: "events", label: "Events" },
   { segment: "results", label: "Results" },
   { segment: "medals", label: "Medals" },
+  { segment: "live", label: "Live" },
 ] as const;
 
 export default function GameEditionTabs({ slug }: { slug: string }) {

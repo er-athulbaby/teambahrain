@@ -191,3 +191,18 @@ export interface GameEditionMedalRecord {
   athlete_name: string;
   medal: Medal;
 }
+
+export interface GameEditionLiveSession {
+  id: number;
+  title: string;
+  slug: string | null;
+  series_title: string | null;
+  episode_number: number | null;
+  frontend_url: string | null;
+  tags: string | null;
+  announced_start_time: string | null;
+  announced_end_time: string | null;
+  actual_start_time: string | null;
+  actual_end_time: string | null;
+  embed_code: string | null;
+}
