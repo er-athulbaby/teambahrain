@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Loader2, Trash2 } from "lucide-react";
+import { KeyRound, Loader2, Pencil, ShieldOff, Trash2, X } from "lucide-react";
 import Card from "@/components/admin/ui/Card";
 import Button from "@/components/admin/ui/Button";
 import Badge from "@/components/admin/ui/Badge";
@@ -12,6 +12,7 @@ type User = {
   email: string;
   username: string;
   role: "admin" | "editor" | "media" | "sports_editor";
+  totp_enabled: boolean;
   created_at: string;
 };
 

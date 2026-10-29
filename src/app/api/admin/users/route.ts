@@ -8,7 +8,7 @@ export async function GET() {
   if (error) return error;
 
   const { rows } = await query(
-    `SELECT id, name, email, username, role, created_at FROM admins ORDER BY created_at ASC`
+    `SELECT id, name, email, username, role, totp_enabled, created_at FROM admins ORDER BY created_at ASC`
   );
   return NextResponse.json(rows);
 }
