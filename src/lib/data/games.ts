@@ -94,7 +94,8 @@ export async function getEditionLiveEvents(editionId: number) {
     `SELECT id, sport, title, venue, event_date, event_time, opponent_country, result_time, result_type, result_rank, live_url
      FROM game_edition_events
      WHERE game_edition_id = $1 AND live_url IS NOT NULL
-     ORDER BY sport ASC, sort_order ASC`,
+     ORDER BY CASE WHEN title = 'Opening Ceremony' THEN 0 WHEN title = 'Closing Ceremony' THEN 2 ELSE 1 END,
+              sport ASC, sort_order ASC`,
     [editionId]
   );
   return rows;
