@@ -20,9 +20,9 @@ export default function GameEditionCard({
         <Image
           src={edition.logo_path}
           alt={edition.name}
-          width={96}
-          height={96}
-          className="h-24 w-24 object-contain"
+          width={140}
+          height={140}
+          className="h-[140px] w-[140px] object-contain"
         />
       )}
       <div>
