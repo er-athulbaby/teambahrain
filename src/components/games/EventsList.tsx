@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { CalendarDays, Clock } from "lucide-react";
+import { CalendarDays, Clock, PlayCircle } from "lucide-react";
 import SportFilterDropdown from "@/components/games/SportFilterDropdown";
 import { flagSrc, countryName } from "@/lib/flags";
 import type { GameEditionEvent, GameEditionSport } from "@/types";
@@ -113,6 +113,17 @@ export default function EventsList({
                     )}
                   </div>
                 </div>
+                {e.live_url && (
+                  <a
+                    href={e.live_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 self-start font-semibold text-sm text-accent-700 hover:underline"
+                  >
+                    <PlayCircle size={16} />
+                    Watch on Olympics.com
+                  </a>
+                )}
               </div>
             );
           })}

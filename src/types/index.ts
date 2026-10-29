@@ -183,6 +183,7 @@ export interface GameEditionEvent {
   result_time: string | null;
   result_type: "Time" | "Score" | "Points";
   result_rank: string | null;
+  live_url: string | null;
 }
 
 export interface GameEditionMedalRecord {

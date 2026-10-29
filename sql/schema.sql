@@ -277,6 +277,7 @@ CREATE TABLE game_edition_events (
   -- score). Existing rows default to 'Time', matching prior behavior.
   result_type TEXT NOT NULL DEFAULT 'Time' CHECK (result_type IN ('Time', 'Score', 'Points')),
   result_rank TEXT,
+  live_url TEXT,
   sort_order INT NOT NULL DEFAULT 0
 );
 

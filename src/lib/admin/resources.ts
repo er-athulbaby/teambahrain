@@ -401,6 +401,12 @@ export const RESOURCES: Record<string, ResourceConfig> = {
         hint: "How the result value above should be labeled on the public site.",
       },
       { key: "result_rank", label: "Result — rank", type: "text" },
+      {
+        key: "live_url",
+        label: "Live stream URL",
+        type: "text",
+        hint: "Link to the Olympics.com video for this event, if one exists.",
+      },
       { key: "sort_order", label: "Sort order", type: "number" },
     ],
   },
