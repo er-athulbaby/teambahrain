@@ -10,6 +10,7 @@ const ALLOWED_TYPES: Record<string, string> = {
   "image/webp": "webp",
   "image/x-icon": "ico",
   "image/vnd.microsoft.icon": "ico",
+  "image/svg+xml": "svg",
   "video/mp4": "mp4",
   "video/webm": "webm",
   "video/quicktime": "mov",
@@ -32,7 +33,7 @@ export async function POST(request: Request) {
   }
 
   const ext = ALLOWED_TYPES[contentType];
-  if (!ext) return errorResponse("Only PNG, JPEG, WebP, ICO images or MP4/WebM/MOV videos are allowed");
+  if (!ext) return errorResponse("Only PNG, JPEG, WebP, SVG, ICO images or MP4/WebM/MOV videos are allowed");
 
   const key = `uploads/${randomUUID()}.${ext}`;
   const { uploadUrl, publicUrl } = await createPresignedUpload(key, contentType);

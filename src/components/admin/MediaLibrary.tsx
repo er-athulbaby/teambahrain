@@ -73,7 +73,7 @@ export default function MediaLibrary() {
           {uploading ? "Uploading…" : "Upload new file"}
           <input
             type="file"
-            accept="image/png,image/jpeg,image/webp,image/x-icon,image/vnd.microsoft.icon,video/mp4,video/webm,video/quicktime"
+            accept="image/png,image/jpeg,image/webp,image/svg+xml,image/x-icon,image/vnd.microsoft.icon,video/mp4,video/webm,video/quicktime"
             className="hidden"
             onChange={(e) => {
               const file = e.target.files?.[0];

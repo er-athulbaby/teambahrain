@@ -288,7 +288,7 @@ export default function AdminResourceManager({
               {uploading ? "Uploading…" : "Choose image"}
               <input
                 type="file"
-                accept="image/png,image/jpeg,image/webp,image/x-icon,image/vnd.microsoft.icon"
+                accept="image/png,image/jpeg,image/webp,image/svg+xml,image/x-icon,image/vnd.microsoft.icon"
                 className="hidden"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
