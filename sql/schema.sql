@@ -213,6 +213,7 @@ CREATE TABLE game_editions (
   end_date DATE,
   end_year INT,
   logo_path TEXT,
+  mascot_image TEXT,
   -- draft: fully hidden. announced: shows in Calendar/Games/Home listings
   -- but isn't a link — no micro-site content yet. live: fully clickable,
   -- same as the old is_published = true.

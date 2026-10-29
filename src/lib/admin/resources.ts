@@ -280,6 +280,12 @@ export const RESOURCES: Record<string, ResourceConfig> = {
       { key: "end_year", label: "End year", type: "year", hiddenInForm: true },
       { key: "logo_path", label: "Logo", type: "image" },
       {
+        key: "mascot_image",
+        label: "Mascot image",
+        type: "image",
+        hint: "Shown on the right side of this edition's banner.",
+      },
+      {
         key: "gold_medal_image",
         label: "Gold medal image",
         type: "image",

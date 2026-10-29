@@ -140,6 +140,7 @@ export interface GameEdition {
   end_date: string | null;
   end_year: number | null;
   logo_path: string | null;
+  mascot_image: string | null;
   /** draft: hidden. announced: shows in listings but isn't a link yet
    * (no micro-site content). live: fully clickable. */
   status: "draft" | "announced" | "live";
