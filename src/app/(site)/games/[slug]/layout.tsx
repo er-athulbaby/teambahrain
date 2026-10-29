@@ -23,40 +23,42 @@ export default async function GameEditionLayout({
 
   return (
     <main>
-      <section className="border-b-2 border-ink">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-10 sm:py-14 flex flex-wrap items-center justify-between gap-6 sm:gap-8">
-          <div className="flex items-center gap-6 sm:gap-8">
-            {edition.logo_path && (
-              <Image
-                src={edition.logo_path}
-                alt={edition.name}
-                width={72}
-                height={72}
-                className="h-16 w-16 sm:h-[72px] sm:w-[72px] object-contain flex-none"
-              />
-            )}
-            <div className="flex flex-col gap-2">
-              <span className="font-semibold text-xs tracking-[0.2em] uppercase text-accent-700">
-                {edition.edition_type}
-              </span>
-              <h1 className="m-0 font-bold text-4xl sm:text-6xl leading-[0.95] tracking-[-0.015em] uppercase">
-                {edition.name}
-              </h1>
-              <span className="font-semibold text-sm text-ink-700">
-                {edition.city} · {dateRange}
-              </span>
-            </div>
-          </div>
-          {edition.mascot_image && (
+      <section className="border-b-2 border-ink relative">
+        <div
+          className={`max-w-[1400px] mx-auto px-4 sm:px-8 py-10 sm:py-14 flex flex-wrap items-center gap-6 sm:gap-8 ${
+            edition.mascot_image ? "sm:pr-40" : ""
+          }`}
+        >
+          {edition.logo_path && (
             <Image
-              src={edition.mascot_image}
-              alt={`${edition.name} mascot`}
-              width={140}
-              height={140}
-              className="h-24 w-24 sm:h-[140px] sm:w-[140px] object-contain flex-none"
+              src={edition.logo_path}
+              alt={edition.name}
+              width={72}
+              height={72}
+              className="h-16 w-16 sm:h-[72px] sm:w-[72px] object-contain flex-none"
             />
           )}
+          <div className="flex flex-col gap-2">
+            <span className="font-semibold text-xs tracking-[0.2em] uppercase text-accent-700">
+              {edition.edition_type}
+            </span>
+            <h1 className="m-0 font-bold text-4xl sm:text-6xl leading-[0.95] tracking-[-0.015em] uppercase">
+              {edition.name}
+            </h1>
+            <span className="font-semibold text-sm text-ink-700">
+              {edition.city} · {dateRange}
+            </span>
+          </div>
         </div>
+        {edition.mascot_image && (
+          <Image
+            src={edition.mascot_image}
+            alt={`${edition.name} mascot`}
+            width={140}
+            height={140}
+            className="hidden sm:block absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 h-[140px] w-[140px] object-contain"
+          />
+        )}
       </section>
 
       <section className="border-b-2 border-ink">
