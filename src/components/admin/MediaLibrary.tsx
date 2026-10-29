@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { ImageOff, Loader2, Trash2, UploadCloud } from "lucide-react";
+import { Check, Copy, ImageOff, Loader2, Trash2, UploadCloud } from "lucide-react";
 import { uploadFile } from "@/lib/admin/uploadClient";
 import { canDeleteMediaLibraryItem } from "@/lib/admin/permissions";
 import Card from "@/components/admin/ui/Card";
@@ -22,6 +22,7 @@ export default function MediaLibrary() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<number | null>(null);
 
   const load = useCallback(async () => {
     const res = await fetch("/api/admin/media");
@@ -46,6 +47,12 @@ export default function MediaLibrary() {
     } finally {
       setUploading(false);
     }
+  }
+
+  async function handleCopy(item: MediaItem) {
+    await navigator.clipboard.writeText(item.url);
+    setCopiedId(item.id);
+    setTimeout(() => setCopiedId((id) => (id === item.id ? null : id)), 1500);
   }
 
   async function handleDelete(item: MediaItem) {
@@ -114,15 +121,33 @@ export default function MediaLibrary() {
               <p className="text-xs text-slate-600 truncate" title={item.filename}>
                 {item.filename}
               </p>
-              {canDelete && (
+              <div className="flex items-center justify-center gap-3">
                 <button
-                  onClick={() => handleDelete(item)}
-                  className="inline-flex items-center justify-center gap-1 text-xs text-slate-500 hover:text-red-600"
+                  onClick={() => handleCopy(item)}
+                  className="inline-flex items-center justify-center gap-1 text-xs text-slate-500 hover:text-indigo-600"
                 >
-                  <Trash2 size={12} strokeWidth={1.75} />
-                  Delete
+                  {copiedId === item.id ? (
+                    <>
+                      <Check size={12} strokeWidth={1.75} />
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={12} strokeWidth={1.75} />
+                      Copy URL
+                    </>
+                  )}
                 </button>
-              )}
+                {canDelete && (
+                  <button
+                    onClick={() => handleDelete(item)}
+                    className="inline-flex items-center justify-center gap-1 text-xs text-slate-500 hover:text-red-600"
+                  >
+                    <Trash2 size={12} strokeWidth={1.75} />
+                    Delete
+                  </button>
+                )}
+              </div>
             </Card>
           ))}
         </div>
