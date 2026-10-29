@@ -86,6 +86,37 @@ export async function updateRow(resource: ResourceConfig, id: number, body: Reco
   const values: unknown[] = [];
   let i = 1;
 
+  // Reordering: two rows sharing a sort_order break ties by id (see
+  // listRows), so typing a number that's already in use silently didn't
+  // move the row. Shift every row between the old and new position
+  // instead, so the typed number always lands exactly where expected.
+  const hasSortOrder = resource.fields.some((f) => f.key === "sort_order");
+  if (hasSortOrder && "sort_order" in body) {
+    const scopeCol = resource.scopeField ? `, ${resource.scopeField}` : "";
+    const current = await queryOne<{ sort_order: number } & Record<string, unknown>>(
+      `SELECT sort_order${scopeCol} FROM ${resource.table} WHERE id = $1`,
+      [id]
+    );
+    const newOrder = Number(body.sort_order) || 0;
+    const oldOrder = Number(current?.sort_order ?? newOrder);
+    if (current && newOrder !== oldOrder) {
+      const params: unknown[] = [];
+      let clause: string;
+      if (newOrder > oldOrder) {
+        clause = `sort_order = sort_order - 1 WHERE sort_order > $1 AND sort_order <= $2 AND id != $3`;
+        params.push(oldOrder, newOrder, id);
+      } else {
+        clause = `sort_order = sort_order + 1 WHERE sort_order >= $1 AND sort_order < $2 AND id != $3`;
+        params.push(newOrder, oldOrder, id);
+      }
+      if (resource.scopeField) {
+        clause += ` AND ${resource.scopeField} = $4`;
+        params.push(current[resource.scopeField]);
+      }
+      await pool.query(`UPDATE ${resource.table} SET ${clause}`, params);
+    }
+  }
+
   for (const field of resource.fields) {
     if (!(field.key in body)) continue;
     // Skip clearing an image/video field when no new upload was provided.
