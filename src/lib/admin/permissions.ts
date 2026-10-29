@@ -24,6 +24,7 @@ const GAME_EDITION_RESOURCE_KEYS = [
   "game_edition_players",
   "game_edition_events",
   "game_edition_medals",
+  "game_edition_live_sessions",
 ];
 
 // Only "media" and "sports_editor" are restricted here — "admin" and

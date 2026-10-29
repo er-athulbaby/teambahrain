@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { ArrowRight, ImageOff, Images, Loader2, Pencil, Trash2, UploadCloud, VideoOff } from "lucide-react";
+import { ArrowRight, ImageOff, Images, Link2, Loader2, Pencil, Trash2, UploadCloud, VideoOff } from "lucide-react";
 import type { ResourceConfig } from "@/lib/admin/resources";
 import { uploadFile } from "@/lib/admin/uploadClient";
 import { canDeleteResource } from "@/lib/admin/permissions";
@@ -303,6 +303,17 @@ export default function AdminResourceManager({
             >
               <Images size={15} strokeWidth={1.75} />
               Library
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const url = window.prompt("Image URL (e.g. an S3 URL):", String(form[field.key] ?? ""));
+                if (url !== null) setForm((f) => ({ ...f, [field.key]: url.trim() }));
+              }}
+              className="flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50"
+            >
+              <Link2 size={15} strokeWidth={1.75} />
+              URL
             </button>
           </div>
         )}

@@ -289,3 +289,24 @@ CREATE TABLE game_edition_medals (
   medal CHAR(1) NOT NULL CHECK (medal IN ('G', 'S', 'B')),
   sort_order INT NOT NULL DEFAULT 0
 );
+
+-- Olympics.com syndicated live-session video embeds for an edition (one row
+-- per session, e.g. "Women's and Men's Pool round Session 1 - 3x3
+-- Basketball"). embed_code is the raw <script>/<div> snippet pasted in as-is.
+CREATE TABLE game_edition_live_sessions (
+  id SERIAL PRIMARY KEY,
+  game_edition_id INT NOT NULL REFERENCES game_editions(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  slug TEXT,
+  tags TEXT,
+  frontend_url TEXT,
+  channel_id TEXT,
+  announced_start_time TEXT,
+  announced_end_time TEXT,
+  actual_start_time TEXT,
+  actual_end_time TEXT,
+  episode_number INT,
+  series_title TEXT,
+  embed_code TEXT,
+  sort_order INT NOT NULL DEFAULT 0
+);
