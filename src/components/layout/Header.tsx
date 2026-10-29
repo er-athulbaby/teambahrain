@@ -63,7 +63,7 @@ export default function Header({
               <span className="font-heading font-semibold text-[21px] leading-none capitalize whitespace-nowrap text-ink">
                 Team Bahrain
               </span>
-              <span className="font-medium text-[12px] leading-none tracking-[0.18em] uppercase text-ink-700 whitespace-nowrap">
+              <span className="font-bold text-[12px] leading-none tracking-[0.18em] uppercase text-ink-700 whitespace-nowrap">
                 {tagline}
               </span>
             </span>
