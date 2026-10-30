@@ -4,10 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { CalendarDays, Clock, PlayCircle } from "lucide-react";
 import SportFilterDropdown from "@/components/games/SportFilterDropdown";
-import LiveEmbed from "@/components/games/LiveEmbed";
-import VideoModal from "@/components/games/VideoModal";
 import { flagSrc, countryName } from "@/lib/flags";
-import { olympicsEmbedCode } from "@/lib/olympicsEmbed";
 import type { GameEditionEvent, GameEditionSport } from "@/types";
 
 function formatDate(d: string) {
@@ -49,10 +46,8 @@ export default function EventsList({
   showResults: boolean;
 }) {
   const [filter, setFilter] = useState("All");
-  const [playing, setPlaying] = useState<GameEditionEvent | null>(null);
   const list = filter === "All" ? events : events.filter((e) => e.sport === filter);
   const iconBySport = new Map(sports.map((s) => [s.name, s.icon_path]));
-  const playingEmbed = playing?.live_url ? olympicsEmbedCode(playing.live_url) : null;
 
   return (
     <>
@@ -118,27 +113,16 @@ export default function EventsList({
                     )}
                   </div>
                 </div>
-                {e.live_url && olympicsEmbedCode(e.live_url) ? (
-                  <button
-                    type="button"
-                    onClick={() => setPlaying(e)}
+                {e.live_url && (
+                  <a
+                    href={e.live_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 self-start font-semibold text-sm text-accent-700 hover:underline"
                   >
                     <PlayCircle size={16} />
-                    Watch
-                  </button>
-                ) : (
-                  e.live_url && (
-                    <a
-                      href={e.live_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 self-start font-semibold text-sm text-accent-700 hover:underline"
-                    >
-                      <PlayCircle size={16} />
-                      Watch on Olympics.com
-                    </a>
-                  )
+                    Watch on Olympics.com
+                  </a>
                 )}
               </div>
             );
@@ -150,11 +134,6 @@ export default function EventsList({
           )}
         </div>
       </section>
-      {playing && playingEmbed && (
-        <VideoModal title={playing.title} onClose={() => setPlaying(null)}>
-          <LiveEmbed html={playingEmbed} />
-        </VideoModal>
-      )}
     </>
   );
 }
