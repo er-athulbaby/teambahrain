@@ -14,6 +14,11 @@ export default function LiveEmbed({ html }: { html: string }) {
     container.querySelectorAll("script").forEach((oldScript) => {
       const script = document.createElement("script");
       for (const attr of Array.from(oldScript.attributes)) script.setAttribute(attr.name, attr.value);
+      // Dynamically-inserted scripts default to async execution, so a
+      // src-loaded script and the inline script right after it (which
+      // depends on a global the src script defines) can run out of
+      // order — async = false forces them to execute in document order.
+      script.async = false;
       script.textContent = oldScript.textContent;
       oldScript.replaceWith(script);
     });
