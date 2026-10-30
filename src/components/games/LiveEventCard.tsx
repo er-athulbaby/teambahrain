@@ -1,4 +1,10 @@
+"use client";
+
+import { useState } from "react";
 import { Clock, PlayCircle } from "lucide-react";
+import LiveEmbed from "@/components/games/LiveEmbed";
+import VideoModal from "@/components/games/VideoModal";
+import { olympicsEmbedCode } from "@/lib/olympicsEmbed";
 import type { GameEditionEvent } from "@/types";
 
 function dayNumber(eventDate: string, editionStart: string | null) {
@@ -28,16 +34,13 @@ function startTimeLabel(eventDate: string, eventTime: string | null) {
 }
 
 export default function LiveEventCard({ event, editionStart }: { event: GameEditionEvent; editionStart: string | null }) {
+  const [open, setOpen] = useState(false);
   const day = dayNumber(event.event_date, editionStart);
   const label = status(event.event_date);
+  const embedCode = event.live_url ? olympicsEmbedCode(event.live_url) : null;
 
-  return (
-    <a
-      href={event.live_url ?? "#"}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="border-2 border-ink bg-white flex flex-col overflow-hidden group"
-    >
+  const card = (
+    <div className="border-2 border-ink bg-white flex flex-col overflow-hidden group cursor-pointer">
       <div className="relative bg-gradient-to-br from-accent-700 via-accent to-accent-600 text-white px-6 py-8 flex flex-col items-center text-center gap-2">
         {day && (
           <span className="font-bold text-4xl uppercase tracking-tight opacity-90">Day {day}</span>
@@ -56,9 +59,30 @@ export default function LiveEventCard({ event, editionStart }: { event: GameEdit
         <p className="m-0 text-sm text-ink-700">{event.venue}</p>
         <span className="inline-flex items-center gap-1.5 mt-1 font-semibold text-sm text-accent-700 group-hover:underline">
           <PlayCircle size={15} />
-          Watch on Olympics.com
+          {embedCode ? "Watch" : "Watch on Olympics.com"}
         </span>
       </div>
-    </a>
+    </div>
+  );
+
+  if (!embedCode) {
+    return (
+      <a href={event.live_url ?? "#"} target="_blank" rel="noopener noreferrer">
+        {card}
+      </a>
+    );
+  }
+
+  return (
+    <>
+      <button type="button" onClick={() => setOpen(true)} className="text-left">
+        {card}
+      </button>
+      {open && (
+        <VideoModal title={event.title} onClose={() => setOpen(false)}>
+          <LiveEmbed html={embedCode} />
+        </VideoModal>
+      )}
+    </>
   );
 }
