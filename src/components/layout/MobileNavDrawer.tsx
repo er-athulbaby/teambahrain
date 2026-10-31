@@ -3,16 +3,21 @@
 import Link from "next/link";
 import { NAV_ITEMS, GALLERY_ITEMS } from "@/lib/site.config";
 
+interface GamesNavEdition {
+  slug: string;
+  name: string;
+}
+
 export default function MobileNavDrawer({
   open,
   onClose,
   pathname,
-  showGames,
+  gamesEditions,
 }: {
   open: boolean;
   onClose: () => void;
   pathname: string;
-  showGames: boolean;
+  gamesEditions: GamesNavEdition[];
 }) {
   if (!open) return null;
 
@@ -55,7 +60,14 @@ export default function MobileNavDrawer({
         </div>
         <nav className="flex flex-col">
           {renderLink(NAV_ITEMS[0].href, NAV_ITEMS[0].label, pathname === NAV_ITEMS[0].href)}
-          {showGames && renderLink("/games", "Games", pathname.startsWith("/games"))}
+          {gamesEditions.length > 0 && renderLink("/games", "Games", pathname === "/games")}
+          {gamesEditions.map((edition) =>
+            renderLink(
+              `/games/${edition.slug}`,
+              edition.name,
+              pathname.startsWith(`/games/${edition.slug}`)
+            )
+          )}
           {GALLERY_ITEMS.map((item) => renderLink(item.href, item.label, pathname === item.href))}
           {NAV_ITEMS.slice(1).map((item) => renderLink(item.href, item.label, pathname === item.href))}
         </nav>

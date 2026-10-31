@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { NAV_ITEMS, GALLERY_ITEMS } from "@/lib/site.config";
 import HeaderDropdown from "./HeaderDropdown";
@@ -93,7 +94,7 @@ export default function Header({
             aria-label="Open menu"
           >
             Menu
-            <span className="text-lg leading-none">☰</span>
+            <Menu size={18} />
           </button>
         </div>
       </div>
@@ -102,7 +103,7 @@ export default function Header({
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         pathname={pathname}
-        showGames={gamesEditions.length > 0}
+        gamesEditions={gamesEditions}
       />
     </>
   );

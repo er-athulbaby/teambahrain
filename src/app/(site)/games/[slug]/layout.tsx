@@ -57,7 +57,7 @@ export default async function GameEditionLayout({
               alt={`${edition.name} mascot`}
               width={140}
               height={140}
-              className="hidden sm:block absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 h-[140px] w-[140px] object-contain"
+              className="h-16 w-16 sm:h-[140px] sm:w-[140px] object-contain flex-none sm:absolute sm:right-8 sm:top-1/2 sm:-translate-y-1/2"
             />
           )}
         </div>
