@@ -1,6 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { Clock, PlayCircle } from "lucide-react";
+import LiveEmbed from "./LiveEmbed";
+import VideoModal from "./VideoModal";
+import { olympicsEmbedCode } from "@/lib/olympicsEmbed";
 import type { GameEditionEvent } from "@/types";
 
 function dayNumber(eventDate: string, editionStart: string | null) {
@@ -30,8 +34,10 @@ function startTimeLabel(eventDate: string, eventTime: string | null) {
 }
 
 export default function LiveEventCard({ event, editionStart }: { event: GameEditionEvent; editionStart: string | null }) {
+  const [open, setOpen] = useState(false);
   const day = dayNumber(event.event_date, editionStart);
   const label = status(event.event_date);
+  const embedCode = event.live_url ? olympicsEmbedCode(event.live_url) : null;
 
   const card = (
     <div className="border-2 border-ink bg-white flex flex-col overflow-hidden group cursor-pointer">
@@ -59,9 +65,24 @@ export default function LiveEventCard({ event, editionStart }: { event: GameEdit
     </div>
   );
 
+  if (!embedCode) {
+    return (
+      <a href={event.live_url ?? "#"} target="_blank" rel="noopener noreferrer">
+        {card}
+      </a>
+    );
+  }
+
   return (
-    <a href={event.live_url ?? "#"} target="_blank" rel="noopener noreferrer">
-      {card}
-    </a>
+    <>
+      <button type="button" onClick={() => setOpen(true)} className="text-left w-full">
+        {card}
+      </button>
+      {open && (
+        <VideoModal title={event.title} onClose={() => setOpen(false)}>
+          <LiveEmbed html={embedCode} />
+        </VideoModal>
+      )}
+    </>
   );
 }

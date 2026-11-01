@@ -1,8 +1,9 @@
-// The Olympics.com syndicated player just needs the video's slug — the last
-// segment of its own page URL — so the embed can be rebuilt from a plain
-// live_url link instead of sending visitors to olympics.com.
+// Olympics.com's syndicated iframe needs our partner identity in the query
+// string or it withholds consent and serves a blank player — confirmed
+// working by their partner support team for teambahrain.bh.
 export function olympicsEmbedCode(liveUrl: string) {
   const slug = liveUrl.replace(/\/+$/, "").split("/").pop();
   if (!slug) return null;
-  return `<script src="https://olympics.com/static/js/syndicated/v1/embed.js"></script><div id="ocplayer1"></div><script>var player = new OLYMPIC_CHANNEL.Syndicated('${slug}', {dimensions: [950,534], id: 'ocplayer1'})</script>`;
+  const src = `https://olympics.com/video/syndicated/detail/${slug}?partner_name=www.teambahrain.bh%2F&partnerdomain=www.olympics.com%2F`;
+  return `<iframe frameborder="0" scrolling="no" allowfullscreen="true" width="950" height="534" src="${src}"></iframe>`;
 }
