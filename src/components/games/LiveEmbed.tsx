@@ -1,3 +1,3 @@
 export default function LiveEmbed({ html }: { html: string }) {
-  return <div className="live-embed [&_iframe]:w-full [&_iframe]:aspect-video" dangerouslySetInnerHTML={{ __html: html }} />;
+  return <div className="live-embed h-full [&_iframe]:w-full [&_iframe]:h-full" dangerouslySetInnerHTML={{ __html: html }} />;
 }
