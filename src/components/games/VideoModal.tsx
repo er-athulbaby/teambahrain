@@ -29,7 +29,7 @@ export default function VideoModal({
 
   return createPortal(
     <>
-      <div className="fixed inset-0 z-[2] bg-black/90" onClick={onClose} />
+      <div className="fixed inset-0 z-[1] bg-black/90" onClick={onClose} />
       <button
         type="button"
         onClick={onClose}
@@ -41,7 +41,7 @@ export default function VideoModal({
       <h2 className="fixed top-5 left-1/2 -translate-x-1/2 z-[150] m-0 font-bold text-lg uppercase text-white text-center pointer-events-none">
         {title}
       </h2>
-      <div className="fixed inset-0 z-[1]">{children}</div>
+      <div className="fixed inset-0 z-[2]">{children}</div>
     </>,
     document.body
   );
