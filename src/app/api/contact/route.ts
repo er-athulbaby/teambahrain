@@ -1,9 +1,18 @@
 import { NextResponse } from "next/server";
 import { sendContactMessage } from "@/lib/mailer";
+import { createRateLimiter } from "@/lib/rateLimit";
+import { getClientIp } from "@/lib/clientIp";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const limiter = createRateLimiter(10, 60 * 60 * 1000);
 
 export async function POST(request: Request) {
+  const ip = getClientIp(request);
+  if (limiter.isLimited(ip)) {
+    return NextResponse.json({ error: "Too many messages. Please try again later." }, { status: 429 });
+  }
+  limiter.record(ip);
+
   let body: { name?: unknown; email?: unknown; subject?: unknown; message?: unknown; company?: unknown };
   try {
     body = await request.json();

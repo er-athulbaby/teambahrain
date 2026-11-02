@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { pool } from "@/lib/db";
+import { createRateLimiter } from "@/lib/rateLimit";
+import { getClientIp } from "@/lib/clientIp";
+
+const limiter = createRateLimiter(120, 60 * 1000);
 
 function classifyDevice(userAgent: string | null): string {
   if (!userAgent) return "unknown";
@@ -9,6 +13,12 @@ function classifyDevice(userAgent: string | null): string {
 }
 
 export async function POST(request: Request) {
+  const ip = getClientIp(request);
+  if (limiter.isLimited(ip)) {
+    return NextResponse.json({ ok: false }, { status: 429 });
+  }
+  limiter.record(ip);
+
   let body: { path?: unknown; referrer?: unknown };
   try {
     body = await request.json();

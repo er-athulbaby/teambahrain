@@ -1,26 +1,16 @@
-// In-memory sliding-window limiter against password-guessing on /login.
-// Per-process only (matches this app's single-VM pm2 hosting — no Redis),
-// resets on deploy; that's an acceptable tradeoff for a low-traffic admin
-// panel, not a public API.
-const MAX_ATTEMPTS = 5;
-const WINDOW_MS = 15 * 60 * 1000;
+// Against password-guessing on /login.
+import { createRateLimiter } from "@/lib/rateLimit";
 
-const attempts = new Map<string, number[]>();
+const limiter = createRateLimiter(5, 15 * 60 * 1000);
 
 export function isRateLimited(key: string) {
-  const now = Date.now();
-  const recent = (attempts.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
-  attempts.set(key, recent);
-  return recent.length >= MAX_ATTEMPTS;
+  return limiter.isLimited(key);
 }
 
 export function recordFailedAttempt(key: string) {
-  const now = Date.now();
-  const recent = (attempts.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
-  recent.push(now);
-  attempts.set(key, recent);
+  limiter.record(key);
 }
 
 export function clearAttempts(key: string) {
-  attempts.delete(key);
+  limiter.clear(key);
 }
