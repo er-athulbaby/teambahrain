@@ -1,6 +1,25 @@
 import type { NextConfig } from "next";
 
+// 'unsafe-inline' on script-src/style-src is required because Next.js
+// injects its own hydration/bootstrap scripts inline and we don't run a
+// nonce-issuing middleware — this still blocks loading external scripts,
+// cross-origin framing, and exfiltration via fetch/XHR to third parties.
+const CSP = [
+  "default-src 'self'",
+  "img-src 'self' data: https://*.amazonaws.com",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "frame-src https://olympics.com",
+  "frame-ancestors 'self'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "object-src 'none'",
+].join("; ");
+
 const securityHeaders = [
+  { key: "Content-Security-Policy", value: CSP },
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },

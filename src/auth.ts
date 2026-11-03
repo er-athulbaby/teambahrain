@@ -24,7 +24,9 @@ declare module "@auth/core/jwt" {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  session: { strategy: "jwt" },
+  // Admin panel session — shorter-lived than next-auth's 30-day default,
+  // since this grants content/user management, not just a reader account.
+  session: { strategy: "jwt", maxAge: 8 * 60 * 60 },
   pages: { signIn: "/login" },
   providers: [
     Credentials({
