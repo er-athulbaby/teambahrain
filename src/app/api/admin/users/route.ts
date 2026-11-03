@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { pool, query } from "@/lib/db";
 import { requireAdmin, errorResponse, isUniqueViolation } from "@/lib/admin/api";
+import { logAudit } from "@/lib/admin/audit";
 
 export async function GET() {
   const { error } = await requireAdmin({ adminOnly: true });
@@ -14,7 +15,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { error } = await requireAdmin({ adminOnly: true });
+  const { session, error } = await requireAdmin({ adminOnly: true });
   if (error) return error;
 
   const { name, email, username, password, role } = await request.json();
@@ -33,6 +34,7 @@ export async function POST(request: Request) {
        VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, username, role, created_at`,
       [name, email, username, passwordHash, role]
     );
+    await logAudit(session.user, "create", "admins", result.rows[0].id);
     return NextResponse.json(result.rows[0], { status: 201 });
   } catch (err) {
     if (isUniqueViolation(err)) return errorResponse("That username or email is already in use", 409);

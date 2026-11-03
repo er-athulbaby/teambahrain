@@ -317,3 +317,15 @@ CREATE TABLE game_edition_live_sessions (
   embed_code TEXT,
   sort_order INT NOT NULL DEFAULT 0
 );
+
+CREATE TABLE audit_log (
+  id SERIAL PRIMARY KEY,
+  admin_id INTEGER REFERENCES admins(id) ON DELETE SET NULL,
+  admin_name TEXT NOT NULL,
+  action TEXT NOT NULL,
+  resource TEXT NOT NULL,
+  resource_id TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX audit_log_created_at_idx ON audit_log (created_at DESC);

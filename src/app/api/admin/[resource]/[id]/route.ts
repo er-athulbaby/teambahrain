@@ -3,13 +3,14 @@ import { requireAdmin, errorResponse } from "@/lib/admin/api";
 import { getResource } from "@/lib/admin/resources";
 import { updateRow, deleteRow } from "@/lib/admin/crud";
 import { canDeleteResource } from "@/lib/admin/permissions";
+import { logAudit } from "@/lib/admin/audit";
 
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ resource: string; id: string }> }
 ) {
   const { resource: resourceKey, id } = await params;
-  const { error } = await requireAdmin({ resourceKey });
+  const { session, error } = await requireAdmin({ resourceKey });
   if (error) return error;
 
   const resource = getResource(resourceKey);
@@ -17,6 +18,7 @@ export async function PATCH(
 
   const body = await request.json();
   await updateRow(resource, Number(id), body);
+  await logAudit(session.user, "update", resourceKey, id);
   return NextResponse.json({ ok: true });
 }
 
@@ -35,5 +37,6 @@ export async function DELETE(
   }
 
   await deleteRow(resource, Number(id));
+  await logAudit(session.user, "delete", resourceKey, id);
   return NextResponse.json({ ok: true });
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { pool, query, queryOne } from "@/lib/db";
 import { requireAdmin, errorResponse, isUniqueViolation } from "@/lib/admin/api";
 import { isRestrictedRole } from "@/lib/admin/permissions";
+import { logAudit } from "@/lib/admin/audit";
 
 export async function GET() {
   const { session, error } = await requireAdmin();
@@ -35,6 +36,7 @@ export async function POST(request: Request) {
       `INSERT INTO olympic_games (year, city, sort_order) VALUES ($1, $2, $3) RETURNING id, year, city, sort_order`,
       [year, city, (max?.max ?? -1) + 1]
     );
+    await logAudit(session.user, "create", "olympic_games", result.rows[0].id);
     return NextResponse.json(result.rows[0], { status: 201 });
   } catch (err) {
     if (isUniqueViolation(err)) return errorResponse(`A Games entry for ${year} already exists`, 409);

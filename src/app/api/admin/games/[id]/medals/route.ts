@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 import { requireAdmin, errorResponse } from "@/lib/admin/api";
 import { isRestrictedRole } from "@/lib/admin/permissions";
+import { logAudit } from "@/lib/admin/audit";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { session, error } = await requireAdmin();
@@ -20,5 +21,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
      VALUES ($1, $2, $3, $4, $5) RETURNING id, game_id, sport, event_name, athlete_name, medal`,
     [id, sport, event_name, athlete_name, medal]
   );
+  await logAudit(session.user, "create", "olympic_medals", result.rows[0].id);
   return NextResponse.json(result.rows[0], { status: 201 });
 }

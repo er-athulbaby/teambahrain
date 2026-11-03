@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { pool, queryOne } from "@/lib/db";
 import { requireAdmin, errorResponse, isUniqueViolation } from "@/lib/admin/api";
+import { logAudit } from "@/lib/admin/audit";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { error } = await requireAdmin({ adminOnly: true });
+  const { session, error } = await requireAdmin({ adminOnly: true });
   if (error) return error;
 
   const { id } = await params;
@@ -50,6 +51,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     if (isUniqueViolation(err)) return errorResponse("That username or email is already in use", 409);
     throw err;
   }
+  await logAudit(session.user, "update", "admins", id);
   return NextResponse.json({ ok: true });
 }
 
@@ -77,5 +79,6 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
   }
 
   await pool.query(`DELETE FROM admins WHERE id = $1`, [id]);
+  await logAudit(session.user, "delete", "admins", id);
   return NextResponse.json({ ok: true });
 }

@@ -4,6 +4,7 @@ import { requireAdmin, errorResponse } from "@/lib/admin/api";
 import { getPageConfig } from "@/lib/admin/pageContentConfig";
 import { getPageContent } from "@/lib/data/pageContent";
 import { isRestrictedRole } from "@/lib/admin/permissions";
+import { logAudit } from "@/lib/admin/audit";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ page: string }> }) {
   const { page } = await params;
@@ -50,5 +51,6 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ pa
     client.release();
   }
 
+  await logAudit(session.user, "update", "page_content", page);
   return NextResponse.json({ ok: true });
 }

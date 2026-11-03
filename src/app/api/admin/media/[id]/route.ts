@@ -3,6 +3,7 @@ import { requireAdmin, errorResponse } from "@/lib/admin/api";
 import { pool, queryOne } from "@/lib/db";
 import { deleteUpload } from "@/lib/s3";
 import { canDeleteMediaLibraryItem } from "@/lib/admin/permissions";
+import { logAudit } from "@/lib/admin/audit";
 
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { session, error } = await requireAdmin();
@@ -19,6 +20,7 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     // Best-effort — still remove the catalog entry even if the S3 object is already gone.
   });
   await pool.query(`DELETE FROM media WHERE id = $1`, [id]);
+  await logAudit(session.user, "delete", "media", id);
 
   return NextResponse.json({ ok: true });
 }

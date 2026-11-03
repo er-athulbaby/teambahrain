@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 import { requireAdmin, errorResponse } from "@/lib/admin/api";
 import { isRestrictedRole } from "@/lib/admin/permissions";
+import { logAudit } from "@/lib/admin/audit";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { session, error } = await requireAdmin();
@@ -19,6 +20,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     `UPDATE olympic_medals SET sport = $1, event_name = $2, athlete_name = $3, medal = $4 WHERE id = $5`,
     [sport, event_name, athlete_name, medal, id]
   );
+  await logAudit(session.user, "update", "olympic_medals", id);
   return NextResponse.json({ ok: true });
 }
 
@@ -29,5 +31,6 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
 
   const { id } = await params;
   await pool.query(`DELETE FROM olympic_medals WHERE id = $1`, [id]);
+  await logAudit(session.user, "delete", "olympic_medals", id);
   return NextResponse.json({ ok: true });
 }

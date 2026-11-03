@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin, errorResponse } from "@/lib/admin/api";
 import { getResource } from "@/lib/admin/resources";
 import { listRows, createRow } from "@/lib/admin/crud";
+import { logAudit } from "@/lib/admin/audit";
 
 export async function GET(request: Request, { params }: { params: Promise<{ resource: string }> }) {
   const resourceKey = (await params).resource;
@@ -20,7 +21,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ reso
 
 export async function POST(request: Request, { params }: { params: Promise<{ resource: string }> }) {
   const resourceKey = (await params).resource;
-  const { error } = await requireAdmin({ resourceKey });
+  const { session, error } = await requireAdmin({ resourceKey });
   if (error) return error;
 
   const resource = getResource(resourceKey);
@@ -44,5 +45,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ res
   }
 
   const created = await createRow(resource, body, scope);
+  await logAudit(session.user, "create", resourceKey, created.id);
   return NextResponse.json(created, { status: 201 });
 }
