@@ -86,10 +86,13 @@ export async function updateRow(resource: ResourceConfig, id: number, body: Reco
   const values: unknown[] = [];
   let i = 1;
 
-  // Reordering: two rows sharing a sort_order break ties by id (see
-  // listRows), so typing a number that's already in use silently didn't
-  // move the row. Shift every row between the old and new position
-  // instead, so the typed number always lands exactly where expected.
+  // Reordering: a delta-shift based on "did the number change" silently did
+  // nothing when two rows already shared a sort_order and the typed number
+  // matched the existing tie (a very reachable state, since ties break by id
+  // in listRows and nothing previously stopped two rows ending up equal).
+  // Renumbering every sibling 0..n-1 from the row's target position instead
+  // makes the result deterministic and incapable of producing a new tie,
+  // regardless of what the value was before.
   const hasSortOrder = resource.fields.some((f) => f.key === "sort_order");
   if (hasSortOrder && "sort_order" in body) {
     const scopeCol = resource.scopeField ? `, ${resource.scopeField}` : "";
@@ -97,27 +100,25 @@ export async function updateRow(resource: ResourceConfig, id: number, body: Reco
       `SELECT sort_order${scopeCol} FROM ${resource.table} WHERE id = $1`,
       [id]
     );
-    const newOrder = Number(body.sort_order) || 0;
-    const oldOrder = Number(current?.sort_order ?? newOrder);
-    if (current && newOrder !== oldOrder) {
-      const params: unknown[] = [];
-      let clause: string;
-      if (newOrder > oldOrder) {
-        clause = `sort_order = sort_order - 1 WHERE sort_order > $1 AND sort_order <= $2 AND id != $3`;
-        params.push(oldOrder, newOrder, id);
-      } else {
-        clause = `sort_order = sort_order + 1 WHERE sort_order >= $1 AND sort_order < $2 AND id != $3`;
-        params.push(newOrder, oldOrder, id);
+    if (current) {
+      const scopeWhere = resource.scopeField ? `WHERE ${resource.scopeField} = $1` : "";
+      const scopeParams = resource.scopeField ? [current[resource.scopeField]] : [];
+      const { rows: siblings } = await query<{ id: number }>(
+        `SELECT id FROM ${resource.table} ${scopeWhere} ORDER BY sort_order ASC, id ASC`,
+        scopeParams
+      );
+      const ids = siblings.map((row) => row.id).filter((siblingId) => siblingId !== id);
+      const target = Math.max(0, Math.min(Number(body.sort_order) || 0, ids.length));
+      ids.splice(target, 0, id);
+
+      for (let position = 0; position < ids.length; position++) {
+        await pool.query(`UPDATE ${resource.table} SET sort_order = $1 WHERE id = $2`, [position, ids[position]]);
       }
-      if (resource.scopeField) {
-        clause += ` AND ${resource.scopeField} = $4`;
-        params.push(current[resource.scopeField]);
-      }
-      await pool.query(`UPDATE ${resource.table} SET ${clause}`, params);
     }
   }
 
   for (const field of resource.fields) {
+    if (field.key === "sort_order") continue;
     if (!(field.key in body)) continue;
     // Skip clearing an image/video field when no new upload was provided.
     if (
