@@ -11,7 +11,7 @@ const CSP = [
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",
   "connect-src 'self'",
-  "frame-src https://olympics.com",
+  "frame-src https://olympics.com https://www.instagram.com",
   "frame-ancestors 'self'",
   "base-uri 'self'",
   "form-action 'self'",
